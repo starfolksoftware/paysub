@@ -11,7 +11,7 @@
         {
             "name": "Faruk Nasir",
             "email": "faruk@starfolksoftware.com",
-            "homepage": "https://spatie.be",
+            "homepage": "https://starfolksoftware.com",
             "role": "Developer"
         }
     ],
@@ -25,13 +25,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Starfolksoftware\\Subscription\\": "src",
-            "Starfolksoftware\\Subscription\\Database\\Factories\\": "database/factories"
+            "Starfolksoftware\\Paystack\\": "src",
+            "Starfolksoftware\\Paystack\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Starfolksoftware\\Subscription\\Tests\\": "tests"
+            "Starfolksoftware\\Paystack\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -45,10 +45,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Starfolksoftware\\Subscription\\SubscriptionServiceProvider"
+                "Starfolksoftware\\Paystack\\SubscriptionServiceProvider"
             ],
             "aliases": {
-                "Subscription": "Starfolksoftware\\Subscription\\SubscriptionFacade"
+                "Subscription": "Starfolksoftware\\Paystack\\SubscriptionFacade"
             }
         }
     },
