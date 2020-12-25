@@ -7,6 +7,10 @@
     ],
     "homepage": "https://github.com/starfolksoftware/paystack-subscription",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/starfolksoftware/paystack-subscription/issues",
+        "source": "https://github.com/starfolksoftware/paystack-subscription"
+    },
     "authors": [
         {
             "name": "Faruk Nasir",
@@ -53,15 +57,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/spatie"
-        },
-        {
-            "type": "other",
-            "url": "https://spatie.be/open-source/support-us"
-        }
-    ]
+    "prefer-stable": true
 }

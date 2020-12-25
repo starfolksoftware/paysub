@@ -1,6 +1,6 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Packstack;
+namespace Starfolksoftware\PaystackSubscription;
 
 use Illuminate\Support\Facades\Facade;
 
