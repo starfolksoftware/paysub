@@ -1,9 +1,9 @@
 <?php
 
-namespace Starfolksoftware\Subscription;
+namespace Starfolksoftware\PaystackSubscription;
 
 use Illuminate\Support\ServiceProvider;
-use Starfolksoftware\Subscription\Commands\SubscriptionCommand;
+use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
 
 class SubscriptionServiceProvider extends ServiceProvider
 {

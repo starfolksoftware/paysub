@@ -1,10 +1,10 @@
 <?php
 
-namespace Starfolksoftware\Subscription\Tests;
+namespace Starfolksoftware\PaystackSubscription\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Starfolksoftware\Subscription\SubscriptionServiceProvider;
+use Starfolksoftware\PaystackSubscription\SubscriptionServiceProvider;
 
 class TestCase extends Orchestra
 {

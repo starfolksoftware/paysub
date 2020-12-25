@@ -1,6 +1,6 @@
 <?php
 
-namespace Starfolksoftware\Subscription;
+namespace Starfolksoftware\PaystackSubscription;
 
 class Subscription
 {

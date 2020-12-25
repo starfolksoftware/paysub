@@ -1,6 +1,6 @@
 <?php
 
-namespace Starfolksoftware\Subscription\Database\Factories;
+namespace Starfolksoftware\PaystackSubscription\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

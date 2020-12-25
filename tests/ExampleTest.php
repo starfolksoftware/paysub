@@ -1,6 +1,6 @@
 <?php
 
-namespace Starfolksoftware\Subscription\Tests;
+namespace Starfolksoftware\PaystackSubscription\Tests;
 
 class ExampleTest extends TestCase
 {

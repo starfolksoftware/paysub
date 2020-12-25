@@ -1,11 +1,11 @@
 <?php
 
-namespace Starfolksoftware\Subscription;
+namespace Starfolksoftware\PaystackSubscription\Packstack;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Starfolksoftware\Subscription\Subscription
+ * @see \Starfolksoftware\PaystackSubscription\Subscription
  */
 class SubscriptionFacade extends Facade
 {
