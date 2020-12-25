@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Skeleton\Commands;
+namespace Starfolksoftware\Subscription\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class SubscriptionCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'paystack-subscription';
 
     public $description = 'My command';
 

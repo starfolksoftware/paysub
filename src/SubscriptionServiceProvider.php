@@ -1,24 +1,24 @@
 <?php
 
-namespace Spatie\Skeleton;
+namespace Starfolksoftware\Subscription;
 
 use Illuminate\Support\ServiceProvider;
-use Spatie\Skeleton\Commands\SkeletonCommand;
+use Starfolksoftware\Subscription\Commands\SubscriptionCommand;
 
-class SkeletonServiceProvider extends ServiceProvider
+class SubscriptionServiceProvider extends ServiceProvider
 {
     public function boot()
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/skeleton.php' => config_path('skeleton.php'),
+                __DIR__ . '/../config/paystack-subscription.php' => config_path('paystack-subscription.php'),
             ], 'config');
 
             $this->publishes([
-                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/skeleton'),
+                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paystack-subscription'),
             ], 'views');
 
-            $migrationFileName = 'create_skeleton_table.php';
+            $migrationFileName = 'create_paystack_subscription_table.php';
             if (! $this->migrationFileExists($migrationFileName)) {
                 $this->publishes([
                     __DIR__ . "/../database/migrations/{$migrationFileName}.stub" => database_path('migrations/' . date('Y_m_d_His', time()) . '_' . $migrationFileName),
@@ -26,16 +26,16 @@ class SkeletonServiceProvider extends ServiceProvider
             }
 
             $this->commands([
-                SkeletonCommand::class,
+                SubscriptionCommand::class,
             ]);
         }
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'skeleton');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'paystack-subscription');
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/skeleton.php', 'skeleton');
+        $this->mergeConfigFrom(__DIR__ . '/../config/paystack-subscription.php', 'paystack-subscription');
     }
 
     public static function migrationFileExists(string $migrationFileName): bool
