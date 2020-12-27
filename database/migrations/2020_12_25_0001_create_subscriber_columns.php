@@ -14,7 +14,7 @@ class CreateSubscriberColumns extends Migration
     public function up()
     {
         Schema::table(config('subscriber_model_name'), function (Blueprint $table) {
-            $table->string('paystack_id')->nullable()->index();
+            $table->string('paystack_code')->nullable()->index();
             $table->string('card_brand')->nullable();
             $table->string('card_last_four', 4)->nullable();
             $table->timestamp('trial_ends_at')->nullable();
@@ -30,7 +30,7 @@ class CreateSubscriberColumns extends Migration
     {
         Schema::table(config('subscriber_model_name'), function (Blueprint $table) {
             $table->dropColumn([
-                'paystack_id',
+                'paystack_code',
                 'card_brand',
                 'card_last_four',
                 'trial_ends_at',

@@ -4,7 +4,7 @@ namespace Starfolksoftware\PaystackSubscription\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Starfolksoftware\PaystackSubscription\SubscriptionServiceProvider;
+use Starfolksoftware\PaystackSubscription\PaystackSubscriptionServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -20,7 +20,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            SubscriptionServiceProvider::class,
+            PaystackSubscriptionServiceProvider::class,
         ];
     }
 

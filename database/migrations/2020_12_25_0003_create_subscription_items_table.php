@@ -16,7 +16,7 @@ class CreateSubscriptionItemsTable extends Migration
         Schema::create('subscription_items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscription_id');
-            $table->string('paystack_id')->index();
+            $table->string('paystack_code')->index();
             $table->string('paystack_plan');
             $table->integer('quantity');
             $table->timestamps();

@@ -17,7 +17,7 @@ class CreateSubscriptionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
             $table->string('name');
-            $table->string('paystack_id');
+            $table->string('paystack_code');
             $table->string('paystack_status');
             $table->string('paystack_plan')->nullable();
             $table->integer('quantity')->nullable();

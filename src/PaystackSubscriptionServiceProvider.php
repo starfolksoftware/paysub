@@ -5,7 +5,7 @@ namespace Starfolksoftware\PaystackSubscription;
 use Illuminate\Support\ServiceProvider;
 use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
 
-class SubscriptionServiceProvider extends ServiceProvider
+class PaystackSubscriptionServiceProvider extends ServiceProvider
 {
     public function boot()
     {

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Starfolksoftware\PaystackSubscription\Subscription
  */
-class SubscriptionFacade extends Facade
+class PaystackSubscriptionFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
