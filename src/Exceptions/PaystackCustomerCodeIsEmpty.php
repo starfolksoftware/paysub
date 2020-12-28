@@ -4,11 +4,12 @@ namespace Starfolksoftware\PaystackSubscription\Exceptions;
 
 use Exception;
 
-class PaystackCustomerCodeIsEmpty extends Exception {
+class PaystackCustomerCodeIsEmpty extends Exception
+{
     /**
      * Create a new PaystackIsNull instance.
      *
-     * 
+     *
      * @return static
      */
     public static function isNotSet()

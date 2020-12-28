@@ -2,13 +2,13 @@
 
 namespace Starfolksoftware\PaystackSubscription\Concerns;
 
-use Starfolksoftware\PaystackSubscription\PaystackSubscription;
+use Starfolksoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
+use Starfolksoftware\PaystackSubscription\Actions\Customer\Read as PaystackCustomerRead;
+use Starfolksoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
 use Starfolksoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated;
 use Starfolksoftware\PaystackSubscription\Exceptions\InvalidCustomer;
 use Starfolksoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Read as PaystackCustomerRead;
+use Starfolksoftware\PaystackSubscription\PaystackSubscription;
 
 trait ManagesCustomer
 {
@@ -71,6 +71,7 @@ trait ManagesCustomer
         if ($customer) {
             $this->paystack_code = $customer->code;
             $this->save();
+
             throw CustomerAlreadyCreated::exists($this);
         }
 
@@ -105,7 +106,8 @@ trait ManagesCustomer
         }
 
         return $customerUpdate->execute(
-            $this->paystackOptions($options), $this->paystack_code
+            $this->paystackOptions($options),
+            $this->paystack_code
         );
     }
 
