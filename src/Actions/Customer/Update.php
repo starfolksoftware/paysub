@@ -20,6 +20,9 @@ class Update {
             $customer->phone($options['phone']);
         }
 
-        return $customer->code($paystack_code)->update();
+        return $customer
+            ->apiKey($options['api_key'])
+            ->code($paystack_code)
+            ->update();
     }
 }

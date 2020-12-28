@@ -23,6 +23,8 @@ class PaystackCustomer {
     public bool $identified;
     public $identifications;
 
+    public string $api_key;
+
     public function __construct() {
         $this->setAttributes([]);
     }
@@ -45,6 +47,12 @@ class PaystackCustomer {
         $this->updated_at = \Carbon\Carbon::parse($opts['updatedAt'] ?? null, 'Africa/Lagos');
         $this->identified = $opts['identified'] ?? false;
         $this->identifications = $opts['identifications'] ?? null;
+    }
+    
+    public function apiKey($apiKey) {
+        $this->api_key = $apiKey;
+
+        return $this;
     }
 
     public function firstName($firstName) {
@@ -95,7 +103,7 @@ class PaystackCustomer {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer ".config('paystack-subscription.secret'),
+            "Authorization: Bearer ".$this->api_key,
             "Cache-Control: no-cache",
         ));
         
@@ -132,7 +140,7 @@ class PaystackCustomer {
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
-                "Authorization: Bearer ".config('paystack-subscription.secret'),
+                "Authorization: Bearer ".$this->api_key,
                 "Cache-Control: no-cache",
             ),
         ));
@@ -178,7 +186,7 @@ class PaystackCustomer {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer ".config('paystack-subscription.secret'),
+            "Authorization: Bearer ".$this->api_key,
             "Cache-Control: no-cache",
         ));
         
