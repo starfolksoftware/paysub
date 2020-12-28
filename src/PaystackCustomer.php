@@ -26,7 +26,8 @@ class PaystackCustomer
 
     public string $api_key;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->setAttributes([]);
     }
 
@@ -51,7 +52,8 @@ class PaystackCustomer
         $this->identifications = $opts['identifications'] ?? null;
     }
     
-    public function apiKey($apiKey) {
+    public function apiKey($apiKey)
+    {
         $this->api_key = $apiKey;
 
         return $this;
@@ -110,10 +112,10 @@ class PaystackCustomer
         curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/customer');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Authorization: Bearer ".$this->api_key,
             "Cache-Control: no-cache",
-        ));
+        ]);
         
         //So that curl_exec returns the contents of the cURL; rather than echoing it
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -148,10 +150,10 @@ class PaystackCustomer
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 "Authorization: Bearer ".$this->api_key,
                 "Cache-Control: no-cache",
-            )
+            ],
         ]);
         
         $err = curl_error($curl);
@@ -194,11 +196,11 @@ class PaystackCustomer
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Authorization: Bearer ".$this->api_key,
             "Cache-Control: no-cache",
-        ));
+        ]);
         
         //So that curl_exec returns the contents of the cURL; rather than echoing it
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
