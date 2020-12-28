@@ -2,9 +2,9 @@
 
 namespace Starfolksoftware\PaystackSubscription;
 
-use Illuminate\Support\ServiceProvider;
-use Starfolksoftware\PaystackSubscription\PaystackSubscription;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+
 // use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
 
 class PaystackSubscriptionServiceProvider extends ServiceProvider
@@ -20,11 +20,11 @@ class PaystackSubscriptionServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paystack-subscription'),
             ], 'views');
 
-            $mFileNames = array(
+            $mFileNames = [
                 'create_subscriber_columns.php',
                 'create_subscriptions_table.php',
-                'create_subscription_items_table.php'
-            );
+                'create_subscription_items_table.php',
+            ];
 
             collect($mFileNames)->each(function ($mFileName) {
                 if (! $this->migrationFileExists($mFileName)) {
