@@ -27,7 +27,7 @@ return [
     |
     */
 
-    'path' => env('PAYSTACK_SUBSCRIPTION_PATH', 'subscription/paystack'),
+    'path' => env('PAYSTACK_SUBSCRIPTION_PATH', 'paystack-subscription'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
     |
     */
 
-    'subcriber_model' => env('PAYSTACK_SUBSCRIPTION_MODEL', class_exists(App\Models\User::class) ? App\Models\User::class : App\User::class),
+    'subscriber_model' => env('PAYSTACK_SUBSCRIPTION_MODEL', class_exists(App\Models\User::class) ? App\Models\User::class : App\User::class),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,7 +66,7 @@ return [
     | This is the table in your application that holds the subscribers. 
     |
     */
-    'subcriber_table_name' => env('PAYSTACK_SUBSCRIPTION_TABLE_NAME', 'users'),
+    'subscriber_table_name' => env('PAYSTACK_SUBSCRIPTION_TABLE_NAME', 'users'),
 
     /*
     |--------------------------------------------------------------------------

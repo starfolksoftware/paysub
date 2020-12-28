@@ -3,7 +3,9 @@
 namespace Starfolksoftware\PaystackSubscription;
 
 use Illuminate\Support\ServiceProvider;
-use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
+use Starfolksoftware\PaystackSubscription\PaystackSubscription;
+use Illuminate\Support\Facades\Route;
+// use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
 
 class PaystackSubscriptionServiceProvider extends ServiceProvider
 {
@@ -18,19 +20,41 @@ class PaystackSubscriptionServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paystack-subscription'),
             ], 'views');
 
-            $migrationFileName = 'create_paystack_subscription_table.php';
-            if (! $this->migrationFileExists($migrationFileName)) {
-                $this->publishes([
-                    __DIR__ . "/../database/migrations/{$migrationFileName}.stub" => database_path('migrations/' . date('Y_m_d_His', time()) . '_' . $migrationFileName),
-                ], 'migrations');
-            }
+            $mFileNames = array(
+                'create_subscriber_columns.php',
+                'create_subscriptions_table.php',
+                'create_subscription_items_table.php'
+            );
 
-            $this->commands([
-                SubscriptionCommand::class,
-            ]);
+            collect($mFileNames)->each(function ($mFileName) {
+                if (! $this->migrationFileExists($mFileName)) {
+                    $this->publishes([
+                        __DIR__ . "/../database/migrations/{$mFileName}.stub" => database_path('migrations/' . date('Y_m_d_His', time()) . '_' . $mFileName),
+                    ], 'migrations');
+                }
+            });
+
+            // $this->commands([
+            //     SubscriptionCommand::class,
+            // ]);
         }
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'paystack-subscription');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+
+        if (PaystackSubscription::$runsMigrations && $this->app->runningInConsole()) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
+
+        if (PaystackSubscription::$registersRoutes) {
+            Route::group([
+                'prefix' => config('paystack-subscription.path'),
+                'namespace' => 'Laravel\Cashier\Http\Controllers',
+                'as' => 'paystack-subscription.',
+            ], function () {
+                $this->loadRoutesFrom(__DIR__.'/../routes/paystack-subscription.php');
+            });
+        }
     }
 
     public function register()

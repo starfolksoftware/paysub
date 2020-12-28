@@ -64,7 +64,7 @@ class PaystackSubscription
             return;
         }
 
-        $model = config('paystack-subscription.subcriber_model');
+        $model = config('paystack-subscription.subscriber_model');
 
         return (new $model)->where('stripe_id', $paystackId)->first();
     }
