@@ -9,6 +9,7 @@ class Read
     public function execute(array $options, $paystack_code = "")
     {
         $customer = new Customer();
+
         return $customer
             ->email($options['email'])
             ->code($paystack_code)

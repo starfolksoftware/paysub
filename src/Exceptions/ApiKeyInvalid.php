@@ -4,11 +4,12 @@ namespace Starfolksoftware\PaystackSubscription\Exceptions;
 
 use Exception;
 
-class ApiKeyInvalid extends Exception {
+class ApiKeyInvalid extends Exception
+{
     /**
      * Create a new PaystackIsNull instance.
      *
-     * 
+     *
      * @return static
      */
     public static function isNull()
