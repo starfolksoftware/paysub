@@ -2,7 +2,8 @@
 
 namespace Starfolksoftware\PaystackSubscription;
 
-use Starfolksoftware\PaystackSubscription\Exceptions\{PaystackCustomerCodeIsEmpty, PaystackEmailIsNull};
+use Starfolksoftware\PaystackSubscription\Exceptions\PaystackCustomerCodeIsEmpty;
+use Starfolksoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
 use Starfolksoftware\PaystackSubscription\Utilities\CurlRequest;
 use stdClass;
 
@@ -26,7 +27,8 @@ class PaystackCustomer
     public bool $identified;
     public $identifications;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->setAttributes(new stdClass());
     }
 
@@ -89,8 +91,9 @@ class PaystackCustomer
     public function create()
     {
         $result = (new CurlRequest())(
-            'post', 
-            'https://api.paystack.co/customer', [
+            'post',
+            'https://api.paystack.co/customer',
+            [
                 'email' => $this->email,
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -100,7 +103,7 @@ class PaystackCustomer
         
         $this->setAttributes($result);
 
-        return $this->id != 0 ? $this : NULL;
+        return $this->id != 0 ? $this : null;
     }
 
     public function find()
@@ -110,14 +113,14 @@ class PaystackCustomer
         }
 
         $result = (new CurlRequest())(
-            'get', 
+            'get',
             'https://api.paystack.co/customer/'.$this->email
         );
 
         
         $this->setAttributes($result);
 
-        return $this->id != 0 ? $this : NULL;
+        return $this->id != 0 ? $this : null;
     }
 
     public function update()
@@ -127,8 +130,9 @@ class PaystackCustomer
         }
 
         $result = (new CurlRequest())(
-            'put', 
-            'https://api.paystack.co/customer/'.$this->code, [
+            'put',
+            'https://api.paystack.co/customer/'.$this->code,
+            [
                 'email' => $this->email,
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -139,6 +143,6 @@ class PaystackCustomer
         
         $this->setAttributes($result);
 
-        return $this->id != 0 ? $this : NULL;
+        return $this->id != 0 ? $this : null;
     }
 }

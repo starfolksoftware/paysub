@@ -1,17 +1,20 @@
-<?php 
+<?php
 
 namespace Starfolksoftware\PaystackSubscription\Utilities;
 
 use Curl\Curl;
+use Starfolksoftware\PaystackSubscription\Exceptions\ApiKeyInvalid;
+use Starfolksoftware\PaystackSubscription\Exceptions\FailedRequest;
 use Starfolksoftware\PaystackSubscription\PaystackSubscription;
-use Starfolksoftware\PaystackSubscription\Exceptions\{ApiKeyInvalid, FailedRequest};
 use stdClass;
 
-class CurlRequest extends Curl {
+class CurlRequest extends Curl
+{
     public Curl $curlInstance;
     private array $paystackOptions;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->paystackOptions = PaystackSubscription::paystackOptions();
         
         if (! $this->paystackOptions['api_key']) {
@@ -27,18 +30,18 @@ class CurlRequest extends Curl {
     }
 
     public function __invoke(
-        string $method, 
-        string $url, 
-        array $fields = [], 
+        string $method,
+        string $url,
+        array $fields = [],
         array $opts = []
     ) {
         $this->curlInstance->setOpts($opts);
-        $result = call_user_func(array(
+        $result = call_user_func([
             $this->curlInstance,
-            $method
-        ), $url, $fields);
+            $method,
+        ], $url, $fields);
 
-        if (is_object($result) && !$result->status) {
+        if (is_object($result) && ! $result->status) {
             throw FailedRequest::default($result->message);
         }
 
