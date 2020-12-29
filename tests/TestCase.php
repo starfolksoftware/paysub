@@ -1,10 +1,10 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Tests;
+namespace StarfolkSoftware\PaystackSubscription\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Starfolksoftware\PaystackSubscription\PaystackSubscriptionServiceProvider;
+use StarfolkSoftware\PaystackSubscription\PaystackSubscriptionServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Starfolksoftware\\Subscription\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'StarfolkSoftware\\Subscription\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

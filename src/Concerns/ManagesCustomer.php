@@ -1,14 +1,14 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Concerns;
+namespace StarfolkSoftware\PaystackSubscription\Concerns;
 
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Read as PaystackCustomerRead;
-use Starfolksoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
-use Starfolksoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated;
-use Starfolksoftware\PaystackSubscription\Exceptions\InvalidCustomer;
-use Starfolksoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
-use Starfolksoftware\PaystackSubscription\PaystackSubscription;
+use StarfolkSoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
+use StarfolkSoftware\PaystackSubscription\Actions\Customer\Read as PaystackCustomerRead;
+use StarfolkSoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
+use StarfolkSoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated;
+use StarfolkSoftware\PaystackSubscription\Exceptions\InvalidCustomer;
+use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
+use StarfolkSoftware\PaystackSubscription\PaystackSubscription;
 
 trait ManagesCustomer
 {
@@ -37,7 +37,7 @@ trait ManagesCustomer
      *
      * @return void
      *
-     * @throws \Starfolksoftware\PaystackSubscription\Exceptions\InvalidCustomer
+     * @throws \StarfolkSoftware\PaystackSubscription\Exceptions\InvalidCustomer
      */
     protected function assertCustomerExists()
     {
@@ -52,7 +52,7 @@ trait ManagesCustomer
      * @param  array  $options
      * @return @mixed
      *
-     * @throws \Starfolksoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated
+     * @throws \StarfolkSoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated
      */
     public function createAsPaystackCustomer(array $options = [])
     {
@@ -66,10 +66,10 @@ trait ManagesCustomer
             $options['email'] = $email;
         }
 
-        $customer = (new PaystackCustomerRead())->execute($this->paystackOptions($options));
+        $customer = (new PaystackCustomerRead())->execute($this->paystackEmail());
 
         if ($customer) {
-            $this->paystack_code = $customer->code;
+            $this->paystack_code = $customer->customer_code;
             $this->save();
 
             throw CustomerAlreadyCreated::exists($this);
@@ -78,9 +78,9 @@ trait ManagesCustomer
         // Here we will create the customer instance on Paystack and store the ID of the
         // user from Paystack. This ID will correspond with the Paystack user instances
         // and allow us to retrieve users from Paystack later when we need to work.
-        $customer = $customerCreate->execute($this->paystackOptions($options));
+        $customer = $customerCreate->execute($this->paystackEmail(), $options['fields']);
 
-        $this->paystack_code = $customer->code;
+        $this->paystack_code = $customer->paystack_code;
 
         $this->save();
 
@@ -107,8 +107,7 @@ trait ManagesCustomer
 
         return $customerUpdate->execute(
             $this->paystackCode(),
-            $fields,
-            $this->paystackOptions($options)
+            $fields
         );
     }
 
@@ -142,7 +141,7 @@ trait ManagesCustomer
             $options['email'] = $email;
         }
 
-        return $customerRead->execute($this->paystackOptions($options), $this->paystack_code);
+        return $customerRead->execute($this->paystackCode());
     }
 
     /**

@@ -44,13 +44,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Starfolksoftware\\PaystackSubscription\\": "src",
-            "Starfolksoftware\\PaystackSubscription\\Database\\Factories\\": "database/factories"
+            "StarfolkSoftware\\PaystackSubscription\\": "src",
+            "StarfolkSoftware\\PaystackSubscription\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Starfolksoftware\\PaystackSubscription\\Tests\\": "tests"
+            "StarfolkSoftware\\PaystackSubscription\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -67,10 +67,10 @@
         },
         "laravel": {
             "providers": [
-                "Starfolksoftware\\PaystackSubscription\\PaystackSubscriptionServiceProvider"
+                "StarfolkSoftware\\PaystackSubscription\\PaystackSubscriptionServiceProvider"
             ],
             "aliases": {
-                "Subscription": "Starfolksoftware\\PaystackSubscription\\SubscriptionFacade"
+                "Subscription": "StarfolkSoftware\\PaystackSubscription\\SubscriptionFacade"
             }
         }
     },

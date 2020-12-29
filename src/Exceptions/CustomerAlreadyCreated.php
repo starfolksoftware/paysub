@@ -1,6 +1,6 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Exceptions;
+namespace StarfolkSoftware\PaystackSubscription\Exceptions;
 
 use Exception;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription;
+namespace StarfolkSoftware\PaystackSubscription;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
-// use Starfolksoftware\PaystackSubscription\Commands\SubscriptionCommand;
+// use StarfolkSoftware\PaystackSubscription\Commands\SubscriptionCommand;
 
 class PaystackSubscriptionServiceProvider extends ServiceProvider
 {

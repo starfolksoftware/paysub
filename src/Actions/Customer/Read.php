@@ -1,18 +1,15 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Actions\Customer;
+namespace StarfolkSoftware\PaystackSubscription\Actions\Customer;
 
-use Starfolksoftware\PaystackSubscription\Customer;
+use StarfolkSoftware\PaystackSubscription\Customer;
 
 class Read
 {
-    public function execute(array $options, $paystack_code = "")
+    public function execute(string $identifier)
     {
         $customer = new Customer();
 
-        return $customer
-            ->email($options['email'])
-            ->code($paystack_code)
-            ->find();
+        return $customer->find($identifier);
     }
 }

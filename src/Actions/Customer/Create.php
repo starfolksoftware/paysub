@@ -1,19 +1,15 @@
 <?php
 
-namespace Starfolksoftware\PaystackSubscription\Actions\Customer;
+namespace StarfolkSoftware\PaystackSubscription\Actions\Customer;
 
-use Starfolksoftware\PaystackSubscription\Customer;
+use StarfolkSoftware\PaystackSubscription\Customer;
 
 class Create
 {
-    public function execute(array $options)
+    public function execute(string $email, array $fields = [])
     {
         $customer = new Customer();
 
-        return $customer
-            ->email($options['email'])
-            ->firstName($options['first_name'] ?? '')
-            ->lastName($options['last_name'] ?? '')
-            ->create();
+        return $customer->email($email)->create($fields);
     }
 }

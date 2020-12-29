@@ -1,10 +1,10 @@
 <?php 
 
-namespace Starfolksoftware\PaystackSubscription\Utilities;
+namespace StarfolkSoftware\PaystackSubscription\Utilities;
 
 use Curl\Curl;
-use Starfolksoftware\PaystackSubscription\PaystackSubscription;
-use Starfolksoftware\PaystackSubscription\Exceptions\{ApiKeyInvalid, FailedRequest};
+use StarfolkSoftware\PaystackSubscription\PaystackSubscription;
+use StarfolkSoftware\PaystackSubscription\Exceptions\{ApiKeyInvalid, FailedRequest};
 use stdClass;
 
 class CurlRequest extends Curl {
@@ -42,6 +42,12 @@ class CurlRequest extends Curl {
             throw FailedRequest::default($result->message);
         }
 
-        return is_object($result) ? $result->data : new stdClass();
+        $arrayedResult = is_array($result->data) ? $result->data : $this->toArray($result->data);
+
+        return !empty($arrayedResult) ? $arrayedResult : [];
+    }
+
+    public function toArray(object $data) {
+        return json_decode(json_encode($data), true);
     }
 }
