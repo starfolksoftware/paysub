@@ -6,7 +6,7 @@ use Starfolksoftware\PaystackSubscription\Exceptions\{PaystackCustomerCodeIsEmpt
 use Starfolksoftware\PaystackSubscription\Utilities\CurlRequest;
 use stdClass;
 
-class PaystackCustomer
+class Customer
 {
     public string $email;
     public string $code;

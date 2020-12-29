@@ -2,7 +2,7 @@
 
 namespace Starfolksoftware\PaystackSubscription\Actions\Customer;
 
-use Starfolksoftware\PaystackSubscription\PaystackCustomer as Customer;
+use Starfolksoftware\PaystackSubscription\Customer;
 
 class Read
 {

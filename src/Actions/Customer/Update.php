@@ -2,11 +2,11 @@
 
 namespace Starfolksoftware\PaystackSubscription\Actions\Customer;
 
-use Starfolksoftware\PaystackSubscription\PaystackCustomer as Customer;
+use Starfolksoftware\PaystackSubscription\Customer;
 
 class Update
 {
-    public function execute($paystack_code, array $fields, array $options)
+    public function execute($paystack_code, array $fields)
     {
         $customer = new Customer();
 
