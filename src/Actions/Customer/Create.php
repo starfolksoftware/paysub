@@ -11,7 +11,6 @@ class Create
         $customer = new Customer();
 
         return $customer
-            ->apiKey($options['api_key'])
             ->email($options['email'])
             ->firstName($options['first_name'] ?? '')
             ->lastName($options['last_name'] ?? '')

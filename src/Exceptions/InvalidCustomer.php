@@ -14,6 +14,6 @@ class InvalidCustomer extends Exception
      */
     public static function notYetCreated($owner)
     {
-        return new static(class_basename($owner).' is not a Paystack customer yet. See the createAsStripeCustomer method.');
+        return new static(class_basename($owner).' is not a Paystack customer yet. See the createAsPaystackCustomer method.');
     }
 }

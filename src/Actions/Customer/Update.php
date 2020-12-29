@@ -6,24 +6,23 @@ use Starfolksoftware\PaystackSubscription\PaystackCustomer as Customer;
 
 class Update
 {
-    public function execute(array $options, $paystack_code)
+    public function execute($paystack_code, array $fields, array $options)
     {
         $customer = new Customer();
 
-        if ($options['first_name']) {
-            $customer->firstName($options['first_name']);
+        if ($fields['first_name']) {
+            $customer->firstName($fields['first_name']);
         }
 
-        if ($options['last_name']) {
-            $customer->lastName($options['last_name']);
+        if ($fields['last_name']) {
+            $customer->lastName($fields['last_name']);
         }
 
-        if ($options['phone']) {
-            $customer->phone($options['phone']);
+        if ($fields['phone']) {
+            $customer->phone($fields['phone']);
         }
 
         return $customer
-            ->apiKey($options['api_key'])
             ->code($paystack_code)
             ->update();
     }

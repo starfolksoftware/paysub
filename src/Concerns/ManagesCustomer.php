@@ -93,7 +93,7 @@ trait ManagesCustomer
      * @param  array  $options
      * @return @mixed
      */
-    public function updatePaystackCustomer(array $options = [])
+    public function updatePaystackCustomer(array $fields, array $options = [])
     {
         $customerUpdate = new PaystackCustomerUpdate();
 
@@ -106,8 +106,9 @@ trait ManagesCustomer
         }
 
         return $customerUpdate->execute(
-            $this->paystackOptions($options),
-            $this->paystack_code
+            $this->paystackCode(),
+            $fields,
+            $this->paystackOptions($options)
         );
     }
 
@@ -131,7 +132,7 @@ trait ManagesCustomer
      *
      * @return @mixed
      */
-    public function asPaystackCustomer(array $options)
+    public function asPaystackCustomer(array $options = [])
     {
         $this->assertCustomerExists();
 

@@ -2,7 +2,9 @@
 
 namespace Starfolksoftware\PaystackSubscription;
 
-use Starfolksoftware\PaystackSubscription\Exceptions\{PaystackCustomerCodeIsEmpty};
+use Starfolksoftware\PaystackSubscription\Exceptions\{PaystackCustomerCodeIsEmpty, PaystackEmailIsNull};
+use Starfolksoftware\PaystackSubscription\Utilities\CurlRequest;
+use stdClass;
 
 class PaystackCustomer
 {
@@ -24,37 +26,29 @@ class PaystackCustomer
     public bool $identified;
     public $identifications;
 
-    public string $api_key;
-
     public function __construct() {
-        $this->setAttributes([]);
+        $this->setAttributes(new stdClass());
     }
 
-    public function setAttributes(array $opts)
+    public function setAttributes(object $object)
     {
-        $this->email = $opts['email'] ?? "";
-        $this->code = $opts['customer_code'] ?? "";
-        $this->transactions = $opts['transactions'] ?? [];
-        $this->subscriptions = $opts['subscriptions'] ?? [];
-        $this->authorizations = $opts['authorizations'] ?? [];
-        $this->fist_name = $opts['first_name'] ?? "";
-        $this->last_name = $opts['last_name'] ?? "";
-        $this->phone = $opts['phone'] ?? "";
-        $this->metadata = $opts['metadata'] ?? null;
-        $this->domain = $opts['domain'] ?? "";
-        $this->risk_action = $opts['risk_action'] ?? "";
-        $this->id = $opts['id'] ?? 0;
-        $this->integration = $opts['integration'] ?? 0;
-        $this->created_at = \Carbon\Carbon::parse($opts['createdAt'] ?? null, 'Africa/Lagos');
-        $this->updated_at = \Carbon\Carbon::parse($opts['updatedAt'] ?? null, 'Africa/Lagos');
-        $this->identified = $opts['identified'] ?? false;
-        $this->identifications = $opts['identifications'] ?? null;
-    }
-    
-    public function apiKey($apiKey) {
-        $this->api_key = $apiKey;
-
-        return $this;
+        $this->email = $object->email ?? "";
+        $this->code = $object->customer_code ?? "";
+        $this->transactions = $object->transactions ?? [];
+        $this->subscriptions = $object->subscriptions ?? [];
+        $this->authorizations = $object->authorizations ?? [];
+        $this->fist_name = $object->first_name ?? "";
+        $this->last_name = $object->last_name ?? "";
+        $this->phone = $object->phone ?? "";
+        $this->metadata = $object->metadata ?? null;
+        $this->domain = $object->domain ?? "";
+        $this->risk_action = $object->risk_action ?? "";
+        $this->id = $object->id ?? 0;
+        $this->integration = $object->integration ?? 0;
+        $this->created_at = \Carbon\Carbon::parse($object->createdAt ?? null, 'Africa/Lagos');
+        $this->updated_at = \Carbon\Carbon::parse($object->updatedAt ?? null, 'Africa/Lagos');
+        $this->identified = $object->identified ?? false;
+        $this->identifications = $object->identifications ?? null;
     }
 
     public function firstName($firstName)
@@ -94,130 +88,57 @@ class PaystackCustomer
 
     public function create()
     {
-        $fields = [
-            'email' => $this->email,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-        ];
-
-        $fields_string = http_build_query($fields);
-
-        //open connection
-        $ch = curl_init();
+        $result = (new CurlRequest())(
+            'post', 
+            'https://api.paystack.co/customer', [
+                'email' => $this->email,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone' => $this->phone,
+            ]
+        );
         
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch, CURLOPT_URL, 'https://api.paystack.co/customer');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer ".$this->api_key,
-            "Cache-Control: no-cache",
-        ));
-        
-        //So that curl_exec returns the contents of the cURL; rather than echoing it
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        $err = curl_error($ch);
-        
-        //execute post
-        $result = json_decode(curl_exec($ch), true);
+        $this->setAttributes($result);
 
-        if ($result) {
-            $this->setAttributes($result['data']);
-        }
-
-        curl_close($ch);
-
-        return $err ? null : $this;
+        return $this->id != 0 ? $this : NULL;
     }
 
     public function find()
     {
-        if (! $this->code && ! $this->email) {
-            throw PaystackCustomerCodeIsEmpty::isNotSet();
+        if (! $this->email) {
+            throw PaystackEmailIsNull::isNull();
         }
 
-        $curl = curl_init();
-  
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.paystack.co/customer/".($this->code ?? $this->email),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: Bearer ".$this->api_key,
-                "Cache-Control: no-cache",
-            )
-        ]);
+        $result = (new CurlRequest())(
+            'get', 
+            'https://api.paystack.co/customer/'.$this->email
+        );
+
         
-        $err = curl_error($curl);
+        $this->setAttributes($result);
 
-        //execute post
-        $result = json_decode(curl_exec($curl), true);
-
-        if ($result) {
-            $this->setAttributes($result['data']);
-        }
-
-        curl_close($curl);
-
-        if ($err || ! $this->code) {
-            return null;
-        } elseif ($this->code) {
-            return $this;
-        }
+        return $this->id != 0 ? $this : NULL;
     }
 
     public function update()
     {
-        $fields = [
-            'email' => $this->email,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-        ];
-
         if (! $this->code) {
             throw PaystackCustomerCodeIsEmpty::isNotSet();
         }
 
-        $url = "https://api.paystack.co/customer/".$this->code;
+        $result = (new CurlRequest())(
+            'put', 
+            'https://api.paystack.co/customer/'.$this->code, [
+                'email' => $this->email,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone' => $this->phone,
+            ]
+        );
 
-        $fields_string = http_build_query($fields);
-        //open connection
-        $ch = curl_init();
         
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer ".$this->api_key,
-            "Cache-Control: no-cache",
-        ));
-        
-        //So that curl_exec returns the contents of the cURL; rather than echoing it
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        $err = curl_error($ch);
-        
-        //execute post
-        $result = json_decode(curl_exec($ch), true);
+        $this->setAttributes($result);
 
-        if ($result) {
-            $this->setAttributes($result['data']);
-        }
-
-        curl_close($ch);
-
-        if ($err || ! $this->code) {
-            return null;
-        } elseif ($this->code) {
-            return $this;
-        }
+        return $this->id != 0 ? $this : NULL;
     }
 }

@@ -33,6 +33,7 @@
         "illuminate/view": "^6.0|^7.0|^8.0",
         "moneyphp/money": "^3.2",
         "nesbot/carbon": "^2.0",
+        "php-curl-class/php-curl-class": "^8.9",
         "symfony/http-kernel": "^4.3|^5.0",
         "symfony/intl": "^4.3|^5.0"
     },

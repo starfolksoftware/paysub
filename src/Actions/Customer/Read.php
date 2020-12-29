@@ -10,7 +10,6 @@ class Read
     {
         $customer = new Customer();
         return $customer
-            ->apiKey($options['api_key'])
             ->email($options['email'])
             ->code($paystack_code)
             ->find();
