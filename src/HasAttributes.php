@@ -2,7 +2,8 @@
 
 namespace StarfolkSoftware\PaystackSubscription;
 
-trait HasAttributes {
+trait HasAttributes
+{
     /**
      * Set a given attribute on the model.
      *
@@ -10,7 +11,8 @@ trait HasAttributes {
      * @param  mixed  $value
      * @return mixed
      */
-    private function setAttribute($key, $value) {
+    private function setAttribute($key, $value)
+    {
         $this->{$key} = $value;
 
         return $this;
@@ -22,7 +24,8 @@ trait HasAttributes {
      * @param  array  $attributes
      * @return mixed
      */
-    private function setAttributes(array $attributes) {
+    private function setAttributes(array $attributes)
+    {
         collect($attributes)->each(function ($value, $key) {
             $this->setAttribute($key, $value);
         });
@@ -36,7 +39,8 @@ trait HasAttributes {
      * @param  string  $key
      * @return mixed
      */
-    public function getAttribute($key) {
+    public function getAttribute($key)
+    {
         return $this->{$key};
     }
 }

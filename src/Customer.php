@@ -2,33 +2,37 @@
 
 namespace StarfolkSoftware\PaystackSubscription;
 
-use StarfolkSoftware\PaystackSubscription\Exceptions\{PaystackCustomerCodeIsEmpty, PaystackEmailIsNull, PaystackPlanCodeIsEmpty};
-use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
 use \Exception;
+use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackCustomerCodeIsEmpty;
+use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
+use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
 
 class Customer
 {
     use HasAttributes;
 
-    public function email(string $email) {
+    public function email(string $email)
+    {
         $this->setAttribute('email', $email);
 
         return $this;
     }
 
-    public function paystackCode(string $paystackCode) {
+    public function paystackCode(string $paystackCode)
+    {
         $this->setAttribute('paystack_code', $paystackCode);
 
         return $this;
     }
 
-    public static function create(array $fields) {
+    public static function create(array $fields)
+    {
         if (! $fields['email']) {
             throw PaystackEmailIsNull::isNull();
         }
 
         return (object) (new CurlRequest())(
-            'post', 
+            'post',
             'https://api.paystack.co/customer',
             $fields
         );
@@ -41,7 +45,7 @@ class Customer
         }
         
         $this->setAttributes((new CurlRequest())(
-            'get', 
+            'get',
             'https://api.paystack.co/customer/'.$identifier
         ));
 
@@ -55,7 +59,7 @@ class Customer
         }
         
         $this->setAttributes((new CurlRequest())(
-            'put', 
+            'put',
             'https://api.paystack.co/customer/'.$this->paystack_code,
             $fields
         ));
@@ -63,12 +67,14 @@ class Customer
         return $this;
     }
 
-    public static function all(int $perPage = 50, int $page = 1) {
+    public static function all(int $perPage = 50, int $page = 1)
+    {
         return collect((new CurlRequest())(
-            'get', 
-            'https://api.paystack.co/customer', [
+            'get',
+            'https://api.paystack.co/customer',
+            [
                 'perPage' => $perPage,
-                'page' => $page
+                'page' => $page,
             ]
         ));
     }
