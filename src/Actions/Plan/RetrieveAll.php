@@ -2,7 +2,7 @@
 
 namespace StarfolkSoftware\PaystackSubscription\Actions\Plan;
 
-use StarfolkSoftware\PaystackSubscription\Core\Plan;
+use StarfolkSoftware\PaystackSubscription\Api\Plan;
 
 class RetrieveAll
 {

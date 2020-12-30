@@ -4,11 +4,11 @@ namespace StarfolkSoftware\PaystackSubscription;
 
 use StarfolkSoftware\PaystackSubscription\Concerns\{
     ManagesCustomer,
-    ManagesSubscriptions,
+    ManagesSubscription,
 };
 
 trait Billable
 {
     use ManagesCustomer;
-    use ManagesSubscriptions;
+    use ManagesSubscription;
 }

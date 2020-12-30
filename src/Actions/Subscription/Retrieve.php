@@ -2,7 +2,7 @@
 
 namespace StarfolkSoftware\PaystackSubscription\Actions\Subscription;
 
-use StarfolkSoftware\PaystackSubscription\Core\Subscription;
+use StarfolkSoftware\PaystackSubscription\Api\Subscription;
 
 class Retrieve
 {

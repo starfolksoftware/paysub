@@ -124,7 +124,7 @@ class SubscriptionBuilder {
     /**
      * Get the Paystack customer instance for the current user and payment method.
      *
-     * @return \StarfolkSofware\PaystackSubscription\Core\Customer
+     * @return \StarfolkSofware\PaystackSubscription\Api\Customer
      */
     protected function getPaystackCustomer()
     {

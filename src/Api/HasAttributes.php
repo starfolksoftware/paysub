@@ -1,6 +1,6 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Core;
+namespace StarfolkSoftware\PaystackSubscription\Api;
 
 trait HasAttributes
 {

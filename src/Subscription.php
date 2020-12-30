@@ -337,7 +337,7 @@ class Subscription extends Model {
      * Get the subscription as a Paystack subscription object.
      *
      * @param  array  $expand
-     * @return \StarfolkSoftware\PaystackSubscription\Core\Subscription
+     * @return \StarfolkSoftware\PaystackSubscription\Api\Subscription
      */
     public function asPaystackSubscription()
     {

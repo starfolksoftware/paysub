@@ -1,6 +1,6 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Core;
+namespace StarfolkSoftware\PaystackSubscription\Api;
 
 use InvalidArgumentException;
 use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackCustomerCodeIsEmpty;
@@ -69,11 +69,11 @@ class Customer
         return $this;
     }
 
-    public static function all(array $fields)
+    public static function all(array $fields = [])
     {
         return collect((new CurlRequest())(
             'get',
-            'https://api.paystack.co/customer',
+            self::$classUrl,
             $fields
         ));
     }
