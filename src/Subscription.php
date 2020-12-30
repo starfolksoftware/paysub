@@ -4,15 +4,13 @@ namespace StarfolkSoftware\PaystackSubscription;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use LogicException;
+use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Disable as PaystackSubscriptionDisable;
+use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Enable as PaystackSubscriptionEnable;
+use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Retrieve as PaystackSubscriptionRetrieve;
 use StarfolkSoftware\PaystackSubscription\Exceptions\InvalidSubscription;
-use StarfolkSoftware\PaystackSubscription\Actions\Subscription\{
-    Retrieve as PaystackSubscriptionRetrieve,
-    Enable as PaystackSubscriptionEnable, 
-    Disable as PaystackSubscriptionDisable
-};
 
-class Subscription extends Model {
+class Subscription extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -36,8 +34,8 @@ class Subscription extends Model {
      */
     protected $dates = [
         'ends_at',
-        'created_at', 
-        'updated_at'
+        'created_at',
+        'updated_at',
     ];
 
     /**
