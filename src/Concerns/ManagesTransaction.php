@@ -5,14 +5,16 @@ namespace StarfolkSoftware\PaystackSubscription\Concerns;
 use \InvalidArgumentException;
 use StarfolkSoftware\PaystackSubscription\Actions\Transaction\Initialize as PaystackTransactionInit;
 
-trait ManagesTransaction {
+trait ManagesTransaction
+{
     /**
      * @return \StarfolkSoftware\PaystackSubscription\Api\Transaction;
-     * 
+     *
      * @param string $plan
      * @param array $channels
      */
-    public function initTransWithPlanSub(string $plan, array $channels = ['card']) {
+    public function initTransWithPlanSub(string $plan, array $channels = ['card'])
+    {
         if (! $plan) {
             throw new InvalidArgumentException("plan code is not provided");
         }

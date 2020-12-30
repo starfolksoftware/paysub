@@ -2,10 +2,8 @@
 
 namespace StarfolkSoftware\PaystackSubscription;
 
-use StarfolkSoftware\PaystackSubscription\Concerns\{
-    ManagesCustomer,
-    ManagesSubscription,
-};
+use StarfolkSoftware\PaystackSubscription\Concerns\ManagesCustomer;
+use StarfolkSoftware\PaystackSubscription\Concerns\ManagesSubscription;
 
 trait Billable
 {
