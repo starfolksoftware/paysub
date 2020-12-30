@@ -2,14 +2,14 @@
 
 namespace StarfolkSoftware\PaystackSubscription\Actions\Customer;
 
-use StarfolkSoftware\PaystackSubscription\Customer;
+use StarfolkSoftware\PaystackSubscription\Core\Customer;
 
-class Read
+class Retrieve
 {
     public function execute(string $identifier)
     {
         $customer = new Customer();
 
-        return $customer->find($identifier);
+        return $customer->retrieve($identifier);
     }
 }

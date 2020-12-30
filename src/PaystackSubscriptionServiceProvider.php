@@ -23,7 +23,6 @@ class PaystackSubscriptionServiceProvider extends ServiceProvider
             $mFileNames = [
                 'create_subscriber_columns.php',
                 'create_subscriptions_table.php',
-                'create_subscription_items_table.php',
             ];
 
             collect($mFileNames)->each(function ($mFileName) {

@@ -4,12 +4,12 @@ namespace StarfolkSoftware\PaystackSubscription\Actions\Customer;
 
 use StarfolkSoftware\PaystackSubscription\Core\Customer;
 
-class Update
+class RetrieveAll
 {
-    public function execute($paystack_code, array $fields)
+    public function execute()
     {
         $customer = new Customer();
 
-        return $customer->paystackCode($paystack_code)->update($fields);
+        return $customer->all();
     }
 }

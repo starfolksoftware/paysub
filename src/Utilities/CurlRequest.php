@@ -44,6 +44,11 @@ class CurlRequest extends Curl
             throw FailedRequest::default($result->message);
         }
 
+        if (!is_object($result->data) && !is_array($result->data) &&
+            !is_null($result->data)) {
+            return $result->status;
+        }
+
         $arrayedResult = is_array($result->data) ? $result->data : $this->toArray($result->data);
 
         return ! empty($arrayedResult) ? $arrayedResult : [];

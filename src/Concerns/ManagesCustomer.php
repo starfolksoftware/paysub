@@ -3,7 +3,7 @@
 namespace StarfolkSoftware\PaystackSubscription\Concerns;
 
 use StarfolkSoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
-use StarfolkSoftware\PaystackSubscription\Actions\Customer\Read as PaystackCustomerRead;
+use StarfolkSoftware\PaystackSubscription\Actions\Customer\Retrieve as PaystackCustomerRetrieve;
 use StarfolkSoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
 use StarfolkSoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated;
 use StarfolkSoftware\PaystackSubscription\Exceptions\InvalidCustomer;
@@ -66,7 +66,7 @@ trait ManagesCustomer
             $options['email'] = $email;
         }
 
-        $customer = (new PaystackCustomerRead())->execute($this->paystackEmail());
+        $customer = (new PaystackCustomerRetrieve())->execute($this->paystackEmail());
 
         if ($customer) {
             $this->paystack_code = $customer->customer_code;
@@ -135,7 +135,7 @@ trait ManagesCustomer
     {
         $this->assertCustomerExists();
 
-        $customerRead = new PaystackCustomerRead();
+        $customerRead = new PaystackCustomerRetrieve();
 
         if (! array_key_exists('email', $options) && $email = $this->paystackEmail()) {
             $options['email'] = $email;

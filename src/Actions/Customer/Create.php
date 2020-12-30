@@ -2,7 +2,7 @@
 
 namespace StarfolkSoftware\PaystackSubscription\Actions\Customer;
 
-use StarfolkSoftware\PaystackSubscription\Customer;
+use StarfolkSoftware\PaystackSubscription\Core\Customer;
 
 class Create
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\PaystackSubscription\Core;
 
-use \Exception;
+use InvalidArgumentException;
 use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackCustomerCodeIsEmpty;
 use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
 use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
@@ -10,6 +10,8 @@ use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
 class Customer
 {
     use HasAttributes;
+
+    public static string $classUrl = 'https://api.paystack.co/customer/';
 
     public function email(string $email)
     {
@@ -33,26 +35,26 @@ class Customer
 
         return (object) (new CurlRequest())(
             'post',
-            'https://api.paystack.co/customer',
+            self::$classUrl,
             $fields
         );
     }
 
-    public function find(string $identifier)
+    public function retrieve(string $identifier)
     {
         if (! $identifier) {
-            throw new Exception('Paystack email or code is not provided');
+            throw new InvalidArgumentException('Paystack email or code is not provided');
         }
         
         $this->setAttributes((new CurlRequest())(
             'get',
-            'https://api.paystack.co/customer/'.$identifier
+            self::$classUrl.$identifier
         ));
 
         return $this;
     }
 
-    public function update($fields)
+    public function update(array $fields)
     {
         if (! $this->paystack_code) {
             throw PaystackCustomerCodeIsEmpty::isNotSet();
@@ -60,22 +62,19 @@ class Customer
         
         $this->setAttributes((new CurlRequest())(
             'put',
-            'https://api.paystack.co/customer/'.$this->paystack_code,
+            self::$classUrl.$this->paystack_code,
             $fields
         ));
 
         return $this;
     }
 
-    public static function all(int $perPage = 50, int $page = 1)
+    public static function all(array $fields)
     {
         return collect((new CurlRequest())(
             'get',
             'https://api.paystack.co/customer',
-            [
-                'perPage' => $perPage,
-                'page' => $page,
-            ]
+            $fields
         ));
     }
 }

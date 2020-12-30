@@ -79,7 +79,7 @@ return [
     |
     */
 
-    'currency' => env('PAYSTACK_SUBSCRIPTION_CURRENCY', 'ngn'),
+    'currency' => env('PAYSTACK_SUBSCRIPTION_CURRENCY', 'NGN'),
 
     /*
     |--------------------------------------------------------------------------
