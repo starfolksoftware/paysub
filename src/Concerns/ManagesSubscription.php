@@ -5,7 +5,8 @@ namespace StarfolkSoftware\PaystackSubscription\Concerns;
 use StarfolkSoftware\PaystackSubscription\Subscription;
 use StarfolkSoftware\PaystackSubscription\SubscriptionBuilder;
 
-trait ManagesSubscriptions {
+trait ManagesSubscriptions
+{
     /**
      * Begin creating a new subscription.
      *

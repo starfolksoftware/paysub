@@ -7,7 +7,8 @@ use StarfolkSoftware\PaystackSubscription\Actions\Subscription\{
     Create as PaystackSubscriptionCreate
 };
 
-class SubscriptionBuilder {
+class SubscriptionBuilder
+{
     /**
      * The model that is subscribing.
      *
@@ -145,5 +146,4 @@ class SubscriptionBuilder {
 
         return $payload;
     }
-
 }
