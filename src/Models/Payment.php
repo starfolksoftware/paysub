@@ -48,10 +48,11 @@ class Payment extends Model
 
     /**
      * Get the invoice of the payment
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function invoice() {
+    public function invoice()
+    {
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 }
