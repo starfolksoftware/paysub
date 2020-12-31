@@ -5,12 +5,14 @@ namespace StarfolkSoftware\PaystackSubscription\Api;
 use InvalidArgumentException;
 use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
 
-class Transaction {
+class Transaction
+{
     use HasAttributes;
 
     public static string $classUrl = 'https://api.paystack.co/transaction/';
 
-    public function initialize(array $fields) {
+    public function initialize(array $fields)
+    {
         if (! $fields['email']) {
             throw new InvalidArgumentException('email is not provided');
         }
@@ -28,7 +30,8 @@ class Transaction {
         return $this;
     }
 
-    public function verify($reference) {
+    public function verify($reference)
+    {
         if (! $reference) {
             throw new InvalidArgumentException('reference is not provided');
         }
@@ -55,7 +58,8 @@ class Transaction {
         return $this;
     }
 
-    public static function all(array $fields) {
+    public static function all(array $fields)
+    {
         return collect((new CurlRequest())(
             'get',
             self::$classUrl,
@@ -63,7 +67,8 @@ class Transaction {
         ));
     }
 
-    public function charge(array $fields) {
+    public function charge(array $fields)
+    {
         if (! $fields['email']) {
             throw new InvalidArgumentException('email is not provided');
         }
