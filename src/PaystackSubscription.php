@@ -64,7 +64,7 @@ class PaystackSubscription
             return;
         }
 
-        $model = config('paystack-subscription.subscriber_model');
+        $model = config('paysub.subscriber_model');
 
         return (new $model)->where('stripe_id', $paystackId)->first();
     }
@@ -78,7 +78,7 @@ class PaystackSubscription
     public static function paystackOptions(array $options = [])
     {
         return array_merge([
-            'api_key' => config('paystack-subscription.secret'),
+            'api_key' => config('paysub.secret'),
             'paystack_version' => static::PAYSTACK_VERSION,
         ], $options);
     }
@@ -108,9 +108,9 @@ class PaystackSubscription
             return call_user_func(static::$formatCurrencyUsing, $amount, $currency);
         }
 
-        $money = new Money($amount, new Currency(strtoupper($currency ?? config('paystack-subscription.currency'))));
+        $money = new Money($amount, new Currency(strtoupper($currency ?? config('paysub.currency'))));
 
-        $locale = $locale ?? config('paystack-subscription.currency_locale');
+        $locale = $locale ?? config('paysub.currency_locale');
 
         $numberFormatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
         $moneyFormatter = new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());

@@ -165,7 +165,7 @@ trait ManagesCustomer
      */
     public function preferredCurrency()
     {
-        return config('paystack-subscription.currency');
+        return config('paysub.currency');
     }
 
     /**

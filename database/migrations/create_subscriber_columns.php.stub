@@ -13,11 +13,10 @@ class CreateSubscriberColumns extends Migration
      */
     public function up()
     {
-        Schema::table(config('paystack-subscription.subscriber_table_name'), function (Blueprint $table) {
+        Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
             $table->string('paystack_code')->nullable()->index();
             $table->string('paystack_email')->unique();
-            $table->string('card_brand')->nullable();
-            $table->string('card_last_four', 4)->nullable();
+            $table->json('send_invoice_to')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
         });
     }
@@ -29,11 +28,10 @@ class CreateSubscriberColumns extends Migration
      */
     public function down()
     {
-        Schema::table(config('paystack-subscription.subscriber_table_name'), function (Blueprint $table) {
+        Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
             $table->dropColumn([
                 'paystack_code',
-                'card_brand',
-                'card_last_four',
+                'send_invoice_to',
                 'trial_ends_at',
             ]);
         });

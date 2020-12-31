@@ -13,17 +13,22 @@ class CreateSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create(config('paysub.subscription_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
-            $table->string('paystack_code');
-            $table->string('paystack_status');
-            $table->string('paystack_plan')->nullable();
+            $table->unsignedBigInteger('plan_id');
+            $table->string('last_authorization_id');
+            $table->enum('last_payment_status', ['success', 'failure'])
+            $table->enum('status', ['active', 'inactive']);
             $table->integer('quantity')->nullable();
+            $table->string('cron_expression')->nullable();
+            $table->timestamp('next_payment_date')->nullable();
+            $table->unsignedBigInteger('open_invoice_id')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();
 
-            $table->index(['subscriber_id', 'paystack_status']);
+            $table->index(['subscriber_id', 'status']);
         });
     }
 
@@ -34,6 +39,6 @@ class CreateSubscriptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists(config('paysub.subscription_table_name'));
     }
 }

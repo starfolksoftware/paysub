@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSubscribersAuthorizationsColumns extends Migration
+{
+    protected $table_name = config('paysub.subscriber_table_name')._.config('paysub.authorization_table_name');
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create($this->table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('subscriber_id');
+            $table->unsignedBigInteger('authorization_id');
+            $table->timestamps();
+
+            $table->index(['subscriber_id', 'authorization_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists($this->table_name);
+    }
+}

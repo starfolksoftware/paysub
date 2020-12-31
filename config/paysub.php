@@ -27,7 +27,7 @@ return [
     |
     */
 
-    'path' => env('PAYSTACK_SUBSCRIPTION_PATH', 'paystack-subscription'),
+    'path' => env('PAYSUB_SUBSCRIPTION_PATH', 'paystack-subscription'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,17 +56,22 @@ return [
     |
     */
 
-    'subscriber_model' => env('PAYSTACK_SUBSCRIPTION_MODEL', class_exists(App\Models\User::class) ? App\Models\User::class : App\User::class),
+    'subscriber_model' => env('PAYSUB_SUBSCRIPTION_MODEL', class_exists(App\Models\User::class) ? App\Models\User::class : App\User::class),
 
     /*
     |--------------------------------------------------------------------------
-    | Paystack Subscription Model
+    | Tables' names
     |--------------------------------------------------------------------------
     |
-    | This is the table in your application that holds the subscribers. 
+    | Define the package's table names here
     |
     */
-    'subscriber_table_name' => env('PAYSTACK_SUBSCRIPTION_TABLE_NAME', 'users'),
+    'subscriber_table_name' => env('PAYSUB_SUBSCRIBER_TABLE', 'users'),
+    'subscription_table_name' => env('PAYSUB_SUBSCRIPTION_TABLE', 'paysub_subscriptions'),
+    'plan_table_name' => env('PAYSUB_PLAN_TABLE', 'paysub_plans'),
+    'authorization_table_name' => env('PAYSUB_AUTHORIZATION_TABLE', 'paysub_authorizations'),
+    'invoice_table_name' => env('PAYSUB_INVOICE_TABLE', 'paysub_invoices'),
+    'payment_table_name' => env('PAYSUB_PAYMENT_TABLE', 'paysub_payments'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,33 +84,7 @@ return [
     |
     */
 
-    'currency' => env('PAYSTACK_SUBSCRIPTION_CURRENCY', 'NGN'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Currency Locale
-    |--------------------------------------------------------------------------
-    |
-    | This is the default locale in which your money values are formatted in
-    | for display. To utilize other locales besides the default en locale
-    | verify you have the "intl" PHP extension installed on the system.
-    |
-    */
-
-    'currency_locale' => env('PAYSTACK_SUBSCRIPTION_CURRENCY_LOCALE', 'en-GB'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Payment Confirmation Notification
-    |--------------------------------------------------------------------------
-    |
-    | If this setting is enabled, Paystack Subscription will automatically notify customers
-    | whose payments require additional verification. You should listen to
-    | Paystack's webhooks in order for this feature to function correctly.
-    |
-    */
-
-    'payment_notification' => env('PAYSTACK_SUBSCRIPTION_PAYMENT_NOTIFICATION'),
+    'currency' => env('PAYSUB_CURRENCY', 'NGN'),
 
     /*
     |--------------------------------------------------------------------------
@@ -120,7 +99,7 @@ return [
     |
     */
 
-    'paper' => env('PAYSTACK_SUBSCRIPTION_PAPER', 'letter'),
+    'paper' => env('PAYSUB_PAPER', 'letter'),
 
     /*
     |--------------------------------------------------------------------------
@@ -133,5 +112,5 @@ return [
     |
     */
 
-    'logger' => env('PAYSTACK_SUBSCRIPTION_LOGGER'),
+    'logger' => env('PAYSUB_LOGGER'),
 ];

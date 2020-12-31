@@ -55,7 +55,7 @@ class Subscription extends Model
      */
     public function owner()
     {
-        $model = config('paystack-subscription.subscriber_model');
+        $model = config('paysub.subscriber_model');
 
         return $this->belongsTo($model, (new $model)->getForeignKey());
     }

@@ -13,7 +13,7 @@ class PaystackSubscriptionServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/paystack-subscription.php' => config_path('paystack-subscription.php'),
+                __DIR__ . '/../config/paysub.php' => config_path('paysub.php'),
             ], 'config');
 
             $this->publishes([
@@ -47,18 +47,18 @@ class PaystackSubscriptionServiceProvider extends ServiceProvider
 
         if (PaystackSubscription::$registersRoutes) {
             Route::group([
-                'prefix' => config('paystack-subscription.path'),
+                'prefix' => config('paysub.path'),
                 'namespace' => 'Laravel\Cashier\Http\Controllers',
                 'as' => 'paystack-subscription.',
             ], function () {
-                $this->loadRoutesFrom(__DIR__.'/../routes/paystack-subscription.php');
+                $this->loadRoutesFrom(__DIR__.'/../routes/paysub.php');
             });
         }
     }
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/paystack-subscription.php', 'paystack-subscription');
+        $this->mergeConfigFrom(__DIR__ . '/../config/paysub.php', 'paystack-subscription');
     }
 
     public static function migrationFileExists(string $migrationFileName): bool
