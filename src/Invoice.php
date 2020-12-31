@@ -1,6 +1,6 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
 use Dompdf\Dompdf;

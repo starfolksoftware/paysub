@@ -1,14 +1,14 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Concerns;
+namespace StarfolkSoftware\Paysub\Concerns;
 
 use \InvalidArgumentException;
-use StarfolkSoftware\PaystackSubscription\Actions\Transaction\Initialize as PaystackTransactionInit;
+use StarfolkSoftware\Paysub\Actions\Transaction\Initialize as PaystackTransactionInit;
 
 trait ManagesTransaction
 {
     /**
-     * @return \StarfolkSoftware\PaystackSubscription\Api\Transaction;
+     * @return \StarfolkSoftware\Paysub\Api\Transaction;
      *
      * @param string $plan
      * @param array $channels

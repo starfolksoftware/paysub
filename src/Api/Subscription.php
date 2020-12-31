@@ -1,11 +1,11 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Api;
+namespace StarfolkSoftware\Paysub\Api;
 
 use InvalidArgumentException;
-use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackCustomerCodeIsEmpty;
-use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackPlanCodeIsEmpty;
-use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
+use StarfolkSoftware\Paysub\Exceptions\PaystackCustomerCodeIsEmpty;
+use StarfolkSoftware\Paysub\Exceptions\PaystackPlanCodeIsEmpty;
+use StarfolkSoftware\Paysub\Utilities\CurlRequest;
 
 class Subscription
 {

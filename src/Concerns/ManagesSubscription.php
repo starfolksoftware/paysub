@@ -1,9 +1,9 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Concerns;
+namespace StarfolkSoftware\Paysub\Concerns;
 
-use StarfolkSoftware\PaystackSubscription\Subscription;
-use StarfolkSoftware\PaystackSubscription\SubscriptionBuilder;
+use StarfolkSoftware\Paysub\Subscription;
+use StarfolkSoftware\Paysub\SubscriptionBuilder;
 
 trait ManagesSubscription
 {
@@ -12,7 +12,7 @@ trait ManagesSubscription
      *
      * @param  string  $name
      * @param  string  $plan
-     * @return StarfolkSoftware\PaystackSubscription\SubscriptionBuilder
+     * @return StarfolkSoftware\Paysub\SubscriptionBuilder
      */
     public function newSubscription($name, $plan)
     {
@@ -41,7 +41,7 @@ trait ManagesSubscription
      * Get a subscription instance by code.
      *
      * @param  string  $code
-     * @return \StarfolkSoftware\PaystackSubscription\Subscription|null
+     * @return \StarfolkSoftware\Paysub\Subscription|null
      */
     public function subscription($code)
     {

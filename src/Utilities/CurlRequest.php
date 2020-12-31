@@ -1,11 +1,11 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Utilities;
+namespace StarfolkSoftware\Paysub\Utilities;
 
 use Curl\Curl;
-use StarfolkSoftware\PaystackSubscription\Exceptions\ApiKeyInvalid;
-use StarfolkSoftware\PaystackSubscription\Exceptions\FailedRequest;
-use StarfolkSoftware\PaystackSubscription\PaystackSubscription;
+use StarfolkSoftware\Paysub\Exceptions\ApiKeyInvalid;
+use StarfolkSoftware\Paysub\Exceptions\FailedRequest;
+use StarfolkSoftware\Paysub\PaystackSubscription;
 
 class CurlRequest extends Curl
 {

@@ -26,13 +26,13 @@ composer require starfolksoftware/paystack-subscription
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="StarfolkSoftware\PaystackSubscription\PaystackSubscriptionServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="StarfolkSoftware\Paysub\PaystackSubscriptionServiceProvider" --tag="migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="StarfolkSoftware\PaystackSubscription\PaystackSubscriptionServiceProvider" --tag="config"
+php artisan vendor:publish --provider="StarfolkSoftware\Paysub\PaystackSubscriptionServiceProvider" --tag="config"
 ```
 
 This is the contents of the published config file:
@@ -45,7 +45,7 @@ return [
 ## Usage
 
 ```php
-$paystack-subscription = new StarfolkSoftware\PaystackSubscription();
+$paystack-subscription = new StarfolkSoftware\Paysub();
 echo $paystack-subscription->echoPhrase('Hello, StarfolkSoftware!');
 ```
 

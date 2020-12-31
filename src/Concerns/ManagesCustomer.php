@@ -1,14 +1,14 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Concerns;
+namespace StarfolkSoftware\Paysub\Concerns;
 
-use StarfolkSoftware\PaystackSubscription\Actions\Customer\Create as PaystackCustomerCreate;
-use StarfolkSoftware\PaystackSubscription\Actions\Customer\Retrieve as PaystackCustomerRetrieve;
-use StarfolkSoftware\PaystackSubscription\Actions\Customer\Update as PaystackCustomerUpdate;
-use StarfolkSoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated;
-use StarfolkSoftware\PaystackSubscription\Exceptions\InvalidCustomer;
-use StarfolkSoftware\PaystackSubscription\Exceptions\PaystackEmailIsNull;
-use StarfolkSoftware\PaystackSubscription\PaystackSubscription;
+use StarfolkSoftware\Paysub\Actions\Customer\Create as PaystackCustomerCreate;
+use StarfolkSoftware\Paysub\Actions\Customer\Retrieve as PaystackCustomerRetrieve;
+use StarfolkSoftware\Paysub\Actions\Customer\Update as PaystackCustomerUpdate;
+use StarfolkSoftware\Paysub\Exceptions\CustomerAlreadyCreated;
+use StarfolkSoftware\Paysub\Exceptions\InvalidCustomer;
+use StarfolkSoftware\Paysub\Exceptions\PaystackEmailIsNull;
+use StarfolkSoftware\Paysub\PaystackSubscription;
 
 trait ManagesCustomer
 {
@@ -37,7 +37,7 @@ trait ManagesCustomer
      *
      * @return void
      *
-     * @throws \StarfolkSoftware\PaystackSubscription\Exceptions\InvalidCustomer
+     * @throws \StarfolkSoftware\Paysub\Exceptions\InvalidCustomer
      */
     protected function assertCustomerExists()
     {
@@ -52,7 +52,7 @@ trait ManagesCustomer
      * @param  array  $options
      * @return @mixed
      *
-     * @throws \StarfolkSoftware\PaystackSubscription\Exceptions\CustomerAlreadyCreated
+     * @throws \StarfolkSoftware\Paysub\Exceptions\CustomerAlreadyCreated
      */
     public function createAsPaystackCustomer(array $options = [])
     {

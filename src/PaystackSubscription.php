@@ -1,6 +1,6 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
@@ -56,7 +56,7 @@ class PaystackSubscription
      * Get the billable entity instance by Stripe ID.
      *
      * @param  string  $paystackId
-     * @return \StarfolkSoftware\PaystackSubscription\Billable|null
+     * @return \StarfolkSoftware\Paysub\Billable|null
      */
     public static function findBillable($paystackId)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Actions\Subscription;
+namespace StarfolkSoftware\Paysub\Actions\Subscription;
 
-use StarfolkSoftware\PaystackSubscription\Api\Subscription;
+use StarfolkSoftware\Paysub\Api\Subscription;
 
 class RetrieveAll
 {

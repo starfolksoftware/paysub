@@ -1,13 +1,13 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Disable as PaystackSubscriptionDisable;
-use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Enable as PaystackSubscriptionEnable;
-use StarfolkSoftware\PaystackSubscription\Actions\Subscription\Retrieve as PaystackSubscriptionRetrieve;
-use StarfolkSoftware\PaystackSubscription\Exceptions\InvalidSubscription;
+use StarfolkSoftware\Paysub\Actions\Subscription\Disable as PaystackSubscriptionDisable;
+use StarfolkSoftware\Paysub\Actions\Subscription\Enable as PaystackSubscriptionEnable;
+use StarfolkSoftware\Paysub\Actions\Subscription\Retrieve as PaystackSubscriptionRetrieve;
+use StarfolkSoftware\Paysub\Exceptions\InvalidSubscription;
 
 class Subscription extends Model
 {
@@ -286,7 +286,7 @@ class Subscription extends Model
     /**
      * Get the latest invoice for the subscription.
      *
-     * @return \StarfolkSoftware\PaystackSubscription\Invoice
+     * @return \StarfolkSoftware\Paysub\Invoice
      */
     public function openInvoice()
     {
@@ -298,7 +298,7 @@ class Subscription extends Model
     /**
      * Get the latest payment for a Subscription.
      *
-     * @return \StarfolkSoftware\PaystackSubscription\Payment|null
+     * @return \StarfolkSoftware\Paysub\Payment|null
      */
     public function latestPayment()
     {
@@ -322,7 +322,7 @@ class Subscription extends Model
      *
      * @return void
      *
-     * @throws \StarfolkSoftware\PaystackSubscription\Exceptions\InvalidSubscription
+     * @throws \StarfolkSoftware\Paysub\Exceptions\InvalidSubscription
      */
     protected function assertSubscriptionExists()
     {
@@ -335,7 +335,7 @@ class Subscription extends Model
      * Get the subscription as a Paystack subscription object.
      *
      * @param  array  $expand
-     * @return \StarfolkSoftware\PaystackSubscription\Api\Subscription
+     * @return \StarfolkSoftware\Paysub\Api\Subscription
      */
     public function asPaystackSubscription()
     {

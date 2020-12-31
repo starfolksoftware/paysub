@@ -1,8 +1,8 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Actions\Transaction;
+namespace StarfolkSoftware\Paysub\Actions\Transaction;
 
-use StarfolkSoftware\PaystackSubscription\Api\Transaction;
+use StarfolkSoftware\Paysub\Api\Transaction;
 
 class Verify
 {

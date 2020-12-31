@@ -1,13 +1,13 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \StarfolkSoftware\PaystackSubscription\Subscription
+ * @see \StarfolkSoftware\Paysub\Subscription
  */
-class PaystackSubscriptionFacade extends Facade
+class PaysubFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {

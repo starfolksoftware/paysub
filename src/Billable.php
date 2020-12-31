@@ -1,9 +1,9 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
-use StarfolkSoftware\PaystackSubscription\Concerns\ManagesCustomer;
-use StarfolkSoftware\PaystackSubscription\Concerns\ManagesSubscription;
+use StarfolkSoftware\Paysub\Concerns\ManagesCustomer;
+use StarfolkSoftware\Paysub\Concerns\ManagesSubscription;
 
 trait Billable
 {

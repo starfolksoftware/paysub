@@ -1,9 +1,9 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription;
+namespace StarfolkSoftware\Paysub;
 
 use InvalidArgumentException;
-use StarfolkSoftware\PaystackSubscription\Actions\Subscription\{
+use StarfolkSoftware\Paysub\Actions\Subscription\{
     Create as PaystackSubscriptionCreate
 };
 
@@ -75,7 +75,7 @@ class SubscriptionBuilder
      *
      * @param  array  $customerOptions
      * @param  array  $subscriptionOptions
-     * @return \StarfolkSoftware\PaystackSubscription\Subscription
+     * @return \StarfolkSoftware\Paysub\Subscription
      *
      * @throws InvalidArgumentException
      */
@@ -88,7 +88,7 @@ class SubscriptionBuilder
      * Create a new Paystack subscription.
      *
      * @param  array  $subscriptionOptions
-     * @return \StarfolkSoftware\PaystackSubscription\Subscription
+     * @return \StarfolkSoftware\Paysub\Subscription
      *
      * @throws InvalidArgumentException
      */
@@ -110,7 +110,7 @@ class SubscriptionBuilder
             $payload
         );
 
-        /** @var \StarfolkSoftware\PaystackSubscription\Subscription $subscription */
+        /** @var \StarfolkSoftware\Paysub\Subscription $subscription */
         $subscription = $this->owner->subscriptions()->create([
             'paystack_code' => $paystackSubscription->subscription_code,
             'paystack_status' => $paystackSubscription->status,

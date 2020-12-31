@@ -1,9 +1,9 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Api;
+namespace StarfolkSoftware\Paysub\Api;
 
 use InvalidArgumentException;
-use StarfolkSoftware\PaystackSubscription\Utilities\CurlRequest;
+use StarfolkSoftware\Paysub\Utilities\CurlRequest;
 
 class Plan
 {

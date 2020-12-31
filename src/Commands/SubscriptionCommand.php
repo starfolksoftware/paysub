@@ -1,6 +1,6 @@
 <?php
 
-namespace StarfolkSoftware\PaystackSubscription\Commands;
+namespace StarfolkSoftware\Paysub\Commands;
 
 use Illuminate\Console\Command;
 
