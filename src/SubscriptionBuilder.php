@@ -8,7 +8,8 @@ use StarfolkSoftware\Paysub\Models\{
     Plan
 };
 
-class SubscriptionBuilder {
+class SubscriptionBuilder
+{
     /**
      * The model that is subscribing.
      *
@@ -156,7 +157,7 @@ class SubscriptionBuilder {
         $subscription = $this->owner->subscriptions()->create([
             'plan_id' => $this->plan_id,
             'quantity' => $this->quantity,
-            'billing_cycle_anchor' => $this->billing_cycle_anchor
+            'billing_cycle_anchor' => $this->billing_cycle_anchor,
         ]);
 
         $this->owner->save();

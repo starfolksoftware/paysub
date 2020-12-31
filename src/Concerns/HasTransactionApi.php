@@ -5,12 +5,13 @@ namespace StarfolkSoftware\Paysub\Concerns;
 use InvalidArgumentException;
 use StarfolkSoftware\Paysub\Utilities\CurlRequest;
 
-trait HasTransactionApi {
+trait HasTransactionApi
+{
     public static string $classUrl = 'https://api.paystack.co/transaction/';
 
     /**
      * Get the subscriber valid email to be used with paystack
-     * 
+     *
      * @return string
      */
     abstract public function paystackEmail(): string;
@@ -19,9 +20,10 @@ trait HasTransactionApi {
     {
         return (new CurlRequest())(
             'post',
-            self::$classUrl.'initialize', [
+            self::$classUrl.'initialize',
+            [
                 'email' => $this->paystackEmail(),
-                'amount' => $amount
+                'amount' => $amount,
             ]
         );
     }
@@ -42,10 +44,11 @@ trait HasTransactionApi {
     {
         return (new CurlRequest())(
             'post',
-            self::$classUrl.'charge_authorization', [
+            self::$classUrl.'charge_authorization',
+            [
                 'email' => $this->paystackEmail(),
                 'amount' => $amount,
-                'authorization_code' => $auth_code
+                'authorization_code' => $auth_code,
             ]
         );
     }
