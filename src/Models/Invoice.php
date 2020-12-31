@@ -56,6 +56,15 @@ class Invoice extends Model {
     }
 
     /**
+     * Get the payments of the authorization
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payments() {
+        return $this->hasMany(Payment::class, 'invoice_id');
+    }
+
+    /**
      * Calculate the invoice amount
      */
     public function getAmountAttribute() {
