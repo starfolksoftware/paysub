@@ -4,7 +4,8 @@ namespace StarfolkSoftware\Paysub\Concerns;
 
 use StarfolkSoftware\Paysub\Models\Authorization;
 
-trait ManagesAuthorization {
+trait ManagesAuthorization
+{
     /**
      * Get all of the authorizations for the subscriber model.
      *

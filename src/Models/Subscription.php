@@ -43,7 +43,7 @@ class Subscription extends Model
      * The attributes that should be appended
      */
     protected $appends = [
-        'next_due_date'
+        'next_due_date',
     ];
 
     /**
@@ -70,28 +70,31 @@ class Subscription extends Model
 
     /**
      * Get the plan of the subscription
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function plan() {
+    public function plan()
+    {
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
     /**
      * Get the invoices of the subscription
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function invoices() {
+    public function invoices()
+    {
         return $this->hasMany(Invoice::class, 'subscription_id');
     }
 
     /**
      * Get the payments of the subscription
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payments() {
+    public function payments()
+    {
         return $this->hasMany(Payment::class, 'subscription_id');
     }
 
@@ -193,7 +196,8 @@ class Subscription extends Model
     /**
      * Check if subscription has open invoice
      */
-    public function hasOpenInvoice() {
+    public function hasOpenInvoice()
+    {
         $count = $this->invoices()->unpaid()->count();
 
         if ($count > 1) {
@@ -205,10 +209,11 @@ class Subscription extends Model
 
     /**
      * Get the open invoice
-     * 
+     *
      * @return Invoice|null
      */
-    public function openInvoice() {
+    public function openInvoice()
+    {
         if (! $this->hasOpenInvoice()) {
             return null;
         }
@@ -261,10 +266,11 @@ class Subscription extends Model
 
     /**
      * Calcuate the next payment date
-     * 
+     *
      * @return \Carbon\Carbon
      */
-    public function getNextPaymentDateAttribute() {
+    public function getNextPaymentDateAttribute()
+    {
         $billingAnchor = Carbon::parse($this->billing_cycle_anchor);
 
         if ($this->plan->interval === Plan::INTERVAL_YEARLY) {

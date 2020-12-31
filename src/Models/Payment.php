@@ -4,7 +4,8 @@ namespace StarfolkSoftware\Paysub\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Payment extends Model {
+class Payment extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -30,25 +31,28 @@ class Payment extends Model {
         'updated_at',
     ];
 
-    public function getTable() {
+    public function getTable()
+    {
         return config('paysub.payment_table_name', parent::getTable());
     }
 
     /**
      * Get the subscription of the payment
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function subscription() {
+    public function subscription()
+    {
         return $this->belongsTo(Subscription::class, 'subscription_id');
     }
 
     /**
      * Get the authorization of the payment
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function authorization() {
+    public function authorization()
+    {
         return $this->belongsTo(Authorization::class, 'authorization_id');
     }
 

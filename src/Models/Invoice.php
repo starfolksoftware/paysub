@@ -4,9 +4,9 @@ namespace StarfolkSoftware\Paysub\Models;
 
 use App\Casts\Json;
 use Illuminate\Database\Eloquent\Model;
-use StarfolkSoftware\Paysub\Models\Subscription;
 
-class Invoice extends Model {
+class Invoice extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -27,7 +27,7 @@ class Invoice extends Model {
      * The attributes that should be appended
      */
     protected $appends = [
-        'amount'
+        'amount',
     ];
 
     /**
@@ -42,16 +42,18 @@ class Invoice extends Model {
         'updated_at',
     ];
 
-    public function getTable() {
+    public function getTable()
+    {
         return config('paysub.invoice_table_name', parent::getTable());
     }
 
     /**
      * Get the subscription of the invoice
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function subscription() {
+    public function subscription()
+    {
         return $this->belongsTo(Subscription::class, 'subscription_id');
     }
 
@@ -67,8 +69,9 @@ class Invoice extends Model {
     /**
      * Calculate the invoice amount
      */
-    public function getAmountAttribute() {
-        $totalTax = collect($this->tax)->reduce(function($carry, $tax) {
+    public function getAmountAttribute()
+    {
+        $totalTax = collect($this->tax)->reduce(function ($carry, $tax) {
             return $carry + $tax['amount'];
         }, 0);
         

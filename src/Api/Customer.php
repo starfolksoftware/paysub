@@ -86,8 +86,9 @@ class Customer
         
         $this->setAttributes((new CurlRequest())(
             'get',
-            self::$classUrl.'deactivate_authorization',[
-                'authorization_code' => $code
+            self::$classUrl.'deactivate_authorization',
+            [
+                'authorization_code' => $code,
             ]
         ));
 

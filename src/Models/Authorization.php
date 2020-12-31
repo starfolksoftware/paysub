@@ -4,7 +4,8 @@ namespace StarfolkSoftware\Paysub\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Authorization extends Model {
+class Authorization extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -32,7 +33,8 @@ class Authorization extends Model {
         'updated_at',
     ];
 
-    public function getTable() {
+    public function getTable()
+    {
         return config('paysub.authorization_table_name', parent::getTable());
     }
 
@@ -50,10 +52,11 @@ class Authorization extends Model {
 
     /**
      * Get the payments of the authorization
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payments() {
+    public function payments()
+    {
         return $this->hasMany(Payment::class, 'authorization_id');
     }
 }
