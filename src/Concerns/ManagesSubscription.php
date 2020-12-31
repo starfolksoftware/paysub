@@ -2,7 +2,7 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
-use StarfolkSoftware\Paysub\Subscription;
+use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\SubscriptionBuilder;
 
 trait ManagesSubscription
@@ -55,7 +55,7 @@ trait ManagesSubscription
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, $this->getForeignKey())->orderBy('created_at', 'desc');
+        return $this->hasMany(Subscription::class, 'subscriber_id')->orderBy('created_at', 'desc');
     }
 
     /**

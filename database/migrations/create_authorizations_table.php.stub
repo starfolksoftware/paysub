@@ -15,6 +15,7 @@ class CreateAuthorizationsTable extends Migration
     {
         Schema::create(config('paysub.authorization_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigIncrements('subscriber_id');
             $table->string('code')->unique();
             $table->string('brand')->nullable();
             $table->string('last4')->nullable();

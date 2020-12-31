@@ -77,4 +77,20 @@ class Customer
             $fields
         ));
     }
+
+    public function deactivateAuth(string $code)
+    {
+        if (! $code) {
+            throw new InvalidArgumentException('Auth code is not provided');
+        }
+        
+        $this->setAttributes((new CurlRequest())(
+            'get',
+            self::$classUrl.'deactivate_authorization',[
+                'authorization_code' => $code
+            ]
+        ));
+
+        return $this;
+    }
 }
