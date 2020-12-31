@@ -8,7 +8,7 @@ use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use NumberFormatter;
 
-class PaystackSubscription
+class Paysub
 {
     /**
      * The library version.

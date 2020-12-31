@@ -8,7 +8,7 @@ use StarfolkSoftware\Paysub\Actions\Customer\Update as PaystackCustomerUpdate;
 use StarfolkSoftware\Paysub\Exceptions\CustomerAlreadyCreated;
 use StarfolkSoftware\Paysub\Exceptions\InvalidCustomer;
 use StarfolkSoftware\Paysub\Exceptions\PaystackEmailIsNull;
-use StarfolkSoftware\Paysub\PaystackSubscription;
+use StarfolkSoftware\Paysub\Paysub;
 
 trait ManagesCustomer
 {
@@ -176,6 +176,6 @@ trait ManagesCustomer
      */
     public function paystackOptions(array $options = [])
     {
-        return PaystackSubscription::paystackOptions($options);
+        return Paysub::paystackOptions($options);
     }
 }

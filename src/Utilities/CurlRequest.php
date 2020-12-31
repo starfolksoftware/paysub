@@ -5,7 +5,7 @@ namespace StarfolkSoftware\Paysub\Utilities;
 use Curl\Curl;
 use StarfolkSoftware\Paysub\Exceptions\ApiKeyInvalid;
 use StarfolkSoftware\Paysub\Exceptions\FailedRequest;
-use StarfolkSoftware\Paysub\PaystackSubscription;
+use StarfolkSoftware\Paysub\Paysub;
 
 class CurlRequest extends Curl
 {
@@ -14,7 +14,7 @@ class CurlRequest extends Curl
 
     public function __construct()
     {
-        $this->paystackOptions = PaystackSubscription::paystackOptions();
+        $this->paystackOptions = Paysub::paystackOptions();
         
         if (! $this->paystackOptions['api_key']) {
             throw ApiKeyInvalid::isNull();

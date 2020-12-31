@@ -41,11 +41,11 @@ class PaysubServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'paystack-subscription');
         $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
-        if (PaystackSubscription::$runsMigrations && $this->app->runningInConsole()) {
+        if (Paysub::$runsMigrations && $this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
 
-        if (PaystackSubscription::$registersRoutes) {
+        if (Paysub::$registersRoutes) {
             Route::group([
                 'prefix' => config('paysub.path'),
                 'namespace' => 'Laravel\Cashier\Http\Controllers',
