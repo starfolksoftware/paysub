@@ -27,7 +27,7 @@ return [
     |
     */
 
-    'path' => env('PAYSUB_SUBSCRIPTION_PATH', 'paystack-subscription'),
+    'path' => env('PAYSUB_SUBSCRIPTION_PATH', 'paysub'),
 
     /*
     |--------------------------------------------------------------------------

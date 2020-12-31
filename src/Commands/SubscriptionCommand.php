@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class SubscriptionCommand extends Command
 {
-    public $signature = 'paystack-subscription';
+    public $signature = 'paysub';
 
     public $description = 'My command';
 

@@ -11,6 +11,6 @@ class PaysubFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'paystack-subscription';
+        return 'paysub';
     }
 }

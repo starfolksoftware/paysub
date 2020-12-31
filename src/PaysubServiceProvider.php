@@ -17,7 +17,7 @@ class PaysubServiceProvider extends ServiceProvider
             ], 'config');
 
             $this->publishes([
-                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paystack-subscription'),
+                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paysub'),
             ], 'views');
 
             $mFileNames = [
@@ -38,7 +38,7 @@ class PaysubServiceProvider extends ServiceProvider
             // ]);
         }
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'paystack-subscription');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'paysub');
         $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
         if (Paysub::$runsMigrations && $this->app->runningInConsole()) {
@@ -49,7 +49,7 @@ class PaysubServiceProvider extends ServiceProvider
             Route::group([
                 'prefix' => config('paysub.path'),
                 'namespace' => 'Laravel\Cashier\Http\Controllers',
-                'as' => 'paystack-subscription.',
+                'as' => 'paysub.',
             ], function () {
                 $this->loadRoutesFrom(__DIR__.'/../routes/paysub.php');
             });
@@ -58,7 +58,7 @@ class PaysubServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/paysub.php', 'paystack-subscription');
+        $this->mergeConfigFrom(__DIR__ . '/../config/paysub.php', 'paysub');
     }
 
     public static function migrationFileExists(string $migrationFileName): bool

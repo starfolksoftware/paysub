@@ -47,16 +47,6 @@ class Payment extends Model
     }
 
     /**
-     * Get the authorization of the payment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function authorization()
-    {
-        return $this->belongsTo(Authorization::class, 'authorization_id');
-    }
-
-    /**
      * Get the invoice of the payment
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

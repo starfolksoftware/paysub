@@ -49,13 +49,6 @@ class CurlRequest extends Curl
             return $result->status;
         }
 
-        $arrayedResult = is_array($result->data) ? $result->data : $this->toArray($result->data);
-
-        return ! empty($arrayedResult) ? $arrayedResult : [];
-    }
-
-    public function toArray(object $data)
-    {
-        return json_decode(json_encode($data), true);
+        return $result;
     }
 }

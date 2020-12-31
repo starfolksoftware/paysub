@@ -16,10 +16,9 @@ class CreatePaymentsTable extends Migration
         Schema::create(config('paysub.payment_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('paystack_id');
+            $table->string('auth_code');
             $table->string('reference');
-            $table->enum('status', ['success', 'failed']);
             $table->unsignedBigInteger('subscription_id');
-            $table->unsignedBigInteger('authorization_id');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('amount');
             $table->datetime('paid_at');

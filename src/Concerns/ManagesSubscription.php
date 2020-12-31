@@ -2,78 +2,30 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
-use StarfolkSoftware\Paysub\Models\Subscription;
+use StarfolkSoftware\Paysub\Models\{Subscription,Plan};
 use StarfolkSoftware\Paysub\SubscriptionBuilder;
 
-trait ManagesSubscription
-{
+trait ManagesSubscription {
     /**
      * Begin creating a new subscription.
      *
      * @param  string  $name
-     * @param  string  $plan
-     * @return StarfolkSoftware\Paysub\SubscriptionBuilder
+     * @param  Plan  $plan
+     * @return \StarfolkSoftware\Paysub\SubscriptionBuilder
      */
-    public function newSubscription($name, $plan)
+    public function newSubscription(Plan $plan)
     {
-        return new SubscriptionBuilder($this, $name, $plan);
+        return new SubscriptionBuilder($this, $plan);
     }
 
     /**
-     * Determine if the Paystack model has a given subscription.
+     * Determine if the model is on trial.
      *
-     * @param  string  $name
-     * @param  string|null  $plan
      * @return bool
      */
-    public function subscribed($paystackCode, $plan = null)
+    public function onTrial()
     {
-        $subscription = $this->subscription($paystackCode);
-
-        if (! $subscription || ! $subscription->valid()) {
-            return false;
-        }
-
-        return $plan ? $subscription->hasPlan($plan) : true;
-    }
-
-    /**
-     * Get a subscription instance by code.
-     *
-     * @param  string  $code
-     * @return \StarfolkSoftware\Paysub\Subscription|null
-     */
-    public function subscription($code)
-    {
-        return $this->subscriptions->where('paystack_code', $code)->first();
-    }
-
-    /**
-     * Get all of the subscriptions for the Paystack model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subscriptions()
-    {
-        return $this->hasMany(Subscription::class, 'subscriber_id')->orderBy('created_at', 'desc');
-    }
-
-    /**
-     * Determine if the Paystack model is actively subscribed to one of the given plans.
-     *
-     * @param  string  $plan
-     * @param  string  $code
-     * @return bool
-     */
-    public function subscribedToPlan($plan, $code)
-    {
-        $subscription = $this->subscription($code);
-
-        if (! $subscription || ! $subscription->valid()) {
-            return false;
-        }
-
-        if ($subscription->hasPlan($plan)) {
+        if ($this->onGenericTrial()) {
             return true;
         }
 
@@ -81,15 +33,12 @@ trait ManagesSubscription
     }
 
     /**
-     * Determine if the entity has a valid subscription on the given plan.
+     * Determine if the model is on a "generic" trial at the model level.
      *
-     * @param  string  $plan
      * @return bool
      */
-    public function onPlan($plan)
+    public function onGenericTrial()
     {
-        return ! is_null($this->subscriptions->first(function (Subscription $subscription) use ($plan) {
-            return $subscription->valid() && $subscription->hasPlan($plan);
-        }));
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
     }
 }

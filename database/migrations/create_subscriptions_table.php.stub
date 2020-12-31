@@ -17,9 +17,10 @@ class CreateSubscriptionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
             $table->unsignedBigInteger('plan_id');
-            $table->enum('status', ['active', 'inactive']);
-            $table->integer('quantity')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->integer('quantity')->default(1);
             $table->timestamp('billing_cycle_anchor')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();
 

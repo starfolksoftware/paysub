@@ -2,13 +2,13 @@
 
 namespace StarfolkSoftware\Paysub;
 
-use InvalidArgumentException;
-use StarfolkSoftware\Paysub\Actions\Subscription\{
-    Create as PaystackSubscriptionCreate
+use Carbon\Carbon;
+use DateTimeInterface;
+use StarfolkSoftware\Paysub\Models\{
+    Plan
 };
 
-class SubscriptionBuilder
-{
+class SubscriptionBuilder {
     /**
      * The model that is subscribing.
      *
@@ -17,24 +17,37 @@ class SubscriptionBuilder
     protected $owner;
 
     /**
-     * The name of the plan being subscribed to.
+     * The date and time the trial will expire.
      *
-     * @var string
+     * @var \Carbon\Carbon|\Carbon\CarbonInterface
      */
-    protected $item;
+    protected $trialExpires;
+
+    /**
+     * Indicates that the trial should end immediately.
+     *
+     * @var bool
+     */
+    protected $skipTrial = false;
+
+    /**
+     * The date on which the billing cycle should be anchored.
+     *
+     * @var int|null
+     */
+    protected $billingCycleAnchor = null;
 
     /**
      * Create a new subscription builder instance.
      *
      * @param  mixed  $owner
-     * @param  string  $name
-     * @param  string  $plans
+     * @param  Plan  $plan
      * @return void
      */
-    public function __construct($owner, $name, $plan = null)
+    public function __construct($owner, Plan $plan)
     {
-        $this->name = $name;
         $this->owner = $owner;
+        $this->subscriber_id = $this->owner->id;
 
         $this->plan($plan);
     }
@@ -42,108 +55,112 @@ class SubscriptionBuilder
     /**
      * Set a plan on the subscription builder.
      *
-     * @param  string  $plan
+     * @param  Plan  $plan
      * @param  int  $quantity
      * @return $this
      */
-    public function plan($plan, $quantity = 1)
+    public function plan(Plan $plan, $quantity = 1)
     {
-        $options = [
-            'plan' => $plan,
-            'quantity' => $quantity,
-        ];
-
-        $this->item = $options;
+        $this->plan_id = $plan->id;
+        $this->quantity = $quantity;
 
         return $this;
     }
 
     /**
-     * Specify the quantity of subscription item.
+     * Specify the quantity of a subscription item.
      *
      * @param  int  $quantity
-     * @param  string  $plan
+     * @param  Plan|null  $plan
      * @return $this
      */
-    public function quantity($plan, $quantity)
+    public function quantity($quantity, Plan $plan = null)
     {
         return $this->plan($plan, $quantity);
     }
 
     /**
-     * Add a new Paystack subscription to the Paystack model.
+     * Specify the number of days of the trial.
      *
-     * @param  array  $customerOptions
-     * @param  array  $subscriptionOptions
-     * @return \StarfolkSoftware\Paysub\Subscription
-     *
-     * @throws InvalidArgumentException
+     * @param  int  $trialDays
+     * @return $this
      */
-    public function add(array $subscriptionOptions = [])
+    public function trialDays($trialDays)
     {
-        return $this->create($subscriptionOptions);
+        $this->owner->trial_ends_at = Carbon::now()->addDays($trialDays);
+
+        return $this;
     }
 
     /**
-     * Create a new Paystack subscription.
+     * Specify the ending date of the trial.
      *
-     * @param  array  $subscriptionOptions
-     * @return \StarfolkSoftware\Paysub\Subscription
-     *
-     * @throws InvalidArgumentException
+     * @param  \Carbon\Carbon|\Carbon\CarbonInterface  $trialUntil
+     * @return $this
      */
-    public function create(array $subscriptionOptions = [])
+    public function trialUntil($trialUntil)
     {
-        if (! $subscriptionOptions['authorization']) {
-            throw new InvalidArgumentException('authorization code must be provided');
+        $this->owner->trial_ends_at = $trialUntil;
+
+        return $this;
+    }
+
+    /**
+     * Force the trial to end immediately.
+     *
+     * @return $this
+     */
+    public function skipTrial()
+    {
+        $this->owner->trial_ends_at = now();
+
+        return $this;
+    }
+
+    /**
+     * Change the billing cycle anchor on a plan creation.
+     *
+     * @param  \DateTimeInterface|int  $date
+     * @return $this
+     */
+    public function anchorBillingCycleOn($date)
+    {
+        if ($date instanceof DateTimeInterface) {
+            $date = $date->getTimestamp();
         }
 
-        $customer = $this->getPaystackCustomer();
+        $this->billing_cycle_anchor = $date;
 
-        $payload = array_merge(
-            ['customer' => $customer->customer_code],
-            $this->buildPayload(),
-            $subscriptionOptions
-        );
+        return $this;
+    }
 
-        $paystackSubscription = (new PaystackSubscriptionCreate())->execute(
-            $payload
-        );
+    /**
+     * Add a new Stripe subscription to the Stripe model.
+     *
+     * @return \StarfolkSoftware\Paysub\Models\Subscription
+     *
+     */
+    public function add()
+    {
+        return $this->create();
+    }
 
-        /** @var \StarfolkSoftware\Paysub\Subscription $subscription */
+    /**
+     * Create a new Stripe subscription.
+     *
+     * @return \StarfolkSoftware\Paysub\Models\Subscription
+     */
+    public function create()
+    {
+        /** @var \StarfolkSoftware\Paysub\Models\Subscription $subscription */
         $subscription = $this->owner->subscriptions()->create([
-            'paystack_code' => $paystackSubscription->subscription_code,
-            'paystack_status' => $paystackSubscription->status,
-            'paystack_plan' => $paystackSubscription->plan,
-            'quantity' => $paystackSubscription->quantity,
-            'ends_at' => null,
+            'plan_id' => $this->plan_id,
+            'quantity' => $this->quantity,
+            'billing_cycle_anchor' => $this->billing_cycle_anchor
         ]);
+
+        $this->owner->save();
 
         return $subscription;
-    }
-
-    /**
-     * Get the Paystack customer instance for the current user and payment method.
-     *
-     * @return \StarfolkSofware\Paysub\Api\Customer
-     */
-    protected function getPaystackCustomer()
-    {
-        return $this->owner->createOrGetPaystackCustomer();
-    }
-
-    /**
-     * Build the payload for subscription creation.
-     *
-     * @return array
-     */
-    protected function buildPayload()
-    {
-        $payload = array_filter([
-            'plan' => $this->item['plan'],
-            'quantity' => $this->item['quantity'],
-        ]);
-
-        return $payload;
     }
 }

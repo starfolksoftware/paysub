@@ -14,10 +14,9 @@ class CreateSubscriberColumns extends Migration
     public function up()
     {
         Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
-            $table->string('paystack_code')->nullable()->index();
+            $table->string('paystack_auth_code')->nullable();
             $table->json('send_invoice_to')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
-            $table->unsignedBigInteger('default_authorization_id')->nullable()
         });
     }
 
@@ -30,10 +29,9 @@ class CreateSubscriberColumns extends Migration
     {
         Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
             $table->dropColumn([
-                'paystack_code',
+                'paystack_auth_code',
                 'send_invoice_to',
-                'trial_ends_at',
-                'default_authorization_id'
+                'trial_ends_at'
             ]);
         });
     }
