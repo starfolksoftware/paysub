@@ -2,10 +2,12 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
-use StarfolkSoftware\Paysub\Models\{Subscription,Plan};
+use StarfolkSoftware\Paysub\Models\Plan;
+use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\SubscriptionBuilder;
 
-trait ManagesSubscription {
+trait ManagesSubscription
+{
     /**
      * Get all of the subscriptions for the Stripe model.
      *
