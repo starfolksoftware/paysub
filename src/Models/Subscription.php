@@ -2,10 +2,11 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
-use Carbon\{Carbon, CarbonInterface};
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use DateTimeInterface;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Paysub;
 
@@ -455,7 +456,6 @@ class Subscription extends Model
 
         return $this;
     }
-
 
     /**
      * Calcuate the next payment date
