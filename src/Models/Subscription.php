@@ -2,14 +2,19 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
-use Carbon\Carbon;
+use Carbon\{Carbon, CarbonInterface};
+use DateTimeInterface;
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
+use StarfolkSoftware\Paysub\Paysub;
 
 class Subscription extends Model
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+    const STATUS_PAST_DUE = 'past_due';
+    const STATUS_UNPAID = 'unpaid';
 
     /**
      * The attributes that are not mass assignable.
@@ -99,13 +104,14 @@ class Subscription extends Model
     }
 
     /**
-     * Determine if the subscription is active.
+     * Determine if the subscription has a specific plan.
      *
+     * @param  Plan  $plan
      * @return bool
      */
-    public function valid()
+    public function hasPlan(Plan $plan)
     {
-        return $this->active();
+        return $this->plan->id === $plan->id;
     }
 
     /**
@@ -113,9 +119,42 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function isActive()
+    public function valid()
     {
-        return $this->status === 'active';
+        return $this->active() || $this->onTrial() || $this->onGracePeriod();
+    }
+
+    /**
+     * Determine if the subscription is past due.
+     *
+     * @return bool
+     */
+    public function pastDue()
+    {
+        return $this->status === self::STATUS_PAST_DUE;
+    }
+
+    /**
+     * Filter query by past due.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopePastDue($query)
+    {
+        $query->where('status', self::STATUS_PAST_DUE);
+    }
+
+    /**
+     * Determine if the subscription is active.
+     *
+     * @return bool
+     */
+    public function active()
+    {
+        return (is_null($this->ends_at) || $this->onGracePeriod()) &&
+            (! Paysub::$deactivatePastDue || $this->status !== self::STATUS_PAST_DUE) &&
+            $this->status !== self::STATUS_UNPAID;
     }
 
     /**
@@ -126,18 +165,27 @@ class Subscription extends Model
      */
     public function scopeActive($query)
     {
-        $query->where('status', 'active');
+        $query->where(function ($query) {
+            $query->whereNull('ends_at')
+                ->orWhere(function ($query) {
+                    $query->onGracePeriod();
+                });
+        })->where('status', '!=', self::STATUS_UNPAID);
+
+        if (Paysub::$deactivatePastDue) {
+            $query->where('status', '!=', self::STATUS_PAST_DUE);
+        }
     }
 
     /**
-     * Filter query by inactive.
+     * Filter query by recurring.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeInactive($query)
+    public function scopeRecurring($query)
     {
-        $query->where('status', 'inactive');
+        $query->notOnTrial()->notCancelled();
     }
 
     /**
@@ -145,7 +193,7 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function isCancelled()
+    public function cancelled()
     {
         return ! is_null($this->ends_at);
     }
@@ -177,9 +225,9 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function hasEnded()
+    public function ended()
     {
-        return $this->isCancelled();
+        return $this->cancelled() && ! $this->onGracePeriod();
     }
 
     /**
@@ -190,7 +238,71 @@ class Subscription extends Model
      */
     public function scopeEnded($query)
     {
-        $query->cancelled();
+        $query->cancelled()->notOnGracePeriod();
+    }
+
+    /**
+     * Determine if the subscription is within its trial period.
+     *
+     * @return bool
+     */
+    public function onTrial()
+    {
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Filter query by on trial.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeOnTrial($query)
+    {
+        $query->whereNotNull('trial_ends_at')->where('trial_ends_at', '>', Carbon::now());
+    }
+
+    /**
+     * Filter query by not on trial.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeNotOnTrial($query)
+    {
+        $query->whereNull('trial_ends_at')->orWhere('trial_ends_at', '<=', Carbon::now());
+    }
+
+    /**
+     * Determine if the subscription is within its grace period after cancellation.
+     *
+     * @return bool
+     */
+    public function onGracePeriod()
+    {
+        return $this->ends_at && $this->ends_at->isFuture();
+    }
+
+    /**
+     * Filter query by on grace period.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeOnGracePeriod($query)
+    {
+        $query->whereNotNull('ends_at')->where('ends_at', '>', Carbon::now());
+    }
+
+    /**
+     * Filter query by not on grace period.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeNotOnGracePeriod($query)
+    {
+        $query->whereNull('ends_at')->orWhere('ends_at', '<=', Carbon::now());
     }
 
     /**
@@ -265,6 +377,87 @@ class Subscription extends Model
     }
 
     /**
+     * Change the billing cycle anchor on a plan change.
+     *
+     * @param  \DateTimeInterface|int|string  $date
+     * @return $this
+     */
+    public function anchorBillingCycleOn($date = 'now')
+    {
+        if ($date instanceof DateTimeInterface) {
+            $date = $date->getTimestamp();
+        }
+
+        $this->billing_cycle_anchor = $date;
+
+        return $this;
+    }
+
+    /**
+     * Force the trial to end immediately.
+     *
+     * This method must be combined with swap, resume, etc.
+     *
+     * @return $this
+     */
+    public function skipTrial()
+    {
+        $this->trial_ends_at = null;
+
+        return $this;
+    }
+
+    /**
+     * Extend an existing subscription's trial period.
+     *
+     * @param  \Carbon\CarbonInterface  $date
+     * @return $this
+     */
+    public function extendTrial(CarbonInterface $date)
+    {
+        if (! $date->isFuture()) {
+            throw new InvalidArgumentException("Extending a subscription's trial requires a date in the future.");
+        }
+
+        $subscription = $this->asStripeSubscription();
+
+        $subscription->trial_end = $date->getTimestamp();
+
+        $subscription->save();
+
+        $this->trial_ends_at = $date;
+
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Swap the subscription to new Stripe plans.
+     *
+     * @param  Play  $plan
+     * @param  array  $options
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function swap(Plan $plan)
+    {
+        if (! $plan) {
+            throw new InvalidArgumentException('Please provide a plan when swapping.');
+        }
+
+        $this->fill([
+            'plan_id' => $this->plan->id,
+            'status' => self::STATUS_ACTIVE,
+            'ends_at' => null,
+        ])->save();
+
+        return $this;
+    }
+
+
+    /**
      * Calcuate the next payment date
      *
      * @return \Carbon\Carbon
@@ -303,6 +496,32 @@ class Subscription extends Model
     }
 
     /**
+     * Cancel the subscription immediately.
+     *
+     * @return $this
+     */
+    public function cancelNow()
+    {
+        $this->markAsCancelled();
+
+        return $this;
+    }
+
+    /**
+     * Mark the subscription as cancelled.
+     *
+     * @return void
+     * @internal
+     */
+    public function markAsCancelled()
+    {
+        $this->fill([
+            'status' => self::STATUS_INACTIVE,
+            'ends_at' => Carbon::now(),
+        ])->save();
+    }
+
+    /**
      * Resume the cancelled subscription.
      *
      * @return $this
@@ -321,12 +540,22 @@ class Subscription extends Model
     }
 
     /**
+     * Get the latest invoice for the subscription.
+     *
+     * @return Invoice
+     */
+    public function latestInvoice()
+    {
+        return $this->invoices()->latest();
+    }
+
+    /**
      * Get the latest payment for a Subscription.
      *
      * @return Payment
      */
     public function latestPayment()
     {
-        return $this->payments->latest();
+        return Payment::findOrFail($this->latest_payment_id);
     }
 }
