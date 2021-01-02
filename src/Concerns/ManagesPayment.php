@@ -5,14 +5,16 @@ namespace StarfolkSoftware\Paysub\Concerns;
 use StarfolkSoftware\Paysub\Exceptions\PaymentError;
 use StarfolkSoftware\Paysub\Models\Subscription;
 
-trait ManagesPayment {
+trait ManagesPayment
+{
     /**
      * Make a payment on invoice
      * @param Subscription|null $subscription
      * @return
      * @throws PaymentError
      */
-    public function makePayment(Subscription $subscription) {
+    public function makePayment(Subscription $subscription)
+    {
         $invoice = $subscription->openInvoice();
 
         if (! $invoice) {

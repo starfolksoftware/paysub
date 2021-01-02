@@ -62,7 +62,7 @@ class Payment extends Model
             '',
             [
                 'StarfolkSoftware\Paysub\Models\Subscription' => 'subscription_id',
-                'StarfolkSoftware\Paysub\Models\Subscription' => 'invoice_id'
+                'StarfolkSoftware\Paysub\Models\Subscription' => 'invoice_id',
             ]
         );
     }
