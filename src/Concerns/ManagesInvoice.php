@@ -3,9 +3,9 @@
 namespace StarfolkSoftware\Paysub\Concerns;
 
 use StarfolkSoftware\Paysub\Models\Invoice;
-use StarfolkSoftware\Paysub\Models\Subscription;
 
-trait ManagesInvoice {
+trait ManagesInvoice
+{
     /**
      * Create an invoice download Response.
      *
@@ -14,7 +14,8 @@ trait ManagesInvoice {
      * @param  string  $filename
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function downloadInvoice($id, array $data, $filename = null) {
+    public function downloadInvoice($id, array $data, $filename = null)
+    {
         $invoice = Invoice::findOrFail($id);
 
         return $filename ? $invoice->downloadAs($filename, $data) : $invoice->download($data);
@@ -26,7 +27,8 @@ trait ManagesInvoice {
      * @param  bool  $includeVoid
      * @return \Illuminate\Support\Collection
      */
-    public function invoices($includeVoid = false) {
+    public function invoices($includeVoid = false)
+    {
         $builder = $this->subscription->invoices();
 
         if ($includeVoid) {
@@ -42,7 +44,8 @@ trait ManagesInvoice {
      * @param  array  $parameters
      * @return \Illuminate\Support\Collection
      */
-    public function invoicesIncludingVoid() {
+    public function invoicesIncludingVoid()
+    {
         return $this->invoices(true);
     }
 }

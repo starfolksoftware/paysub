@@ -2,11 +2,11 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
-use Dompdf\Dompdf;
 use App\Casts\Json;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\View;
+use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\View;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -82,8 +82,9 @@ class Invoice extends Model
      *
      * @return bool
      */
-    public function hasTax() {
-        return !! $this->tax;
+    public function hasTax()
+    {
+        return ! ! $this->tax;
     }
 
     /**
@@ -92,14 +93,16 @@ class Invoice extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeTax($query) {
+    public function scopeTax($query)
+    {
         $query->whereNotNull('tax');
     }
 
     /**
      * Get Tax total
      */
-    public function getTaxTotalAttribute() {
+    public function getTaxTotalAttribute()
+    {
         return collect($this->tax)->reduce(function ($carry, $tax) {
             return $carry + $tax['amount'];
         }, 0);
@@ -122,7 +125,8 @@ class Invoice extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopePaid($query) {
+    public function scopePaid($query)
+    {
         $query->where('status', self::STATUS_PAID);
     }
 
@@ -132,7 +136,8 @@ class Invoice extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeUnpaid($query) {
+    public function scopeUnpaid($query)
+    {
         $query->where('status', self::STATUS_UNPAID);
     }
 
@@ -142,7 +147,8 @@ class Invoice extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeVoid($query) {
+    public function scopeVoid($query)
+    {
         $query->where('status', self::STATUS_VOID);
     }
 
@@ -167,7 +173,7 @@ class Invoice extends Model
     protected function formatAmount($amount, $currency = 'NGN')
     {
         return Paysub::formatAmount(
-            $amount, 
+            $amount,
             $currency ?? $this->subscription->plan->currency
         );
     }
