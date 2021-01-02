@@ -34,7 +34,7 @@ trait ManagesSubscription
      * Determine if the model is on trial.
      * @param Subscription $subscription
      * @param Plan|null $plan
-     * 
+     *
      * @return bool
      */
     public function onTrial(Subscription $subscription, Plan $plan = null)
