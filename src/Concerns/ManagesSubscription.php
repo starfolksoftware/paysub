@@ -9,7 +9,7 @@ use StarfolkSoftware\Paysub\SubscriptionBuilder;
 trait ManagesSubscription
 {
     /**
-     * Get all of the subscriptions for the Stripe model.
+     * Get all of the subscriptions for the model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -32,19 +32,18 @@ trait ManagesSubscription
 
     /**
      * Determine if the model is on trial.
+     * @param Subscription $subscription
      * @param Plan|null $plan
      * 
      * @return bool
      */
-    public function onTrial(Plan $plan = null)
+    public function onTrial(Subscription $subscription, Plan $plan = null)
     {
         if ($this->onGenericTrial()) {
             return true;
         }
 
-        $subscription = $this->subscription();
-
-        if (! $subscription || ! $subscription->onTrial()) {
+        if (! $subscription->onTrial()) {
             return false;
         }
 
@@ -77,16 +76,14 @@ trait ManagesSubscription
     }
 
     /**
-     * Determine if the Stripe model has a given subscription.
-     *
+     * Determine if the model has a given subscription.
+     * @param  Subscription $subscription
      * @param  string|null  $plan
      * @return bool
      */
-    public function subscribed(Plan $plan = null)
+    public function subscribed(Subscription $subscription, Plan $plan = null)
     {
-        $subscription = $this->subscription();
-
-        if (! $subscription || ! $subscription->valid()) {
+        if (! $subscription->valid()) {
             return false;
         }
 
@@ -94,27 +91,14 @@ trait ManagesSubscription
     }
 
     /**
-     * Get a subscription instance by name.
-     *
-     * @param  string  $name
-     * @return \StarfolkSoftware\Paysub\Models\Subscription|null
-     */
-    public function subscription()
-    {
-        return $this->subscriptions->active()->first();
-    }
-
-    /**
-     * Determine if the Stripe model is actively subscribed to one of the given plans.
-     *
+     * Determine if the model is actively subscribed to one of the given plans.
+     * @param Subscription $subscription
      * @param  Plan|Plan[]  $plans
      * @return bool
      */
-    public function subscribedToPlan($plans)
+    public function subscribedToPlan(Subscription $subscription, $plans)
     {
-        $subscription = $this->subscription();
-
-        if (! $subscription || ! $subscription->valid()) {
+        if (! $subscription->valid()) {
             return false;
         }
 
@@ -133,7 +117,7 @@ trait ManagesSubscription
      * @param  Plan  $plan
      * @return bool
      */
-    public function onPlan($plan)
+    public function onPlan(Plan $plan)
     {
         return ! is_null($this->subscriptions->first(function (Subscription $subscription) use ($plan) {
             return $subscription->valid() && $subscription->hasPlan($plan);

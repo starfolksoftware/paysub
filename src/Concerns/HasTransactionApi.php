@@ -40,13 +40,13 @@ trait HasTransactionApi
         );
     }
 
-    public function charge(string $amount, string $auth_code)
+    public function charge(string $amount, string $email, string $auth_code)
     {
         return (new CurlRequest())(
             'post',
             self::$classUrl.'charge_authorization',
             [
-                'email' => $this->paystackEmail(),
+                'email' => $email,
                 'amount' => $amount,
                 'authorization_code' => $auth_code,
             ]

@@ -19,7 +19,7 @@ class CreateInvoicesTable extends Migration
             $table->string('description')->nullable();
             $table->json('tax')->nullable();
             $table->timestamp('due_date');
-            $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
+            $table->enum('status', ['paid', 'unpaid', 'void'])->default('unpaid');
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });

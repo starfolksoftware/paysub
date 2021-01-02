@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
     /**
      * The attributes that are not mass assignable.
      *
@@ -37,16 +39,6 @@ class Payment extends Model
     }
 
     /**
-     * Get the subscription of the payment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class, 'subscription_id');
-    }
-
-    /**
      * Get the invoice of the payment
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -54,5 +46,24 @@ class Payment extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
+    }
+
+    /**
+     * Get the subscription of the payment
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function subscription()
+    {
+        return $this->belongsToThrough(
+            'StarfolkSoftware\Paysub\Models\Subscription',
+            'StarfolkSoftware\Paysub\Models\Invoice',
+            null,
+            '',
+            [
+                'StarfolkSoftware\Paysub\Models\Subscription' => 'subscription_id',
+                'StarfolkSoftware\Paysub\Models\Subscription' => 'invoice_id'
+            ]
+        );
     }
 }

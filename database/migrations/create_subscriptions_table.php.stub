@@ -22,7 +22,6 @@ class CreateSubscriptionsTable extends Migration
             $table->timestamp('billing_cycle_anchor')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
-            $table->unsignedBigInteger('latest_payment_id');
             $table->timestamps();
 
             $table->index(['subscriber_id', 'status']);

@@ -2,11 +2,20 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
+use Dompdf\Dompdf;
 use App\Casts\Json;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Model;
+use StarfolkSoftware\Paysub\Paysub;
+use Symfony\Component\HttpFoundation\Response;
 
 class Invoice extends Model
 {
+    const STATUS_UNPAID = 'unpaid';
+    const STATUS_PAID = 'paid';
+    const STATUS_VOID = 'void';
+    
     /**
      * The attributes that are not mass assignable.
      *
@@ -28,6 +37,7 @@ class Invoice extends Model
      */
     protected $appends = [
         'amount',
+        'tax_total',
     ];
 
     /**
@@ -68,17 +78,187 @@ class Invoice extends Model
     }
 
     /**
+     * Determine if the invoice has tax applied.
+     *
+     * @return bool
+     */
+    public function hasTax() {
+        return !! $this->tax;
+    }
+
+    /**
+     * Filter query by invoice with tax.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeTax($query) {
+        $query->whereNotNull('tax');
+    }
+
+    /**
+     * Get Tax total
+     */
+    public function getTaxTotalAttribute() {
+        return collect($this->tax)->reduce(function ($carry, $tax) {
+            return $carry + $tax['amount'];
+        }, 0);
+    }
+
+    /**
      * Calculate the invoice amount
      */
     public function getAmountAttribute()
     {
-        $totalTax = collect($this->tax)->reduce(function ($carry, $tax) {
-            return $carry + $tax['amount'];
-        }, 0);
-        
         $planAmount = $this->subscription->plan->amount;
         $quantity = $this->subscription->quantity;
 
-        return ($planAmount * $quantity) - $totalTax;
+        return ($planAmount * $quantity) - $this->tax_total;
+    }
+
+    /**
+     * Filter query by paid.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopePaid($query) {
+        $query->where('status', self::STATUS_PAID);
+    }
+
+    /**
+     * Filter query by unpaid.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeUnpaid($query) {
+        $query->where('status', self::STATUS_UNPAID);
+    }
+
+    /**
+     * Filter query by void.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeVoid($query) {
+        $query->where('status', self::STATUS_VOID);
+    }
+
+    /**
+     * Filter query by past due.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopePastDue($query)
+    {
+        $query->whereNotNull('due_date')->where('due_date', '>', Carbon::now());
+    }
+
+    /**
+     * Format the given amount into a displayable currency.
+     *
+     * @param  int  $amount
+     * @param string $currency
+     * @return string
+     */
+    protected function formatAmount($amount, $currency = 'NGN')
+    {
+        return Paysub::formatAmount(
+            $amount, 
+            $currency ?? $this->subscription->plan->currency
+        );
+    }
+
+    /**
+     * Get the View instance for the invoice.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function view(array $data)
+    {
+        return View::make('paysub::receipt', array_merge($data, [
+            'invoice' => $this,
+            'owner' => $this->owner,
+            'user' => $this->owner,
+        ]));
+    }
+
+    /**
+     * Capture the invoice as a PDF and return the raw bytes.
+     *
+     * @param  array  $data
+     * @return string
+     */
+    public function pdf(array $data)
+    {
+        if (! defined('DOMPDF_ENABLE_AUTOLOAD')) {
+            define('DOMPDF_ENABLE_AUTOLOAD', false);
+        }
+
+        $dompdf = new Dompdf;
+        $dompdf->setPaper(config('paysub.paper', 'letter'));
+        $dompdf->loadHtml($this->view($data)->render());
+        $dompdf->render();
+
+        return $dompdf->output();
+    }
+
+    /**
+     * Create an invoice download response.
+     *
+     * @param  array  $data
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function download(array $data)
+    {
+        $filename = $data['product'].'_'.$this->date()->month.'_'.$this->date()->year;
+
+        return $this->downloadAs($filename, $data);
+    }
+
+    /**
+     * Create an invoice download response with a specific filename.
+     *
+     * @param  string  $filename
+     * @param  array  $data
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadAs($filename, array $data)
+    {
+        return new Response($this->pdf($data), 200, [
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'.pdf"',
+            'Content-Transfer-Encoding' => 'binary',
+            'Content-Type' => 'application/pdf',
+            'X-Vapor-Base64-Encode' => 'True',
+        ]);
+    }
+
+    /**
+     * Void the Stripe invoice.
+     *
+     * @param  array  $options
+     * @return $this
+     */
+    public function void(array $options = [])
+    {
+        $this->status = self::STATUS_VOID;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Get the Subscriber model instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function owner()
+    {
+        return $this->subscription->subscriber;
     }
 }

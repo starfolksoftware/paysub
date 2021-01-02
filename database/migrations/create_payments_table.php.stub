@@ -18,7 +18,6 @@ class CreatePaymentsTable extends Migration
             $table->string('paystack_id');
             $table->string('auth_code');
             $table->string('reference');
-            $table->unsignedBigInteger('subscription_id');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('amount');
             $table->datetime('paid_at');

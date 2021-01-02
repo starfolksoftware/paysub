@@ -34,6 +34,7 @@
         "moneyphp/money": "^3.2",
         "nesbot/carbon": "^2.0",
         "php-curl-class/php-curl-class": "^8.9",
+        "staudenmeir/belongs-to-through": "^2.5",
         "symfony/http-kernel": "^4.3|^5.0",
         "symfony/intl": "^4.3|^5.0"
     },

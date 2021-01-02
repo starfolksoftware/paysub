@@ -96,11 +96,18 @@ class Subscription extends Model
     /**
      * Get the payments of the subscription
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'subscription_id');
+        return $this->hasManyThrough(
+            Payment::class,
+            Invoice::class,
+            'subscription_id',
+            'invoice_id',
+            'id',
+            'id'
+        );
     }
 
     /**
@@ -330,7 +337,7 @@ class Subscription extends Model
             return null;
         }
 
-        return $this->invoices()->unpaid()->first();
+        return $this->invoices()->unpaid()->latest()->first();
     }
 
     /**
