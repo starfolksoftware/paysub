@@ -23,7 +23,8 @@ trait ManagesSubscription
      *
      * @return \StarfolkSoftware\Paysub\Models\Subscription|null
      */
-    public function subscription() {
+    public function subscription()
+    {
         return $this->subscriptions()->active()->first();
     }
 
