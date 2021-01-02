@@ -553,7 +553,7 @@ class Subscription extends Model
      */
     public function latestInvoice()
     {
-        return $this->invoices()->latest();
+        return $this->invoices()->latest()->first();
     }
 
     /**
@@ -563,6 +563,6 @@ class Subscription extends Model
      */
     public function latestPayment()
     {
-        return Payment::findOrFail($this->latest_payment_id);
+        return $this->payments()->latest()->first();
     }
 }

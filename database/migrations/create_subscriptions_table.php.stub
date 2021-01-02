@@ -24,7 +24,7 @@ class CreateSubscriptionsTable extends Migration
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();
 
-            $table->index(['subscriber_id', 'status']);
+            $table->index(['subscriber_id', 'plan_id']);
         });
     }
 

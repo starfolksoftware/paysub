@@ -19,6 +19,15 @@ trait ManagesSubscription
     }
 
     /**
+     * Get a subscription instance by name.
+     *
+     * @return \StarfolkSoftware\Paysub\Models\Subscription|null
+     */
+    public function subscription() {
+        return $this->subscriptions()->active()->first();
+    }
+
+    /**
      * Begin creating a new subscription.
      *
      * @param  string  $name
@@ -32,16 +41,17 @@ trait ManagesSubscription
 
     /**
      * Determine if the model is on trial.
-     * @param Subscription $subscription
      * @param Plan|null $plan
      *
      * @return bool
      */
-    public function onTrial(Subscription $subscription, Plan $plan = null)
+    public function onTrial(Plan $plan = null)
     {
         if ($this->onGenericTrial()) {
             return true;
         }
+
+        $subscription = $this->subscription();
 
         if (! $subscription->onTrial()) {
             return false;
@@ -66,8 +76,10 @@ trait ManagesSubscription
      * @param  Subscription|null  $subscription
      * @return \Illuminate\Support\Carbon|null
      */
-    public function trialEndsAt(Subscription $subscription = null)
+    public function trialEndsAt()
     {
+        $subscription = $this->subscription();
+
         if ($subscription) {
             return $subscription->trial_ends_at;
         }
@@ -77,12 +89,13 @@ trait ManagesSubscription
 
     /**
      * Determine if the model has a given subscription.
-     * @param  Subscription $subscription
      * @param  string|null  $plan
      * @return bool
      */
-    public function subscribed(Subscription $subscription, Plan $plan = null)
+    public function subscribed(Plan $plan = null)
     {
+        $subscription = $this->subscription();
+
         if (! $subscription->valid()) {
             return false;
         }
@@ -92,12 +105,13 @@ trait ManagesSubscription
 
     /**
      * Determine if the model is actively subscribed to one of the given plans.
-     * @param Subscription $subscription
      * @param  Plan|Plan[]  $plans
      * @return bool
      */
-    public function subscribedToPlan(Subscription $subscription, $plans)
+    public function subscribedToPlan($plans)
     {
+        $subscription = $this->subscription();
+        
         if (! $subscription->valid()) {
             return false;
         }
