@@ -32,21 +32,21 @@ class Paysub
     protected static $formatCurrencyUsing;
 
     /**
-     * Indicates if Cashier migrations will be run.
+     * Indicates if Paysub migrations will be run.
      *
      * @var bool
      */
     public static $runsMigrations = true;
 
     /**
-     * Indicates if Cashier routes will be registered.
+     * Indicates if Paysub routes will be registered.
      *
      * @var bool
      */
     public static $registersRoutes = true;
 
     /**
-     * Indicates if Cashier will mark past due subscriptions as inactive.
+     * Indicates if Paysub will mark past due subscriptions as inactive.
      *
      * @var bool
      */
@@ -119,7 +119,7 @@ class Paysub
     }
 
     /**
-     * Configure Cashier to not register its migrations.
+     * Configure Paysub to not register its migrations.
      *
      * @return static
      */
@@ -131,19 +131,7 @@ class Paysub
     }
 
     /**
-     * Configure Cashier to not register its routes.
-     *
-     * @return static
-     */
-    public static function ignoreRoutes()
-    {
-        static::$registersRoutes = false;
-
-        return new static;
-    }
-
-    /**
-     * Configure Cashier to maintain past due subscriptions as active.
+     * Configure Paysub to maintain past due subscriptions as active.
      *
      * @return static
      */

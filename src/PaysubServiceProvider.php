@@ -44,16 +44,6 @@ class PaysubServiceProvider extends ServiceProvider
         if (Paysub::$runsMigrations && $this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
-
-        if (Paysub::$registersRoutes) {
-            Route::group([
-                'prefix' => config('paysub.path'),
-                'namespace' => 'Laravel\Cashier\Http\Controllers',
-                'as' => 'paysub.',
-            ], function () {
-                $this->loadRoutesFrom(__DIR__.'/../routes/paysub.php');
-            });
-        }
     }
 
     public function register()
