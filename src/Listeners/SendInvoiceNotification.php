@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace StarfolkSoftware\Paysub\Listeners;
 
@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Mail;
 use StarfolkSoftware\Paysub\Events\InvoicePaid;
 use StarfolkSoftware\Paysub\Mail\InvoiceMail;
 
-class SendInvoiceNotification {
+class SendInvoiceNotification
+{
     /**
      * Handle the event.
      *

@@ -10,7 +10,8 @@ use StarfolkSoftware\Paysub\Models\Invoice;
 
 class InvoiceMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $billable;
     protected $invoice;
@@ -24,7 +25,7 @@ class InvoiceMail extends Mailable
     public function __construct($billable, Invoice $invoice)
     {
         $this->billable = $billable;
-        $this->invoice  = $invoice;
+        $this->invoice = $invoice;
     }
 
     public function build()
@@ -40,7 +41,7 @@ class InvoiceMail extends Mailable
 
         return $this->view('paysub::invoice')->with(array_merge($data, [
             'invoice' => $this,
-            'subscription' => $this->invoice->subscription
+            'subscription' => $this->invoice->subscription,
         ]))->attachData($this->invoice->pdf($data), 'invoice.pdf', [
             'mime' => 'application/pdf',
         ]);

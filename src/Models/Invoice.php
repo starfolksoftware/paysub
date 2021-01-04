@@ -207,7 +207,7 @@ class Invoice extends Model
     {
         return View::make('paysub::invoice', array_merge($data, [
             'invoice' => $this,
-            'subscription' => $this->subscription
+            'subscription' => $this->subscription,
         ]));
     }
 
