@@ -4,6 +4,7 @@ namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
 use DateTimeInterface;
+use StarfolkSoftware\Paysub\Events\SubscriptionCreated;
 use StarfolkSoftware\Paysub\Models\{
     Plan
 };
@@ -161,6 +162,8 @@ class SubscriptionBuilder
         ]);
 
         $this->owner->save();
+
+        event(new SubscriptionCreated($subscription));
 
         return $subscription;
     }

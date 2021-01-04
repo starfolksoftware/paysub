@@ -31,22 +31,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Paystack Webhooks
-    |--------------------------------------------------------------------------
-    |
-    | Your Paystack webhook secret is used to prevent unauthorized requests to
-    | your Paystack webhook handling controllers. The tolerance setting will
-    | check the drift between the current time and the signed request's.
-    |
-    */
-
-    'webhook' => [
-        'secret' => env('PAYSTACK_WEBHOOK_SECRET'),
-        'tolerance' => env('PAYSTACK_WEBHOOK_TOLERANCE', 300),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Paystack Subscription Model
     |--------------------------------------------------------------------------
     |
@@ -85,6 +69,19 @@ return [
     */
 
     'currency' => env('PAYSUB_CURRENCY', 'NGN'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Taxes
+    |--------------------------------------------------------------------------
+    |
+    | Tax definitions for invoice. 
+    |
+    */
+
+    'invoice_taxes' => [
+        // ['name' => 'VAT', 'percentage' => 7.5]
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
+use StarfolkSoftware\Paysub\Events\InvoicePaid;
 use StarfolkSoftware\Paysub\Exceptions\PaymentError;
 use StarfolkSoftware\Paysub\Models\Subscription;
 
@@ -32,7 +33,7 @@ trait ManagesPayment
         $response = $this->charge($invoice->amount, $this->paystackEmail(), $this->paystack_auth_code);
 
         if ($response->status) {
-            // event('')
+           event(new InvoicePaid($invoice));
         }
 
         throw PaymentError::default($response->message);

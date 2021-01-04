@@ -59,6 +59,7 @@ class PaysubServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/paysub.php', 'paysub');
+        $this->app->register(EventServiceProvider::class);
     }
 
     public static function migrationFileExists(string $migrationFileName): bool

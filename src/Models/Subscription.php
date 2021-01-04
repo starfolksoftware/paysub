@@ -7,6 +7,7 @@ use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
+use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Paysub;
 
@@ -342,6 +343,29 @@ class Subscription extends Model
     }
 
     /**
+     * Generate upcoming invoice
+     * 
+     * @return boolean|null
+     */
+    public function generateUpcomingInvoice() {
+        $upcomingInvoice = Invoice::create([
+            'subscription_id' => $this->id,
+            'tax' => null,
+            'due_date' => $this->next_payment_date,
+            'status' => Invoice::STATUS_UNPAID,
+        ]);
+
+        $upcomingInvoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($upcomingInvoice) {
+            return [
+                'name' => $value['name'],
+                'amount' => $upcomingInvoice->amount * $value['percentage']
+            ];
+        })->toArray();
+
+        return $upcomingInvoice->save();
+    }
+
+    /**
      * Increment the quantity of the subscription.
      *
      * @param  int  $count
@@ -499,6 +523,8 @@ class Subscription extends Model
 
         $this->save();
 
+        event(new SubscriptionCancelled($this));
+
         return $this;
     }
 
@@ -526,6 +552,8 @@ class Subscription extends Model
             'status' => self::STATUS_INACTIVE,
             'ends_at' => Carbon::now(),
         ])->save();
+
+        event(new SubscriptionCancelled($this));
     }
 
     /**
