@@ -24,7 +24,7 @@ class InvoicePaid extends Notification implements ShouldQueue
     public function __construct($billable, Invoice $invoice)
     {
         $this->billable = $billable;
-        $this->invoice  = $invoice;
+        $this->invoice = $invoice;
     }
 
     /**
@@ -58,7 +58,7 @@ class InvoicePaid extends Notification implements ShouldQueue
         $mailMessage = (new MailMessage)->subject('Ciniki Accounting' . ' Invoice[INV-'.$this->invoice->id.']')
                                         ->view('paysub::invoice', array_merge($data, [
                                             'invoice' => $this,
-                                            'subscription' => $this->invoice->subscription
+                                            'subscription' => $this->invoice->subscription,
                                         ]))
                                         ->line('Thanks for your continued support. We\'ve attached a copy of your invoice for your records. Please let us know if you have any questions or concerns!')
                                         ->attachData($this->invoice->pdf($data), 'invoice.pdf');
