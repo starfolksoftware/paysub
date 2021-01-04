@@ -1,11 +1,13 @@
-<?php 
+<?php
 
 namespace StarfolkSoftware\Paysub\Listeners;
 
 use StarfolkSoftware\Paysub\Events\InvoicePaid;
 
-class ResumeSubscription {
-    public function handle(InvoicePaid $event) {
+class ResumeSubscription
+{
+    public function handle(InvoicePaid $event)
+    {
         $invoice = $event->invoice;
         $subscription = $event->invoice->subscription;
 

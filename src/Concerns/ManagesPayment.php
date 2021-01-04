@@ -33,7 +33,7 @@ trait ManagesPayment
         $response = $this->charge($invoice->amount, $this->paystackEmail(), $this->paystack_auth_code);
 
         if ($response->status) {
-           event(new InvoicePaid($invoice));
+            event(new InvoicePaid($invoice));
         }
 
         throw PaymentError::default($response->message);
