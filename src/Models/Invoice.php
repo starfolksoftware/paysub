@@ -37,6 +37,7 @@ class Invoice extends Model
      */
     protected $appends = [
         'amount',
+        'amount_without_tax',
         'tax_total',
     ];
 
@@ -113,10 +114,15 @@ class Invoice extends Model
      */
     public function getAmountAttribute()
     {
-        $planAmount = $this->subscription->plan->amount;
-        $quantity = $this->subscription->quantity;
+        return $this->getAmountWithoutTaxAttribute - $this->tax_total;
+    }
 
-        return ($planAmount * $quantity) - $this->tax_total;
+    /**
+     * Calculate the invoice amount
+     */
+    public function getAmountWithoutTaxAttribute()
+    {
+        return $this->subscription->plan->amount * $this->subscription->quantity;
     }
 
     /**
@@ -164,6 +170,19 @@ class Invoice extends Model
     }
 
     /**
+     * Get a Carbon date for the invoice.
+     *
+     * @param  \DateTimeZone|string  $timezone
+     * @return \Carbon\Carbon
+     */
+    public function date($timezone = null)
+    {
+        $carbon = Carbon::createFromTimestampUTC($this->created_at);
+
+        return $timezone ? $carbon->setTimezone($timezone) : $carbon;
+    }
+
+    /**
      * Format the given amount into a displayable currency.
      *
      * @param  int  $amount
@@ -186,10 +205,9 @@ class Invoice extends Model
      */
     public function view(array $data)
     {
-        return View::make('paysub::receipt', array_merge($data, [
+        return View::make('paysub::invoice', array_merge($data, [
             'invoice' => $this,
-            'owner' => $this->owner,
-            'user' => $this->owner,
+            'subscription' => $this->subscription
         ]));
     }
 

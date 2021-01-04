@@ -11,6 +11,7 @@ use StarfolkSoftware\Paysub\Listeners\GenerateUpcomingInvoice;
 use StarfolkSoftware\Paysub\Listeners\MarkInvoiceAsPaid;
 use StarfolkSoftware\Paysub\Listeners\MarkInvoiceAsVoid;
 use StarfolkSoftware\Paysub\Listeners\ResumeSubscription;
+use StarfolkSoftware\Paysub\Listeners\SendInvoiceNotification;
 
 class EventServiceProvider extends ServiceProvider {
     protected $listen = [
@@ -21,6 +22,7 @@ class EventServiceProvider extends ServiceProvider {
             MarkInvoiceAsPaid::class,
             ResumeSubscription::class,
             GenerateUpcomingInvoice::class,
+            SendInvoiceNotification::class,
         ],
         SubscriptionCancelled::class => [
             MarkInvoiceAsVoid::class,
