@@ -2,16 +2,19 @@
 
 namespace StarfolkSoftware\Paysub\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use StarfolkSoftware\Paysub\Models\Subscription;
 
-class SubscriptionCreated {
-    use Dispatchable, SerializesModels;
+class SubscriptionCreated
+{
+    use Dispatchable;
+    use SerializesModels;
 
     public $subscription;
 
-    public function __construct(Subscription $subscription) {
+    public function __construct(Subscription $subscription)
+    {
         $this->subscription = $subscription;
     }
 }

@@ -344,10 +344,11 @@ class Subscription extends Model
 
     /**
      * Generate upcoming invoice
-     * 
-     * @return boolean|null
+     *
+     * @return bool|null
      */
-    public function generateUpcomingInvoice() {
+    public function generateUpcomingInvoice()
+    {
         $upcomingInvoice = Invoice::create([
             'subscription_id' => $this->id,
             'tax' => null,
@@ -358,7 +359,7 @@ class Subscription extends Model
         $upcomingInvoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($upcomingInvoice) {
             return [
                 'name' => $value['name'],
-                'amount' => $upcomingInvoice->amount * $value['percentage']
+                'amount' => $upcomingInvoice->amount * $value['percentage'],
             ];
         })->toArray();
 
