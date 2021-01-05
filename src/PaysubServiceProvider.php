@@ -22,7 +22,10 @@ class PaysubServiceProvider extends ServiceProvider
 
             $mFileNames = [
                 'create_subscriber_columns.php',
+                'create_plans_table.php',
                 'create_subscriptions_table.php',
+                'create_invoices_table.php',
+                'create_payments_table.php',
             ];
 
             collect($mFileNames)->each(function ($mFileName) {
