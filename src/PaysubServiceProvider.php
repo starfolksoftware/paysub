@@ -2,7 +2,6 @@
 
 namespace StarfolkSoftware\Paysub;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 // use StarfolkSoftware\Paysub\Commands\SubscriptionCommand;
