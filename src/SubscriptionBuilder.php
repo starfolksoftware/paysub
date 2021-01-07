@@ -73,12 +73,13 @@ class SubscriptionBuilder
      * Specify the quantity of a subscription item.
      *
      * @param  int  $quantity
-     * @param  Plan|null  $plan
      * @return $this
      */
-    public function quantity($quantity, Plan $plan = null)
+    public function quantity($quantity)
     {
-        return $this->plan($plan, $quantity);
+        $this->quantity = $quantity;
+
+        return $this;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
-use App\Casts\Json;
+use StarfolkSoftware\Paysub\Casts\Json;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;

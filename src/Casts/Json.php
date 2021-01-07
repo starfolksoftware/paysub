@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Casts;
+namespace StarfolkSoftware\Paysub\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 

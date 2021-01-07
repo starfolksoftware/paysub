@@ -53,6 +53,11 @@ class Subscription extends Model
         'next_due_date',
     ];
 
+    public function getTable()
+    {
+        return config('paysub.subscription_table_name', parent::getTable());
+    }
+
     /**
      * Get the subscriber that owns the subscription.
      *

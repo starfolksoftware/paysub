@@ -22,7 +22,7 @@ trait ManagesPayment
             throw PaymentError::invoiceIsNull();
         }
 
-        if (! $this->paystack_auth_code) {
+        if (! $this->paystack_auth) {
             throw PaymentError::paystackAuthCodeIsNull();
         }
 
@@ -30,7 +30,7 @@ trait ManagesPayment
             throw PaymentError::paystackEmailNotDefined();
         }
 
-        $response = $this->charge($invoice->amount, $this->paystackEmail(), $this->paystack_auth_code);
+        $response = $this->charge($invoice->amount, $this->paystackEmail(), $this->paystack_auth->authorization_code);
 
         if ($response->status) {
             event(new InvoicePaid($invoice));
