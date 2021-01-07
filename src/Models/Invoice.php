@@ -2,11 +2,11 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
-use StarfolkSoftware\Paysub\Casts\Json;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
+use StarfolkSoftware\Paysub\Casts\Json;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
 
