@@ -9,7 +9,7 @@ trait ManagesPayment
 {
     /**
      * Make a payment on invoice
-     * 
+     *
      * @throws PaymentError
      */
     public function makePayment()

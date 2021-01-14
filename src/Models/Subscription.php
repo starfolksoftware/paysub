@@ -61,21 +61,22 @@ class Subscription extends Model
         return config('paysub.subscription_table_name', parent::getTable());
     }
 
-    public function getBillingCycleAnchorAttribute($value) {
+    public function getBillingCycleAnchorAttribute($value)
+    {
         $date = Carbon::parse($value);
 
         if ($this->interval === self::INTERVAL_YEARLY) {
-            return array(
+            return [
                 'interval' => self::INTERVAL_YEARLY,
                 'day' => $date->day,
                 'month' => $date->month,
-            );
-        } else if ($this->interval === self::INTERVAL_MONTHLY) {
-            return array(
+            ];
+        } elseif ($this->interval === self::INTERVAL_MONTHLY) {
+            return [
                 'interval' => self::INTERVAL_MONTHLY,
                 'day' => $date->day,
-                'month' => null
-            );
+                'month' => null,
+            ];
         }
 
         return null;
@@ -391,14 +392,17 @@ class Subscription extends Model
             switch ($this->interval) {
                 case self::INTERVAL_MONTHLY:
                     $dt = 1;
+
                     break;
 
                 case self::INTERVAL_YEARLY:
                     $dt = 12;
+
                     break;
                 
                 default:
                     throw new LogicException("Couldnt determine subscription interval!");
+
                     break;
             }
 

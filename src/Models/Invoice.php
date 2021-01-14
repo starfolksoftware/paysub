@@ -119,14 +119,14 @@ class Invoice extends Model
 
     /**
      * Calculate the invoice amount
-     * 
+     *
      * @throws LogicException
      */
     public function getAmountWithoutTaxAttribute()
     {
         if ($this->subscription->interval === Subscription::INTERVAL_MONTHLY) {
             return $this->subscription->plan->amount * $this->subscription->quantity;
-        } else if ($this->subscription->interval === Subscription::INTERVAL_YEARLY) {
+        } elseif ($this->subscription->interval === Subscription::INTERVAL_YEARLY) {
             return ($this->subscription->plan->amount * $this->subscription->quantity) * 12;
         }
 
