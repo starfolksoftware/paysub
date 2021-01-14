@@ -7,6 +7,7 @@ use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use LogicException;
+use StarfolkSoftware\Paysub\Casts\Json;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
 
