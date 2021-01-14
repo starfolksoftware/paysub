@@ -109,7 +109,7 @@ trait ManagesSubscription
      * @param  Plan|Plan[]  $plans
      * @return bool
      */
-    public function subscribedToPlan($plans)
+    public function subscribedToOneOf($plans)
     {
         $subscription = $this->subscription();
         

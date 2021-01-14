@@ -30,7 +30,7 @@ trait ManagesPayment
             throw PaymentError::paystackEmailNotDefined();
         }
 
-        $response = $this->charge($invoice->amount, $this->paystackEmail(), $this->paystack_auth->authorization_code);
+        $response = $this->chargeUsingPaystack($invoice->amount, $this->paystackEmail(), $this->paystack_auth->authorization_code);
 
         if ($response->status) {
             event(new InvoicePaid($invoice));

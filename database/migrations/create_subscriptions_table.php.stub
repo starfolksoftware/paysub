@@ -17,6 +17,7 @@ class CreateSubscriptionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
             $table->unsignedBigInteger('plan_id');
+            $table->enum('interval', ['monthly', 'yearly'])->default('monthly');
             $table->enum('status', ['active', 'inactive', 'past_due', 'unpaid'])->default('active');
             $table->integer('quantity')->default(1);
             $table->timestamp('billing_cycle_anchor')->nullable();

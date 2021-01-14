@@ -17,6 +17,8 @@ class Subscription extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_PAST_DUE = 'past_due';
     const STATUS_UNPAID = 'unpaid';
+    const INTERVAL_MONTHLY = 'monthly';
+    const INTERVAL_YEARLY = 'yearly';
 
     /**
      * The attributes that are not mass assignable.
@@ -56,6 +58,26 @@ class Subscription extends Model
     public function getTable()
     {
         return config('paysub.subscription_table_name', parent::getTable());
+    }
+
+    public function getBillingCycleAnchorAttribute($value) {
+        $date = Carbon::parse($value);
+
+        if ($this->interval === self::INTERVAL_YEARLY) {
+            return array(
+                'interval' => self::INTERVAL_YEARLY,
+                'day' => $date->day,
+                'month' => $date->month,
+            );
+        } else if ($this->interval === self::INTERVAL_MONTHLY) {
+            return array(
+                'interval' => self::INTERVAL_MONTHLY,
+                'day' => $date->day,
+                'month' => null
+            );
+        }
+
+        return null;
     }
 
     /**
@@ -357,7 +379,7 @@ class Subscription extends Model
         $upcomingInvoice = Invoice::create([
             'subscription_id' => $this->id,
             'tax' => null,
-            'due_date' => $this->next_payment_date,
+            'due_date' => $this->next_due_date,
             'status' => Invoice::STATUS_UNPAID,
         ]);
 
@@ -497,23 +519,14 @@ class Subscription extends Model
     /**
      * Calcuate the next payment date
      *
-     * @return \Carbon\Carbon
+     * @return \Carbon\Carbon|null
      */
-    public function getNextPaymentDateAttribute()
+    public function getNextDueDateAttribute()
     {
-        $billingAnchor = Carbon::parse($this->billing_cycle_anchor);
+        $anchor = $this->billing_cycle_anchor;
+        $date = Carbon::createFromDate(null, $anchor['month'], $anchor['day']);
 
-        if ($this->plan->interval === Plan::INTERVAL_YEARLY) {
-            return $billingAnchor->addYear();
-        } else {
-            $day = $billingAnchor->day;
-
-            return Carbon::createFromDate(
-                Carbon::now()->year,
-                Carbon::now()->month,
-                $day
-            )->addMonth();
-        }
+        return $anchor['month'] ? $date->addYear() : $date->addMonth();
     }
 
     /**

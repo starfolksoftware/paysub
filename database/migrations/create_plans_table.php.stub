@@ -18,7 +18,6 @@ class CreatePlansTable extends Migration
             $table->string('name')->unique();
             $table->string('description');
             $table->unsignedBigInteger('amount');
-            $table->enum('interval', ['monthly', 'yearly'])->default('monthly');
             $table->string('currency')->default('NGN');
             $table->timestamps();
         });

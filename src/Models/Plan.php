@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
-    const INTERVAL_MONTHLY = 'monthly';
-    const INTERVAL_YEARLY = 'yearly';
-
     /**
      * The attributes that are not mass assignable.
      *

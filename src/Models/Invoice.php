@@ -114,7 +114,7 @@ class Invoice extends Model
      */
     public function getAmountAttribute()
     {
-        return $this->getAmountWithoutTaxAttribute - $this->tax_total;
+        return $this->amount_without_tax - $this->tax_total;
     }
 
     /**

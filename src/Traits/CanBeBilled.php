@@ -2,14 +2,14 @@
 
 namespace StarfolkSoftware\Paysub\Traits;
 
-use StarfolkSoftware\Paysub\Concerns\HasTransactionApi;
+use StarfolkSoftware\Paysub\Concerns\HasPaystackTransactionApi;
 use StarfolkSoftware\Paysub\Concerns\ManagesInvoice;
 use StarfolkSoftware\Paysub\Concerns\ManagesPayment;
 use StarfolkSoftware\Paysub\Concerns\ManagesSubscription;
 
-trait Billable
+trait CanBeBilled
 {
-    use HasTransactionApi;
+    use HasPaystackTransactionApi;
     use ManagesInvoice;
     use ManagesPayment;
     use ManagesSubscription;
