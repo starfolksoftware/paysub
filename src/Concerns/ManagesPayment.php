@@ -4,19 +4,17 @@ namespace StarfolkSoftware\Paysub\Concerns;
 
 use StarfolkSoftware\Paysub\Events\InvoicePaid;
 use StarfolkSoftware\Paysub\Exceptions\PaymentError;
-use StarfolkSoftware\Paysub\Models\Subscription;
 
 trait ManagesPayment
 {
     /**
      * Make a payment on invoice
-     * @param Subscription|null $subscription
-     * @return
+     * 
      * @throws PaymentError
      */
-    public function makePayment(Subscription $subscription)
+    public function makePayment()
     {
-        $invoice = $subscription->openInvoice();
+        $invoice = $this->subscription()->openInvoice();
 
         if (! $invoice) {
             throw PaymentError::invoiceIsNull();

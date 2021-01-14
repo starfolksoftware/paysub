@@ -46,12 +46,12 @@ class SubscriptionBuilder
      * @param  Plan  $plan
      * @return void
      */
-    public function __construct($owner, Plan $plan)
+    public function __construct($owner, Plan $plan, $interval = null)
     {
         $this->owner = $owner;
         $this->subscriber_id = $this->owner->id;
 
-        $this->plan($plan);
+        $this->plan($plan, 1, $interval);
     }
 
     /**
@@ -59,12 +59,17 @@ class SubscriptionBuilder
      *
      * @param  Plan  $plan
      * @param  int  $quantity
+     * @param  string|null $interval
      * @return $this
      */
-    public function plan(Plan $plan, $quantity = 1)
+    public function plan(Plan $plan, $quantity = 1, $interval = null)
     {
         $this->plan_id = $plan->id;
         $this->quantity = $quantity;
+        
+        if ($interval) {
+            $this->interval = $interval;
+        }
 
         return $this;
     }

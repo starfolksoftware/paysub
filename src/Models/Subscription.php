@@ -7,6 +7,7 @@ use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
+use LogicException;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Paysub;
@@ -373,6 +374,7 @@ class Subscription extends Model
      * Generate upcoming invoice
      *
      * @return bool|null
+     * @throws LogicException
      */
     public function generateUpcomingInvoice()
     {
@@ -384,9 +386,25 @@ class Subscription extends Model
         ]);
 
         $upcomingInvoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($upcomingInvoice) {
+            $dt = 0;
+
+            switch ($this->interval) {
+                case self::INTERVAL_MONTHLY:
+                    $dt = 1;
+                    break;
+
+                case self::INTERVAL_YEARLY:
+                    $dt = 12;
+                    break;
+                
+                default:
+                    throw new LogicException("Couldnt determine subscription interval!");
+                    break;
+            }
+
             return [
                 'name' => $value['name'],
-                'amount' => $upcomingInvoice->amount * $value['percentage'],
+                'amount' => ($upcomingInvoice->amount * $value['percentage']) * $dt,
             ];
         })->toArray();
 
@@ -536,7 +554,7 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        $this->ends_at = $this->getNextPaymentDateAttribute();
+        $this->ends_at = $this->next_due_date;
 
         $this->status = self::STATUS_INACTIVE;
 

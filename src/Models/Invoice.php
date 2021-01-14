@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
+use LogicException;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -119,10 +120,18 @@ class Invoice extends Model
 
     /**
      * Calculate the invoice amount
+     * 
+     * @throws LogicException
      */
     public function getAmountWithoutTaxAttribute()
     {
-        return $this->subscription->plan->amount * $this->subscription->quantity;
+        if ($this->subscription->interval === Subscription::INTERVAL_MONTHLY) {
+            return $this->subscription->plan->amount * $this->subscription->quantity;
+        } else if ($this->subscription->interval === Subscription::INTERVAL_YEARLY) {
+            return ($this->subscription->plan->amount * $this->subscription->quantity) * 12;
+        }
+
+        throw new LogicException("Interval could not be determined.");
     }
 
     /**
