@@ -2,25 +2,38 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
+use Carbon\Carbon;
 use StarfolkSoftware\Paysub\Events\InvoicePaid;
 use StarfolkSoftware\Paysub\Exceptions\PaymentError;
+use StarfolkSoftware\Paysub\Models\Invoice;
+use StarfolkSoftware\Paysub\Models\Payment;
 
 trait ManagesPayment
 {
+    public function payUpcomingInvoice() {
+        $invoice = $this->subscription()->openInvoice();
+
+        if ($paymentResult = $this->pay($invoice)) {
+            event(new InvoicePaid($invoice));
+        }
+
+        return $paymentResult;
+    }
+
     /**
      * Make a payment on invoice
      *
+     * @param Invoice $invoice
+     * @return bool
      * @throws PaymentError
      */
-    public function makePayment()
+    public function pay(Invoice $invoice)
     {
-        $invoice = $this->subscription()->openInvoice();
-
         if (! $invoice) {
             throw PaymentError::invoiceIsNull();
         }
 
-        if (! $this->paystack_auth) {
+        if (! $this->paystack_auth['authorization_code']) {
             throw PaymentError::paystackAuthCodeIsNull();
         }
 
@@ -28,10 +41,26 @@ trait ManagesPayment
             throw PaymentError::paystackEmailNotDefined();
         }
 
-        $response = $this->chargeUsingPaystack($invoice->amount, $this->paystackEmail(), $this->paystack_auth->authorization_code);
+        $response = $this->chargeUsingPaystack(
+            $invoice->amount, 
+            $this->paystackEmail(), 
+            $this->paystack_auth['authorization_code']
+        );
 
         if ($response->status) {
-            event(new InvoicePaid($invoice));
+            $dataObject = $response->data;
+
+            // save payment
+            Payment::create([
+                'paystack_id' => $dataObject->id,
+                'auth_code' => $dataObject->authorization->authorization_code,
+                'reference' => $dataObject->reference,
+                'invoice_id' => $invoice->id,
+                'amount' => $dataObject->amount,
+                'paid_at' => Carbon::now(),
+            ]);
+
+            return true;
         }
 
         throw PaymentError::default($response->message);

@@ -379,14 +379,19 @@ class Subscription extends Model
      */
     public function generateUpcomingInvoice()
     {
-        $upcomingInvoice = Invoice::create([
+        return $this->generateInvoice();
+    }
+
+    public function generateInvoice($description = null, $due_date = null, $status = Invoice::STATUS_UNPAID) {
+        $invoice = Invoice::create([
             'subscription_id' => $this->id,
+            'description' => $description,
             'tax' => null,
-            'due_date' => $this->next_due_date,
-            'status' => Invoice::STATUS_UNPAID,
+            'due_date' => $due_date ?? $this->next_due_date,
+            'status' => $status,
         ]);
 
-        $upcomingInvoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($upcomingInvoice) {
+        $invoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($invoice) {
             $dt = 0;
 
             switch ($this->interval) {
@@ -408,11 +413,13 @@ class Subscription extends Model
 
             return [
                 'name' => $value['name'],
-                'amount' => ($upcomingInvoice->amount * $value['percentage']) * $dt,
+                'amount' => ($invoice->amount * $value['percentage']) * $dt,
             ];
         })->toArray();
 
-        return $upcomingInvoice->save();
+        $invoice->save();
+
+        return $invoice->refresh();
     }
 
     /**
