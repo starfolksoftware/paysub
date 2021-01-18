@@ -382,7 +382,8 @@ class Subscription extends Model
         return $this->generateInvoice();
     }
 
-    public function generateInvoice($description = null, $due_date = null, $status = Invoice::STATUS_UNPAID) {
+    public function generateInvoice($description = null, $due_date = null, $status = Invoice::STATUS_UNPAID)
+    {
         $invoice = Invoice::create([
             'subscription_id' => $this->id,
             'description' => $description,
