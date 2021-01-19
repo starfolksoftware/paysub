@@ -10,7 +10,8 @@ use StarfolkSoftware\Paysub\Models\Payment;
 
 trait ManagesPayment
 {
-    public function payUpcomingInvoice() {
+    public function payUpcomingInvoice()
+    {
         $invoice = $this->subscription()->openInvoice();
 
         if ($paymentResult = $this->pay($invoice)) {
@@ -42,8 +43,8 @@ trait ManagesPayment
         }
 
         $response = $this->chargeUsingPaystack(
-            $invoice->amount, 
-            $this->paystackEmail(), 
+            $invoice->amount,
+            $this->paystackEmail(),
             $this->paystack_auth['authorization_code']
         );
 
