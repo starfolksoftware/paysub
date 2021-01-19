@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
-use LogicException;
 use StarfolkSoftware\Paysub\Casts\Json;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +29,7 @@ class Invoice extends Model
      * @var array
      */
     protected $casts = [
+        'line_items' => Json::class,
         'tax' => Json::class,
     ];
 
@@ -37,8 +37,6 @@ class Invoice extends Model
      * The attributes that should be appended
      */
     protected $appends = [
-        'amount',
-        'amount_without_tax',
         'tax_total',
     ];
 
@@ -108,30 +106,6 @@ class Invoice extends Model
         return collect($this->tax)->reduce(function ($carry, $tax) {
             return $carry + $tax['amount'];
         }, 0);
-    }
-
-    /**
-     * Calculate the invoice amount
-     */
-    public function getAmountAttribute()
-    {
-        return $this->amount_without_tax - $this->tax_total;
-    }
-
-    /**
-     * Calculate the invoice amount
-     *
-     * @throws LogicException
-     */
-    public function getAmountWithoutTaxAttribute()
-    {
-        if ($this->subscription->interval === Subscription::INTERVAL_MONTHLY) {
-            return $this->subscription->plan->amount * $this->subscription->quantity;
-        } elseif ($this->subscription->interval === Subscription::INTERVAL_YEARLY) {
-            return ($this->subscription->plan->amount * $this->subscription->quantity) * 12;
-        }
-
-        throw new LogicException("Interval could not be determined.");
     }
 
     /**

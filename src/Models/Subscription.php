@@ -372,57 +372,6 @@ class Subscription extends Model
     }
 
     /**
-     * Generate upcoming invoice
-     *
-     * @return bool|null
-     * @throws LogicException
-     */
-    public function generateUpcomingInvoice()
-    {
-        return $this->generateInvoice();
-    }
-
-    public function generateInvoice($description = null, $due_date = null, $status = Invoice::STATUS_UNPAID) {
-        $invoice = Invoice::create([
-            'subscription_id' => $this->id,
-            'description' => $description,
-            'tax' => null,
-            'due_date' => $due_date ?? $this->next_due_date,
-            'status' => $status,
-        ]);
-
-        $invoice->tax = collect(config('paysub.invoice_taxes'))->map(function ($value) use ($invoice) {
-            $dt = 0;
-
-            switch ($this->interval) {
-                case self::INTERVAL_MONTHLY:
-                    $dt = 1;
-
-                    break;
-
-                case self::INTERVAL_YEARLY:
-                    $dt = 12;
-
-                    break;
-                
-                default:
-                    throw new LogicException("Couldnt determine subscription interval!");
-
-                    break;
-            }
-
-            return [
-                'name' => $value['name'],
-                'amount' => ($invoice->amount * $value['percentage']) * $dt,
-            ];
-        })->toArray();
-
-        $invoice->save();
-
-        return $invoice->refresh();
-    }
-
-    /**
      * Increment the quantity of the subscription.
      *
      * @param  int  $count

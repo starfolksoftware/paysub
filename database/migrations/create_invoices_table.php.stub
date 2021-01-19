@@ -17,7 +17,9 @@ class CreateInvoicesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscription_id');
             $table->string('description')->nullable();
+            $table->json('line_items');
             $table->json('tax')->nullable();
+            $table->unsignedBigInteger('amount');
             $table->timestamp('due_date');
             $table->enum('status', ['paid', 'unpaid', 'void'])->default('unpaid');
             $table->timestamp('paid_at')->nullable();

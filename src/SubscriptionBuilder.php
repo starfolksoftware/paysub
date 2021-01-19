@@ -143,7 +143,7 @@ class SubscriptionBuilder
     }
 
     /**
-     * Add a new Stripe subscription to the Stripe model.
+     * Add a new subscription to the model.
      *
      * @return \StarfolkSoftware\Paysub\Models\Subscription
      *
@@ -154,7 +154,7 @@ class SubscriptionBuilder
     }
 
     /**
-     * Create a new Stripe subscription.
+     * Create a new subscription.
      *
      * @return \StarfolkSoftware\Paysub\Models\Subscription
      */

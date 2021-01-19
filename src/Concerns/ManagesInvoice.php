@@ -2,10 +2,39 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
+use StarfolkSoftware\Paysub\InvoiceBuilder;
 use StarfolkSoftware\Paysub\Models\Invoice;
+use StarfolkSoftware\Paysub\Models\Subscription;
 
 trait ManagesInvoice
 {
+    /**
+     * Begin creating a new invoice.
+     *
+     * @param  Subscription  $subscription
+     * @return InvoiceBuilder
+     */
+    public function newInvoice(Subscription $subscription, $autofill = true) {
+        return new InvoiceBuilder($subscription, $autofill);
+    }
+
+    /**
+     * Generate upcoming invoice
+     *
+     * @return bool|null
+     * @throws LogicException
+     */
+    public function generateUpcomingInvoice()
+    {
+        $subscription = $this->subscription();
+
+        $invoiceBuilder = $this->newInvoice(
+            $subscription
+        );
+
+        return !! $invoiceBuilder->add();
+    }
+
     /**
      * Create an invoice download Response.
      *
