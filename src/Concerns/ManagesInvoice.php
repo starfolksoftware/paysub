@@ -14,7 +14,8 @@ trait ManagesInvoice
      * @param  Subscription  $subscription
      * @return InvoiceBuilder
      */
-    public function newInvoice(Subscription $subscription, $autofill = true) {
+    public function newInvoice(Subscription $subscription, $autofill = true)
+    {
         return new InvoiceBuilder($subscription, $autofill);
     }
 
@@ -32,7 +33,7 @@ trait ManagesInvoice
             $subscription
         );
 
-        return !! $invoiceBuilder->add();
+        return ! ! $invoiceBuilder->add();
     }
 
     /**

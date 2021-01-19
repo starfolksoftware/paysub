@@ -3,10 +3,8 @@
 namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
-use StarfolkSoftware\Paysub\Models\{
-    Subscription,
-    Invoice
-};
+use StarfolkSoftware\Paysub\Models\Invoice;
+use StarfolkSoftware\Paysub\Models\Subscription;
 
 class InvoiceBuilder
 {
@@ -36,9 +34,9 @@ class InvoiceBuilder
             $this->lineItem(
                 trans('paysub::invoice.invoice_bill_payment_name', [
                     'interval' => trans('paysub::invoice.'.$subscription->interval),
-                    'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ? 
-                        $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(), 
-                    'to' => $subscription->next_due_date
+                    'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ?
+                        $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(),
+                    'to' => $subscription->next_due_date,
                 ]),
                 ($subscription->plan->amount * $subscription->quantity),
                 $subscription->quantity
@@ -53,11 +51,12 @@ class InvoiceBuilder
 
     /**
      * Add a description to the invoice builder
-     * 
+     *
      * @param string $description
      * @return $this
      */
-    public function description(string $description) {
+    public function description(string $description)
+    {
         $this->description = $description;
 
         return $this;
@@ -69,7 +68,8 @@ class InvoiceBuilder
      * @param  array  $line_items
      * @return $this
      */
-    public function lineItems(array $line_items) {
+    public function lineItems(array $line_items)
+    {
         foreach ($line_items as $line_item) {
             $this->lineItem(
                 $line_item['name'],
@@ -83,35 +83,38 @@ class InvoiceBuilder
 
     /**
      * add an item to the line items
-     * 
+     *
      * @param string $name
-     * @param integer $amount
-     * @param integer $quantity
+     * @param int $amount
+     * @param int $quantity
      * @return $this
      */
-    public function lineItem($name, $amount, $quantity) {
+    public function lineItem($name, $amount, $quantity)
+    {
         if (! $this->line_items) {
-            $this->line_items = array();
+            $this->line_items = [];
         }
 
-        array_push($this->line_items, array(
+        array_push($this->line_items, [
             'name' => $name,
             'amount' => $amount,
             'quantity' => $quantity,
-        ));
+        ]);
 
         return $this;
     }
 
     /**
      * Calculate the amount payable
-     * 
-     * @param double|null $amount
-     * @return $this|double
+     *
+     * @param float|null $amount
+     * @return $this|float
      */
-    public function amount($amount = null) {
+    public function amount($amount = null)
+    {
         if ($amount) {
             $this->amount = $amount;
+
             return $this;
         }
 
@@ -200,7 +203,7 @@ class InvoiceBuilder
             'amount' => $this->amount(),
             'due_date' => $this->due_date,
             'status' => $this->status,
-            'paid_at' => $this->paid_at ?? null
+            'paid_at' => $this->paid_at ?? null,
         ]);
 
         $this->subscription->save();
