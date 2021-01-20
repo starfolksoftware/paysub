@@ -142,6 +142,17 @@ class Invoice extends Model
     }
 
     /**
+     * Filter query by void or not paid.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopeVoidOrUnpaid($query)
+    {
+        $query->where('status', self::STATUS_VOID)->orWhere('status', self::STATUS_UNPAID);
+    }
+
+    /**
      * Filter query by past due.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

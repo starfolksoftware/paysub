@@ -346,15 +346,21 @@ class Subscription extends Model
     /**
      * Check if subscription has open invoice
      */
-    public function hasOpenInvoice()
+    public function hasOpenInvoice($withVoid = false)
     {
-        $count = $this->invoices()->unpaid()->count();
+        if ($withVoid) {
+            $builder = $this->invoices()->voidOrUnpaid();
+        } else {
+            $builder = $this->invoices()->unpaid();
+        }
+
+        $count = $builder->count();
 
         if ($count > 1) {
             throw InvoiceCreationError::multipleOpenInvoice($this);
         }
 
-        return  $count === 1;
+        return  $builder->latest()->first();
     }
 
     /**
@@ -362,13 +368,13 @@ class Subscription extends Model
      *
      * @return Invoice|null
      */
-    public function openInvoice()
+    public function openInvoice($withVoid = false)
     {
-        if (! $this->hasOpenInvoice()) {
+        if (! $invoice = $this->hasOpenInvoice($withVoid)) {
             return null;
         }
 
-        return $this->invoices()->unpaid()->latest()->first();
+        return $invoice;
     }
 
     /**
@@ -515,8 +521,6 @@ class Subscription extends Model
     public function cancel()
     {
         $this->ends_at = $this->next_due_date;
-
-        $this->status = self::STATUS_INACTIVE;
 
         $this->save();
 

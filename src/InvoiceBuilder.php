@@ -10,6 +10,12 @@ use StarfolkSoftware\Paysub\Models\{
 
 class InvoiceBuilder
 {
+    /** @var array */
+    protected $line_items = array();
+
+    /** @var Subscription */
+    protected $subscription;
+
     /**
      * Create a new invoice builder instance.
      *
@@ -30,22 +36,26 @@ class InvoiceBuilder
      */
     public function subscription(Subscription $subscription, $autofill = true)
     {
+        $this->subscription = $subscription;
         $this->subscription_id = $subscription->id;
 
         if ($autofill) {
+            $line_item_name = trans('paysub::invoice.invoice_bill_payment_name', [
+                'interval' => trans('paysub::invoice.'.$subscription->interval),
+                'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ? 
+                    $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(), 
+                'to' => $subscription->next_due_date
+            ]);
+
             $this->lineItem(
-                trans('paysub::invoice.invoice_bill_payment_name', [
-                    'interval' => trans('paysub::invoice.'.$subscription->interval),
-                    'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ? 
-                        $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(), 
-                    'to' => $subscription->next_due_date
-                ]),
+                $line_item_name,
                 ($subscription->plan->amount * $subscription->quantity),
                 $subscription->quantity
             );
 
             $this->dueDate($subscription->next_due_date);
             $this->status(Invoice::STATUS_UNPAID);
+            $this->description($line_item_name);
         }
 
         return $this;
@@ -90,10 +100,6 @@ class InvoiceBuilder
      * @return $this
      */
     public function lineItem($name, $amount, $quantity) {
-        if (! $this->line_items) {
-            $this->line_items = array();
-        }
-
         array_push($this->line_items, array(
             'name' => $name,
             'amount' => $amount,
@@ -116,7 +122,7 @@ class InvoiceBuilder
         }
 
         $amount = collect($this->line_items)->reduce(function ($carry, $line_item) {
-            return $carry + (double) $line_item['amount'];
+            return $carry + ((double) $line_item['amount'] * (int) $line_item['quantity']);
         }, 0);
 
         return $amount;
@@ -199,7 +205,7 @@ class InvoiceBuilder
             'tax' => $this->tax ?? null,
             'amount' => $this->amount(),
             'due_date' => $this->due_date,
-            'status' => $this->status,
+            'status' => $this->status ?? Invoice::STATUS_UNPAID,
             'paid_at' => $this->paid_at ?? null
         ]);
 

@@ -21,7 +21,7 @@ trait ManagesInvoice
     /**
      * Generate upcoming invoice
      *
-     * @return bool|null
+     * @return Invoice
      * @throws LogicException
      */
     public function generateUpcomingInvoice()
@@ -32,7 +32,7 @@ trait ManagesInvoice
             $subscription
         );
 
-        return !! $invoiceBuilder->add();
+        return $invoiceBuilder->add();
     }
 
     /**
