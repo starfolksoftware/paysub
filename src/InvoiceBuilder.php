@@ -9,7 +9,7 @@ use StarfolkSoftware\Paysub\Models\Subscription;
 class InvoiceBuilder
 {
     /** @var array */
-    protected $line_items = array();
+    protected $line_items = [];
 
     /** @var Subscription */
     protected $subscription;
@@ -40,9 +40,9 @@ class InvoiceBuilder
         if ($autofill) {
             $line_item_name = trans('paysub::invoice.invoice_bill_payment_name', [
                 'interval' => trans('paysub::invoice.'.$subscription->interval),
-                'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ? 
-                    $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(), 
-                'to' => $subscription->next_due_date
+                'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ?
+                    $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(),
+                'to' => $subscription->next_due_date,
             ]);
 
             $this->lineItem(
@@ -99,12 +99,13 @@ class InvoiceBuilder
      * @param int $quantity
      * @return $this
      */
-    public function lineItem($name, $amount, $quantity) {
-        array_push($this->line_items, array(
+    public function lineItem($name, $amount, $quantity)
+    {
+        array_push($this->line_items, [
             'name' => $name,
             'amount' => $amount,
             'quantity' => $quantity,
-        ));
+        ]);
 
         return $this;
     }
@@ -208,7 +209,7 @@ class InvoiceBuilder
             'amount' => $this->amount(),
             'due_date' => $this->due_date,
             'status' => $this->status ?? Invoice::STATUS_UNPAID,
-            'paid_at' => $this->paid_at ?? null
+            'paid_at' => $this->paid_at ?? null,
         ]);
 
         $this->subscription->save();
