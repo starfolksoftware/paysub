@@ -3,10 +3,8 @@
 namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
-use StarfolkSoftware\Paysub\Models\{
-    Subscription,
-    Invoice
-};
+use StarfolkSoftware\Paysub\Models\Invoice;
+use StarfolkSoftware\Paysub\Models\Subscription;
 
 class InvoiceBuilder
 {
@@ -63,11 +61,12 @@ class InvoiceBuilder
 
     /**
      * Add a description to the invoice builder
-     * 
+     *
      * @param string $description
      * @return $this
      */
-    public function description(string $description) {
+    public function description(string $description)
+    {
         $this->description = $description;
 
         return $this;
@@ -79,7 +78,8 @@ class InvoiceBuilder
      * @param  array  $line_items
      * @return $this
      */
-    public function lineItems(array $line_items) {
+    public function lineItems(array $line_items)
+    {
         foreach ($line_items as $line_item) {
             $this->lineItem(
                 $line_item['name'],
@@ -93,10 +93,10 @@ class InvoiceBuilder
 
     /**
      * add an item to the line items
-     * 
+     *
      * @param string $name
-     * @param integer $amount
-     * @param integer $quantity
+     * @param int $amount
+     * @param int $quantity
      * @return $this
      */
     public function lineItem($name, $amount, $quantity) {
@@ -111,13 +111,15 @@ class InvoiceBuilder
 
     /**
      * Calculate the amount payable
-     * 
-     * @param double|null $amount
-     * @return $this|double
+     *
+     * @param float|null $amount
+     * @return $this|float
      */
-    public function amount($amount = null) {
+    public function amount($amount = null)
+    {
         if ($amount) {
             $this->amount = $amount;
+
             return $this;
         }
 

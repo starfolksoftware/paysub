@@ -7,7 +7,6 @@ use Carbon\CarbonInterface;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use LogicException;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Paysub;
