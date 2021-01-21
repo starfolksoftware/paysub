@@ -47,7 +47,7 @@ class InvoiceBuilder
 
             $this->lineItem(
                 $line_item_name,
-                ($subscription->plan->amount * $subscription->quantity),
+                $subscription->plan->amount,
                 $subscription->quantity
             );
 

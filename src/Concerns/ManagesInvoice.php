@@ -2,6 +2,7 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
+use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\InvoiceBuilder;
 use StarfolkSoftware\Paysub\Models\Invoice;
 use StarfolkSoftware\Paysub\Models\Subscription;
@@ -23,11 +24,15 @@ trait ManagesInvoice
      * Generate upcoming invoice
      *
      * @return Invoice
-     * @throws LogicException
+     * @throws InvoiceCreationError
      */
     public function generateUpcomingInvoice()
     {
         $subscription = $this->subscription();
+
+        if ($subscription->hasOpenInvoice()) {
+            throw InvoiceCreationError::hasOpenInvoice($this);
+        }
 
         $invoiceBuilder = $this->newInvoice(
             $subscription

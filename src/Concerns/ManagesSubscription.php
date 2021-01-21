@@ -25,8 +25,15 @@ trait ManagesSubscription
      */
     public function subscription()
     {
-        return $this->subscriptions()->active()->first();
+        return $this->subscriptions()->first();
     }
+
+    /**
+     * Get array of emails to send invoice to
+     *
+     * @return array
+     */
+    abstract public function invoiceMailables(): array;
 
     /**
      * Begin creating a new subscription.

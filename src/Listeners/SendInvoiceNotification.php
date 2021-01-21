@@ -17,12 +17,8 @@ class SendInvoiceNotification
     public function handle(InvoicePaid $event)
     {
         $invoice = $event->invoice;
-        $subscriber = $invoice->subscription->subscriber();
-        $emails = array_map('trim', explode(',', $subscriber->send_invoice_to));
-
-        if ($subscriber->email()) {
-            array_push($emails, $subscriber->email());
-        }
+        $subscriber = $invoice->subscription->subscriber;
+        $emails = $subscriber->invoiceMailables();
 
         foreach ($emails as $recipient) {
             Mail::to($recipient)->queue(new InvoiceMail($subscriber, $invoice));
