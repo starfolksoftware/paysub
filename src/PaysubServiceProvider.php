@@ -19,21 +19,9 @@ class PaysubServiceProvider extends ServiceProvider
                 __DIR__ . '/../resources/views' => base_path('resources/views/vendor/paysub'),
             ], 'views');
 
-            $mFileNames = [
-                'create_subscriber_columns.php',
-                'create_plans_table.php',
-                'create_subscriptions_table.php',
-                'create_invoices_table.php',
-                'create_payments_table.php',
-            ];
-
-            collect($mFileNames)->each(function ($mFileName) {
-                if (! $this->migrationFileExists($mFileName)) {
-                    $this->publishes([
-                        __DIR__ . "/../database/migrations/{$mFileName}.stub" => database_path('migrations/' . date('Y_m_d_His', time()) . '_' . $mFileName),
-                    ], 'migrations');
-                }
-            });
+            // $this->publishes([
+            //     __DIR__ . "/../resources/stubs/create_paysub_tables.php.stub" => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_paysub_tables.php'),
+            // ], 'migrations');
 
             // $this->commands([
             //     SubscriptionCommand::class,
@@ -52,17 +40,5 @@ class PaysubServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/paysub.php', 'paysub');
         $this->app->register(EventServiceProvider::class);
-    }
-
-    public static function migrationFileExists(string $migrationFileName): bool
-    {
-        $len = strlen($migrationFileName);
-        foreach (glob(database_path("migrations/*.php")) as $filename) {
-            if ((substr($filename, -$len) === $migrationFileName)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
