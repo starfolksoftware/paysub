@@ -5,7 +5,8 @@ namespace StarfolkSoftware\Paysub\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Card extends Model {
+class Card extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -20,7 +21,7 @@ class Card extends Model {
      */
     protected $casts = [
         'exp_month' => 'integer',
-        'exp_year' => 'integer'
+        'exp_year' => 'integer',
     ];
 
     /**
@@ -41,17 +42,18 @@ class Card extends Model {
     public function getTable()
     {
         return config(
-            'paysub.card_table_name', 
+            'paysub.card_table_name',
             parent::getTable()
         );
     }
 
     /**
      * Get authorizations
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function authorizations() {
+    public function authorizations()
+    {
         return $this->hasMany(
             Authorization::class,
             'card_id'
@@ -60,10 +62,11 @@ class Card extends Model {
 
     /**
      * Check if card has expired
-     * 
+     *
      * @return bool
      */
-    public function expired() {
+    public function expired()
+    {
         $date = Carbon::create($this->exp_year, $this->exp_month);
 
         return now()->isAfter($date);

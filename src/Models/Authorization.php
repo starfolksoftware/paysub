@@ -74,10 +74,11 @@ class Authorization extends Model
 
     /**
      * Get Card
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function card() {
+    public function card()
+    {
         return $this->belongsTo(
             Card::class,
             'card_id'

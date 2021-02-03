@@ -25,16 +25,17 @@ trait ManagesAuthorization
      * @param string $signature
      * @return int
      */
-    public function setDefaultAuth(Authorization $auth) {
+    public function setDefaultAuth(Authorization $auth)
+    {
         $oldDefault = $this->authorizations()->where('default', true)->first();
 
         $result = $auth->update([
-            'default' => true
+            'default' => true,
         ]);
 
         if ($result && $oldDefault) {
             $oldDefault->update([
-                'default' => false
+                'default' => false,
             ]);
         }
 
@@ -46,7 +47,8 @@ trait ManagesAuthorization
      *
      * @return Authorization|null
      */
-    public function defaultAuth() {
+    public function defaultAuth()
+    {
         $default = $this->authorizations()->where('default', true)->first();
 
         if (! $default && ($this->authorizations()->count() > 0)) {

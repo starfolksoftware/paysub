@@ -5,7 +5,8 @@ namespace StarfolkSoftware\Paysub\Concerns;
 use StarfolkSoftware\Paysub\Models\Authorization;
 use StarfolkSoftware\Paysub\Models\Card;
 
-trait ManagesCard {
+trait ManagesCard
+{
     /**
      * Get the cards
      *
