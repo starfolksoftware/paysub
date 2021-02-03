@@ -17,7 +17,7 @@ class CreateAuthorizationTablesUpdateColumns extends Migration
             $table->dropColumn('paystack_auth');
         });
 
-        Schema::create(config('paysub.payment_table_name'), function (Blueprint $table) {
+        Schema::table(config('paysub.payment_table_name'), function (Blueprint $table) {
             $table->dropColumn('auth_code');
             $table->unsignedBigInteger('authorization_id');
         });
@@ -35,7 +35,7 @@ class CreateAuthorizationTablesUpdateColumns extends Migration
             function (Blueprint $table) {
             $table->unsignedBigInteger('subscriber_id');
             $table->unsignedBigInteger('authorization_id');
-            $table->boolean('default');
+            $table->boolean('default')->default(false);
 
             $table->unique(['subscriber_id', 'authorization_id']);
         });
