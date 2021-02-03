@@ -56,6 +56,7 @@ return [
     'authorization_table_name' => env('PAYSUB_AUTHORIZATION_TABLE', 'paysub_authorizations'),
     'invoice_table_name' => env('PAYSUB_INVOICE_TABLE', 'paysub_invoices'),
     'payment_table_name' => env('PAYSUB_PAYMENT_TABLE', 'paysub_payments'),
+    'auth_table_name' => env('PAYSUB_AUTH_TABLE', 'paysub_authorizations'),
 
     /*
     |--------------------------------------------------------------------------

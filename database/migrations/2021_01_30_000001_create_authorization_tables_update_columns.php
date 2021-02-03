@@ -21,6 +21,24 @@ class CreateAuthorizationTablesUpdateColumns extends Migration
             $table->dropColumn('auth_code');
             $table->unsignedBigInteger('authorization_id')->change();
         });
+
+        schema::create(config('paysub.auth_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('email');
+            $table->string('signature');
+            $table->json('auth');
+            $table->timestamps();
+        });
+
+        schema::create(config('paysub.auth_table_name').'_'.config('paysub.subscriber_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('subscriber_id');
+            $table->unsignedBigInteger('authorization_id');
+
+            $table->unique(['subscriber_id', 'authorization_id']);
+        });
     }
 
     /**
@@ -38,5 +56,8 @@ class CreateAuthorizationTablesUpdateColumns extends Migration
             $table->string('auth_code');
             $table->dropColumn('authorization_id');
         });
+
+        Schema::dropIfExists(config('paysub.auth_table_name'));
+        Schema::dropIfExists(config('paysub.auth_table_name').'_'.config('paysub.subscriber_table_name'));
     }
 }
