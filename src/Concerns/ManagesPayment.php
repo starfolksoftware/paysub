@@ -30,22 +30,12 @@ trait ManagesPayment
      */
     public function pay(Invoice $invoice)
     {
-        if (! $invoice) {
-            throw PaymentError::invoiceIsNull();
-        }
-
-        if (! $this->paystack_auth['authorization_code']) {
-            throw PaymentError::paystackAuthCodeIsNull();
-        }
-
-        if (! $this->paystackEmail()) {
-            throw PaymentError::paystackEmailNotDefined();
-        }
+        $auth = $this->defaultAuth();
 
         $response = $this->chargeUsingPaystack(
             $invoice->amount,
-            $this->paystackEmail(),
-            $this->paystack_auth['authorization_code']
+            $auth->email,
+            $auth->code
         );
 
         if ($response->status) {
@@ -54,7 +44,7 @@ trait ManagesPayment
             // save payment
             Payment::create([
                 'paystack_id' => $dataObject->id,
-                'auth_code' => $dataObject->authorization->authorization_code,
+                'authorization_id' => $auth->id,
                 'reference' => $dataObject->reference,
                 'invoice_id' => $invoice->id,
                 'amount' => $dataObject->amount,

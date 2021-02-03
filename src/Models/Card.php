@@ -2,10 +2,10 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use StarfolkSoftware\Paysub\Casts\Json;
 
-class Authorization extends Model {
+class Card extends Model {
     /**
      * The attributes that are not mass assignable.
      *
@@ -19,7 +19,8 @@ class Authorization extends Model {
      * @var array
      */
     protected $casts = [
-        'auth' => Json::class,
+        'exp_month' => 'integer',
+        'exp_year' => 'integer'
     ];
 
     /**
@@ -40,45 +41,31 @@ class Authorization extends Model {
     public function getTable()
     {
         return config(
-            'paysub.auth_table_name', 
+            'paysub.card_table_name', 
             parent::getTable()
         );
     }
 
     /**
-     * Get the subscriber
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function subscriber()
-    {
-        return $this->belongsTo(
-            config('paysub.subscriber_model'),
-            'subscriber_id'
-        );
-    }
-
-    /**
-     * Get payments
+     * Get authorizations
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payments() {
+    public function authorizations() {
         return $this->hasMany(
-            Payment::class,
-            'authorization_id'
+            Authorization::class,
+            'card_id'
         );
     }
 
     /**
-     * Get Card
+     * Check if card has expired
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return bool
      */
-    public function card() {
-        return $this->belongsTo(
-            Card::class,
-            'card_id'
-        );
+    public function expired() {
+        $date = Carbon::create($this->exp_year, $this->exp_month);
+
+        return now()->isAfter($date);
     }
 }

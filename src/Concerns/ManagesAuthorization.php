@@ -9,16 +9,14 @@ trait ManagesAuthorization
     /**
      * Get the subscribers
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
     public function authorizations()
     {
-        return $this->belongsToMany(
-            config('paysub.auth_table_name'), 
-            config('paysub.auth_table_name').'_'.config('paysub.subscriber_table_name'),
-            'authorization_id',
+        return $this->hasMany(
+            Authorization::class,
             'subscriber_id'
-        )->withPivot('default');
+        );
     }
 
     /**
@@ -28,16 +26,16 @@ trait ManagesAuthorization
      * @return integer
      */
     public function setDefaultAuth(Authorization $auth) {
-        $oldDefault = $this->authorizations()->wherePivot('default', true)->first();
+        $oldDefault = $this->authorizations()->where('default', true)->first();
 
-        $result = $this->authorizations()->updateExistingPivot($auth->id, [
-            'default' => 1
-        ], false);
+        $result = $auth->update([
+            'default' => true
+        ]);
 
         if ($result && $oldDefault) {
-            $this->authorizations()->updateExistingPivot($oldDefault->id, [
-                'default' => 1
-            ], false);
+            $oldDefault->update([
+                'default' => false
+            ]);
         }
 
         return $result;
@@ -49,7 +47,7 @@ trait ManagesAuthorization
      * @return Authorization|null
      */
     public function defaultAuth() {
-        $default = $this->authorizations()->wherePivot('default', true)->first();
+        $default = $this->authorizations()->where('default', true)->first();
 
         if (! $default && ($this->authorizations()->count() > 0)) {
             $this->setDefaultAuth($this->authorizations()->first());
