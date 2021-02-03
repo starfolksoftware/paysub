@@ -21,9 +21,9 @@ trait ManagesAuthorization
 
     /**
      * Set authorization as default
-     * 
+     *
      * @param string $signature
-     * @return integer
+     * @return int
      */
     public function setDefaultAuth(Authorization $auth) {
         $oldDefault = $this->authorizations()->where('default', true)->first();
@@ -43,7 +43,7 @@ trait ManagesAuthorization
 
     /**
      * Get default Authorization
-     * 
+     *
      * @return Authorization|null
      */
     public function defaultAuth() {
