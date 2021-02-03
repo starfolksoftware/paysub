@@ -2,6 +2,7 @@
 
 namespace StarfolkSoftware\Paysub\Concerns;
 
+use Illuminate\Database\Eloquent\Collection;
 use StarfolkSoftware\Paysub\Models\Authorization;
 use StarfolkSoftware\Paysub\Models\Card;
 
@@ -10,17 +11,17 @@ trait ManagesCard
     /**
      * Get the cards
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return Illuminate\Database\Eloquent\Collection
      */
     public function cards()
     {
-        return $this->hasManyThrough(
-            Card::class,
-            Authorization::class,
-            'subscriber_id',
-            'authorization_id',
-            'id',
-            'id'
-        );
+        $authorizations = $this->authorizations;
+
+        $cards = $authorizations->map(function($authorization) {
+            return $authorization->card;
+        });
+
+        // return Collection::unwrap($cards);
+        return $cards;
     }
 }
