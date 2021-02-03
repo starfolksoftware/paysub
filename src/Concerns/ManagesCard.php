@@ -11,7 +11,7 @@ trait ManagesCard
     /**
      * Get the cards
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return array
      */
     public function cards()
     {
@@ -21,7 +21,6 @@ trait ManagesCard
             return $authorization->card;
         });
 
-        // return Collection::unwrap($cards);
-        return $cards;
+        return Collection::unwrap($cards);
     }
 }
