@@ -5,7 +5,8 @@ namespace StarfolkSoftware\Paysub\Models;
 use Illuminate\Database\Eloquent\Model;
 use StarfolkSoftware\Paysub\Casts\Json;
 
-class Authorization extends Model {
+class Authorization extends Model
+{
     /**
      * The attributes that are not mass assignable.
      *
@@ -40,7 +41,7 @@ class Authorization extends Model {
     public function getTable()
     {
         return config(
-            'paysub.auth_table_name', 
+            'paysub.auth_table_name',
             parent::getTable()
         );
     }
@@ -53,7 +54,7 @@ class Authorization extends Model {
     public function subscribers()
     {
         return $this->belongsToMany(
-            config('paysub.subscriber_model'), 
+            config('paysub.subscriber_model'),
             config('paysub.auth_table_name').'_'.config('paysub.subscriber_table_name'),
             'subscriber_id',
             'authorization_id'
@@ -62,10 +63,11 @@ class Authorization extends Model {
 
     /**
      * Get payments
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function payments() {
+    public function payments()
+    {
         return $this->hasMany(
             Payment::class,
             'authorization_id'
