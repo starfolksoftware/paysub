@@ -3,8 +3,6 @@
 namespace StarfolkSoftware\Paysub\Concerns;
 
 use Illuminate\Database\Eloquent\Collection;
-use StarfolkSoftware\Paysub\Models\Authorization;
-use StarfolkSoftware\Paysub\Models\Card;
 
 trait ManagesCard
 {
@@ -17,7 +15,7 @@ trait ManagesCard
     {
         $authorizations = $this->authorizations;
 
-        $cards = $authorizations->map(function($authorization) {
+        $cards = $authorizations->map(function ($authorization) {
             return $authorization->card;
         });
 
