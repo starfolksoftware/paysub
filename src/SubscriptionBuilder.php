@@ -6,7 +6,8 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use StarfolkSoftware\Paysub\Events\SubscriptionCreated;
 use StarfolkSoftware\Paysub\Models\{
-    Plan
+    Plan,
+    Subscription
 };
 
 class SubscriptionBuilder
@@ -49,7 +50,7 @@ class SubscriptionBuilder
     public function __construct($owner, Plan $plan, $interval = null)
     {
         $this->owner = $owner;
-        $this->subscriber_id = $this->owner->id;
+        $this->subscriber_id = $this->owner->id; 
 
         $this->plan($plan, 1, $interval);
     }
@@ -70,6 +71,28 @@ class SubscriptionBuilder
         if ($interval) {
             $this->interval = $interval;
         }
+
+        return $this;
+    }
+
+    /**
+     * Set the interval to monthly
+     * 
+     * @return $this
+     */
+    public function monthly() {
+        $this->interval = Subscription::INTERVAL_MONTHLY;
+
+        return $this;
+    }
+
+    /**
+     * Set the interval to yearly
+     * 
+     * @return $this
+     */
+    public function yearly() {
+        $this->interval = Subscription::INTERVAL_YEARLY;
 
         return $this;
     }
