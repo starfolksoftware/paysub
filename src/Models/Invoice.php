@@ -257,14 +257,39 @@ class Invoice extends Model
     }
 
     /**
-     * Void the Stripe invoice.
+     * mark invoice as void.
      *
-     * @param  array  $options
      * @return $this
      */
-    public function void(array $options = [])
+    public function void()
     {
         $this->status = self::STATUS_VOID;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * mark invoice as paid.
+     *
+     * @return $this
+     */
+    public function markAsPaid()
+    {
+        $this->status = self::STATUS_PAID;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * mark invoice as paid.
+     *
+     * @return $this
+     */
+    public function markAsUnpaid()
+    {
+        $this->status = self::STATUS_UNPAID;
         $this->save();
 
         return $this;

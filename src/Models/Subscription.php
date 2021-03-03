@@ -479,21 +479,15 @@ class Subscription extends Model
      * Swap the subscription to new Stripe plans.
      *
      * @param  Play  $plan
-     * @param  array  $options
+     * @param  string  $interval
      * @return $this
      *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
      */
-    public function swap(Plan $plan)
+    public function swap(Plan $plan, string $interval = self::INTERVAL_MONTHLY)
     {
-        if (! $plan) {
-            throw new InvalidArgumentException('Please provide a plan when swapping.');
-        }
-
         $this->fill([
-            'plan_id' => $this->plan->id,
-            'status' => self::STATUS_ACTIVE,
-            'ends_at' => null,
+            'plan_id' => $plan->id,
+            'interval' => $interval,
         ])->save();
 
         return $this;
