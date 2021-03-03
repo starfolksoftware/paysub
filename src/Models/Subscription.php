@@ -479,12 +479,16 @@ class Subscription extends Model
      * Swap the subscription to new Stripe plans.
      *
      * @param  Play  $plan
-     * @param  string  $interval
+     * @param  string|null  $interval
      * @return $this
      *
      */
-    public function swap(Plan $plan, string $interval = self::INTERVAL_MONTHLY)
+    public function swap(Plan $plan, string $interval = null)
     {
+        if (! $interval) {
+            $interval = self::INTERVAL_MONTHLY;
+        }
+
         $this->fill([
             'plan_id' => $plan->id,
             'interval' => $interval,
