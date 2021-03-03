@@ -488,6 +488,7 @@ class Subscription extends Model
         $this->fill([
             'plan_id' => $plan->id,
             'interval' => $interval,
+            'created_at' => now()
         ])->save();
 
         return $this;
