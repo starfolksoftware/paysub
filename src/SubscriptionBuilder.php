@@ -5,10 +5,8 @@ namespace StarfolkSoftware\Paysub;
 use Carbon\Carbon;
 use DateTimeInterface;
 use StarfolkSoftware\Paysub\Events\SubscriptionCreated;
-use StarfolkSoftware\Paysub\Models\{
-    Plan,
-    Subscription
-};
+use StarfolkSoftware\Paysub\Models\Plan;
+use StarfolkSoftware\Paysub\Models\Subscription;
 
 class SubscriptionBuilder
 {
@@ -50,7 +48,7 @@ class SubscriptionBuilder
     public function __construct($owner, Plan $plan, $interval = null)
     {
         $this->owner = $owner;
-        $this->subscriber_id = $this->owner->id; 
+        $this->subscriber_id = $this->owner->id;
 
         $this->plan($plan, 1, $interval);
     }
@@ -77,10 +75,11 @@ class SubscriptionBuilder
 
     /**
      * Set the interval to monthly
-     * 
+     *
      * @return $this
      */
-    public function monthly() {
+    public function monthly()
+    {
         $this->interval = Subscription::INTERVAL_MONTHLY;
 
         return $this;
@@ -88,10 +87,11 @@ class SubscriptionBuilder
 
     /**
      * Set the interval to yearly
-     * 
+     *
      * @return $this
      */
-    public function yearly() {
+    public function yearly()
+    {
         $this->interval = Subscription::INTERVAL_YEARLY;
 
         return $this;
