@@ -509,7 +509,7 @@ class Subscription extends Model
         $date = Carbon::createFromDate(null, $anchor['month'], $anchor['day']);
 
         // first invoice is about to be generated
-        if ($this->invoices()->count == 0) {
+        if ($this->invoices()->count() == 0) {
             return $this->owner->trial_ends_at;
         }
 
