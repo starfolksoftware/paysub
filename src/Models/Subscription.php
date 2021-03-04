@@ -359,10 +359,6 @@ class Subscription extends Model
             throw InvoiceCreationError::multipleOpenInvoice($this);
         }
 
-        if (! $builder->latest()->first() && $this->active()) {
-            return $this->subscriber()->generateUpcomingInvoice();
-        }
-
         return  $builder->latest()->first();
     }
 
