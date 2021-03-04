@@ -128,7 +128,7 @@ class InvoiceBuilder
             return $carry + ((double) $line_item['amount'] * (int) $line_item['quantity']);
         }, 0);
 
-        $amount = $amount * ($this->subscription->interval == Subscription::INTERVAL_MONTHLY ? 1 : 12 );
+        $amount = $amount * ($this->subscription->interval == Subscription::INTERVAL_MONTHLY ? 1 : 12);
 
         return $amount;
     }
