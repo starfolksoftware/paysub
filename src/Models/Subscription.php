@@ -360,7 +360,7 @@ class Subscription extends Model
         }
 
         if (! $builder->latest()->first() && $this->active()) {
-            return $this->subscriber()->generateUpcomingInvoice();
+            return $this->owner->generateUpcomingInvoice();
         }
 
         return  $builder->latest()->first();
