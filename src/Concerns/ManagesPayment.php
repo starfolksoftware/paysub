@@ -10,9 +10,11 @@ use StarfolkSoftware\Paysub\Models\Payment;
 
 trait ManagesPayment
 {
-    public function payUpcomingInvoice()
+    public function payInvoice($invoice = null)
     {
-        $invoice = $this->subscription()->openInvoice();
+        if (! $invoice) {
+            $invoice = $this->subscription()->openInvoice();
+        }
 
         if ($paymentResult = $this->pay($invoice)) {
             event(new InvoicePaid($invoice));
