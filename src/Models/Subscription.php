@@ -508,6 +508,11 @@ class Subscription extends Model
         $anchor = $this->billing_cycle_anchor;
         $date = Carbon::createFromDate(null, $anchor['month'], $anchor['day']);
 
+        // first invoice is about to be generated
+        if ($this->invoices()->count == 0) {
+            return $this->owner->trial_ends_at;
+        }
+
         return $anchor['month'] ? $date->addYear() : $date->addMonth();
     }
 
