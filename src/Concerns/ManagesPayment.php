@@ -10,6 +10,14 @@ use StarfolkSoftware\Paysub\Models\Payment;
 
 trait ManagesPayment
 {
+    /**
+     * Make a payment on invoice.
+     * Fires InvoicePaid event
+     *
+     * @param Invoice $invoice
+     * @return bool
+     * @throws PaymentError
+     */
     public function payInvoice($invoice = null)
     {
         if (! $invoice) {
