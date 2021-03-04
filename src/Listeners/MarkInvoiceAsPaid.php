@@ -9,7 +9,6 @@ class MarkInvoiceAsPaid
 {
     public function handle(InvoicePaid $event)
     {
-        $event->invoice->status = Invoice::STATUS_PAID;
-        $event->invoice->save();
+        $event->invoice->markAsPaid();
     }
 }

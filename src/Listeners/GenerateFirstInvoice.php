@@ -10,6 +10,6 @@ class GenerateFirstInvoice
     {
         $subscription = $event->subscription;
 
-        $subscription->owner->generateUpcomingInvoice();
+        $subscription->subscriber()->generateUpcomingInvoice();
     }
 }
