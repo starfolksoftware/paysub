@@ -21,9 +21,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         InvoicePaid::class => [
             MarkInvoiceAsPaid::class,
-            ResumeSubscription::class,
             GenerateUpcomingInvoice::class,
-            SendInvoiceNotification::class,
+            ResumeSubscription::class,
+            // SendInvoiceNotification::class,
         ],
         SubscriptionCancelled::class => [
             MarkInvoiceAsVoid::class,
