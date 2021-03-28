@@ -2,11 +2,12 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    use \Znck\Eloquent\Traits\BelongsToThrough;
+    use \Znck\Eloquent\Traits\BelongsToThrough, HasFactory;
 
     /**
      * The attributes that are not mass assignable.

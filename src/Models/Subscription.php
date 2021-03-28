@@ -5,14 +5,18 @@ namespace StarfolkSoftware\Paysub\Models;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
+use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
 use StarfolkSoftware\Paysub\Paysub;
 
 class Subscription extends Model
 {
+    use HasFactory;
+    
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
     const STATUS_PAST_DUE = 'past_due';
@@ -408,10 +412,14 @@ class Subscription extends Model
      * @param  int  $quantity
      * @param  string|null  $plan
      * @return $this
-     *
+     * @throws SubscriptionUpdateFailure
      */
     public function updateQuantity($quantity)
     {
+        if ($this->pastDue()) {
+            throw SubscriptionUpdateFailure::default();
+        }
+        
         $this->quantity = $quantity;
 
         $this->save();
@@ -481,10 +489,14 @@ class Subscription extends Model
      * @param  Play  $plan
      * @param  string|null  $interval
      * @return $this
-     *
+     * @throws SubscriptionUpdateFailure
      */
     public function swap(Plan $plan, string $interval = null)
     {
+        if ($this->pastDue()) {
+            throw SubscriptionUpdateFailure::default();
+        }
+        
         if (! $interval) {
             $interval = self::INTERVAL_MONTHLY;
         }
