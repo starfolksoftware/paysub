@@ -4,7 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/starfolksoftware/paystack-subscription/run-tests?label=tests)](https://github.com/starfolksoftware/paystack-subscription/actions?query=workflow%3ATests+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/starfolksoftware/paystack-subscription.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paystack-subscription)
 
-Paysub offers basic subscription management with paystack as a payment provider.
+Paysub offers basic subscription management for laravel applications with paystack as a payment provider.
 
 ## Installation
 
@@ -215,6 +215,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 - [Faruk Nasir](https://github.com/frknasir)
 - [Spatie](https://github.com/spatie)
+- [Laravel Cashier Contributors](https://github.com/laravel/cashier-stripe)
 - [All Contributors](../../contributors)
 
 ## License
