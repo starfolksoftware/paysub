@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    use \Znck\Eloquent\Traits\BelongsToThrough, HasFactory;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+    use HasFactory;
 
     /**
      * The attributes that are not mass assignable.

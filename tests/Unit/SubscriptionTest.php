@@ -8,8 +8,10 @@ use StarfolkSoftware\Paysub\Models\Plan;
 use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\Tests\TestCase;
 
-class SubscriptionTest extends TestCase {
-    public function test_we_can_check_if_a_subscription_is_active() {
+class SubscriptionTest extends TestCase
+{
+    public function test_we_can_check_if_a_subscription_is_active()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_ACTIVE,
         ]);
@@ -17,7 +19,8 @@ class SubscriptionTest extends TestCase {
         $this->assertTrue($subscription->active());
     }
 
-    public function test_we_can_check_if_a_subscription_is_inactive() {
+    public function test_we_can_check_if_a_subscription_is_inactive()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_INACTIVE,
         ]);
@@ -27,7 +30,8 @@ class SubscriptionTest extends TestCase {
         $this->assertFalse($subscription->status === 'unpaid');
     }
 
-    public function test_we_can_check_if_a_subscription_is_past_due() {
+    public function test_we_can_check_if_a_subscription_is_past_due()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_PAST_DUE,
         ]);
@@ -35,7 +39,8 @@ class SubscriptionTest extends TestCase {
         $this->assertTrue($subscription->pastDue());
     }
 
-    public function test_we_can_check_if_a_subscription_is_unpaid() {
+    public function test_we_can_check_if_a_subscription_is_unpaid()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_UNPAID,
         ]);
@@ -45,13 +50,15 @@ class SubscriptionTest extends TestCase {
         $this->assertTrue($subscription->status === 'unpaid');
     }
 
-    public function test_extending_a_trial_requires_a_date_in_the_future() {
+    public function test_extending_a_trial_requires_a_date_in_the_future()
+    {
         $this->expectException(InvalidArgumentException::class);
 
         (new Subscription)->extendTrial(now()->subDay());
     }
 
-    public function test_past_due_subscriptions_cannot_be_swapped() {
+    public function test_past_due_subscriptions_cannot_be_swapped()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_PAST_DUE,
         ]);
@@ -61,7 +68,8 @@ class SubscriptionTest extends TestCase {
         $subscription->swap(new Plan);
     }
 
-    public function test_past_due_subscriptions_cannot_update_their_quantity() {
+    public function test_past_due_subscriptions_cannot_update_their_quantity()
+    {
         $subscription = new Subscription([
             'status' => Subscription::STATUS_PAST_DUE,
         ]);

@@ -7,7 +7,8 @@ use StarfolkSoftware\Paysub\Http\Middleware\VerifyRedirectUrl;
 use StarfolkSoftware\Paysub\Tests\TestCase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class VerifyRedirectUrlTest extends TestCase {
+class VerifyRedirectUrlTest extends TestCase
+{
     public function test_it_passes_when_hosts_match()
     {
         $request = Request::create('http://foo.com/stripe/payment', 'GET', ['redirect' => 'http://foo.com/bar']);

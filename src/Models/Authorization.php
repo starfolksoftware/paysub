@@ -2,9 +2,9 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use StarfolkSoftware\Paysub\Casts\Json;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Authorization extends Model
 {

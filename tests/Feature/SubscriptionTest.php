@@ -10,7 +10,8 @@ use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\Paysub;
 use StarfolkSoftware\Paysub\Tests\Fixtures\User;
 
-class SubscriptionTest extends FeatureTestCase {
+class SubscriptionTest extends FeatureTestCase
+{
     /**
      * @var Plan
      */
@@ -26,25 +27,26 @@ class SubscriptionTest extends FeatureTestCase {
      */
     protected static $professionalPlan;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         parent::setUp();
 
         self::$basicPlan = Plan::create([
             'name' => 'Basic',
             'description' => '',
-            'amount' => 250000
+            'amount' => 250000,
         ]);
 
         self::$standardPlan = Plan::create([
             'name' => 'Standard',
             'description' => '',
-            'amount' => 850000
+            'amount' => 850000,
         ]);
 
         self::$professionalPlan = Plan::create([
             'name' => 'Professional',
             'description' => '',
-            'amount' => 1050000
+            'amount' => 1050000,
         ]);
     }
 
@@ -53,7 +55,8 @@ class SubscriptionTest extends FeatureTestCase {
 
     // }
 
-    public function test_subscriptions_can_be_created() {
+    public function test_subscriptions_can_be_created()
+    {
         $subscriber = $this->createCustomer();
 
         $subscriber->newSubscription(self::$basicPlan)
@@ -118,7 +121,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertInstanceOf(Carbon::class, $invoice->date());
     }
 
-    public function test_swapping_subscription_and_preserving_quantity() {
+    public function test_swapping_subscription_and_preserving_quantity()
+    {
         $subscriber = $this->createCustomer();
         $subscription = $subscriber->newSubscription(self::$basicPlan)
             ->quantity(5)
@@ -130,7 +134,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertSame(5, $subscription->quantity);
     }
 
-    public function test_swapping_subscription_and_adopting_new_quantity() {
+    public function test_swapping_subscription_and_adopting_new_quantity()
+    {
         $subscriber = $this->createCustomer();
         $subscription = $subscriber->newSubscription(self::$basicPlan)
             ->quantity(5)
@@ -211,7 +216,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertEquals(Carbon::today()->addDays(7)->day, $subscription->trial_ends_at->day);
     }
 
-    public function test_user_without_subscriptions_can_return_its_generic_trial_end_date() {
+    public function test_user_without_subscriptions_can_return_its_generic_trial_end_date()
+    {
         $user = new User;
         $user->trial_ends_at = $tomorrow = Carbon::tomorrow();
 
@@ -219,7 +225,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertSame($tomorrow, $user->trialEndsAt());
     }
 
-    public function test_creating_subscription_with_explicit_trial() {
+    public function test_creating_subscription_with_explicit_trial()
+    {
         $subscriber = $this->createCustomer();
 
         // Create Subscription
@@ -253,7 +260,8 @@ class SubscriptionTest extends FeatureTestCase {
     }
 
     /** @group FOO */
-    public function test_trial_on_swap_is_skipped_when_explicitly_asked_to() {
+    public function test_trial_on_swap_is_skipped_when_explicitly_asked_to()
+    {
         $subscriber = $this->createCustomer();
 
         $subscription = $subscriber->newSubscription(self::$basicPlan)
@@ -268,7 +276,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertFalse($subscription->onTrial());
     }
 
-    public function test_trials_can_be_extended() {
+    public function test_trials_can_be_extended()
+    {
         $subscriber = $this->createCustomer();
 
         $subscription = $subscriber
@@ -283,7 +292,8 @@ class SubscriptionTest extends FeatureTestCase {
         $this->assertTrue($trialEndsAt->equalTo($subscription->trial_ends_at));
     }
 
-    public function test_trials_extension_date_is_not_in_the_past() {
+    public function test_trials_extension_date_is_not_in_the_past()
+    {
         $subscriber = $this->createCustomer();
 
         $subscription = $subscriber
