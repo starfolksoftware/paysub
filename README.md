@@ -59,6 +59,10 @@ composer test
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
+## Road Map
+
+- [ ] Invoice period(invoice starts at, invoice ends at)
+
 ## Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.

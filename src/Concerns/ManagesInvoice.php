@@ -64,7 +64,7 @@ trait ManagesInvoice
      */
     public function invoices($includeVoid = false)
     {
-        $builder = $this->subscription->invoices();
+        $builder = $this->subscription()->invoices();
 
         if ($includeVoid) {
             $builder = $builder->paid()->unpaid();

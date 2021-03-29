@@ -4,11 +4,11 @@ namespace StarfolkSoftware\Paysub\Tests\Unit;
 
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
-use StarfolkSoftware\Paysub\Tests\Fixtures\Subscriber;
+use StarfolkSoftware\Paysub\Tests\Fixtures\User;
 
 class SubscriberTest extends TestCase {
     public function test_customer_can_be_put_on_a_generic_trial() {
-        $subscriber = new Subscriber;
+        $subscriber = new User;
 
         $this->assertFalse($subscriber->onGenericTrial());
 
@@ -22,7 +22,7 @@ class SubscriberTest extends TestCase {
     }
 
     public function test_customer_returns_invoice_mailables() {
-        $subscriber = new Subscriber;
+        $subscriber = new User;
         $mailables = $subscriber->invoiceMailables();
 
         $this->assertTrue(in_array('user@example.com', $mailables));

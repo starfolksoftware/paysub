@@ -50,6 +50,7 @@ class Subscription extends Model
         'ends_at',
         'created_at',
         'updated_at',
+        'trial_ends_at',
     ];
 
     /**
@@ -211,7 +212,8 @@ class Subscription extends Model
                 ->orWhere(function ($query) {
                     $query->onGracePeriod();
                 });
-        })->where('status', '!=', self::STATUS_UNPAID);
+        })->where('status', '!=', self::STATUS_UNPAID)
+        ->Where('status', '!=', self::STATUS_INACTIVE);
 
         if (Paysub::$deactivatePastDue) {
             $query->where('status', '!=', self::STATUS_PAST_DUE);
@@ -445,13 +447,23 @@ class Subscription extends Model
     }
 
     /**
-     * Force the trial to end immediately.
-     *
-     * This method must be combined with swap, resume, etc.
+     * Skip trial.
      *
      * @return $this
      */
     public function skipTrial()
+    {
+        $this->trial_ends_at = null;
+
+        return $this;
+    }
+
+    /**
+     * Force the trial to end immediately.
+     *
+     * @return $this
+     */
+    public function endTrial()
     {
         $this->trial_ends_at = null;
 
@@ -470,12 +482,6 @@ class Subscription extends Model
             throw new InvalidArgumentException("Extending a subscription's trial requires a date in the future.");
         }
 
-        $subscription = $this->asStripeSubscription();
-
-        $subscription->trial_end = $date->getTimestamp();
-
-        $subscription->save();
-
         $this->trial_ends_at = $date;
 
         $this->save();
@@ -484,14 +490,15 @@ class Subscription extends Model
     }
 
     /**
-     * Swap the subscription to new Stripe plans.
+     * Swap the subscription to new plans.
      *
      * @param  Play  $plan
      * @param  string|null  $interval
+     * @param int|null $quantity
      * @return $this
      * @throws SubscriptionUpdateFailure
      */
-    public function swap(Plan $plan, string $interval = null)
+    public function swap(Plan $plan, string $interval = null, int $quantity = null)
     {
         if ($this->pastDue()) {
             throw SubscriptionUpdateFailure::default();
@@ -504,6 +511,7 @@ class Subscription extends Model
         $this->fill([
             'plan_id' => $plan->id,
             'interval' => $interval,
+            'quantity' => $quantity ?? $this->quantity,
             'created_at' => now(),
         ])->save();
 
@@ -522,7 +530,7 @@ class Subscription extends Model
 
         // first invoice is about to be generated
         if ($this->invoices()->count() == 0) {
-            return $this->owner->trial_ends_at;
+            return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
         return $anchor['month'] ? $date->addYear() : $date->addMonth();
