@@ -22,6 +22,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "doctrine/dbal": "^3.0",
         "dompdf/dompdf": "^0.8.0",
         "illuminate/contracts": "^6.0|^7.0|^8.0",
         "illuminate/database": "^6.0|^7.0|^8.0",
