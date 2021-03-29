@@ -6,16 +6,20 @@ use Illuminate\Foundation\Auth\User as Model;
 use Illuminate\Notifications\Notifiable;
 use StarfolkSoftware\Paysub\Traits\CanBeBilled;
 
-class User extends Model {
-    use CanBeBilled, Notifiable;
+class User extends Model
+{
+    use CanBeBilled;
+    use Notifiable;
 
-    public function paystackEmail(): string {
+    public function paystackEmail(): string
+    {
         return 'user@example.com';
     }
 
-    public function invoiceMailables(): array {
+    public function invoiceMailables(): array
+    {
         return [
-            'user@example.com'
+            'user@example.com',
         ];
     }
 }
