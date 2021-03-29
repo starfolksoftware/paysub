@@ -10,7 +10,7 @@ use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\Paysub;
 use StarfolkSoftware\Paysub\Tests\Fixtures\User;
 
-class SubscriptionsTest extends FeatureTestCase {
+class SubscriptionTest extends FeatureTestCase {
     /**
      * @var Plan
      */
