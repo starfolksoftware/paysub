@@ -118,7 +118,7 @@ class SubscriptionBuilder
      */
     public function trialDays($trialDays)
     {
-        $this->owner->trial_ends_at = Carbon::now()->addDays($trialDays);
+        $this->trialExpires = Carbon::now()->addDays($trialDays);
 
         return $this;
     }
@@ -131,7 +131,7 @@ class SubscriptionBuilder
      */
     public function trialUntil($trialUntil)
     {
-        $this->owner->trial_ends_at = $trialUntil;
+        $this->trialExpires = $trialUntil;
 
         return $this;
     }
@@ -143,7 +143,7 @@ class SubscriptionBuilder
      */
     public function skipTrial()
     {
-        $this->owner->trial_ends_at = now();
+        $this->skipTrial = true;
 
         return $this;
     }
@@ -188,6 +188,8 @@ class SubscriptionBuilder
             'plan_id' => $this->plan_id,
             'quantity' => $this->quantity,
             'billing_cycle_anchor' => $this->billing_cycle_anchor,
+            'trial_ends_at' => ! $this->skipTrial ? $this->trialExpires : null,
+            'ends_at' => null,
         ]);
 
         $this->owner->save();

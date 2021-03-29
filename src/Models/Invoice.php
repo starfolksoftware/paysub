@@ -4,6 +4,7 @@ namespace StarfolkSoftware\Paysub\Models;
 
 use Carbon\Carbon;
 use Dompdf\Dompdf;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use StarfolkSoftware\Paysub\Casts\Json;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Invoice extends Model
 {
+    use HasFactory;
+    
     const STATUS_UNPAID = 'unpaid';
     const STATUS_PAID = 'paid';
     const STATUS_VOID = 'void';

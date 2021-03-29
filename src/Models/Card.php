@@ -3,10 +3,13 @@
 namespace StarfolkSoftware\Paysub\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
+    use HasFactory;
+    
     /**
      * The attributes that are not mass assignable.
      *

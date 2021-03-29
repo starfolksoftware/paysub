@@ -2,11 +2,14 @@
 
 namespace StarfolkSoftware\Paysub\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use StarfolkSoftware\Paysub\Casts\Json;
 
 class Authorization extends Model
 {
+    use HasFactory;
+    
     /**
      * The attributes that are not mass assignable.
      *
