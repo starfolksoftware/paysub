@@ -1,4 +1,4 @@
-# Provides an inteface to paystack's subscription service
+# Do not user in production
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/starfolksoftware/paystack-subscription.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paystack-subscription)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/starfolksoftware/paystack-subscription/run-tests?label=tests)](https://github.com/starfolksoftware/paystack-subscription/actions?query=workflow%3ATests+branch%3Amaster)
@@ -199,8 +199,8 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Road Map
 
-- [ ] Invoice period(invoice starts at, invoice ends at)
 - [ ] Multiple plans support
+- [ ] Invoice period(invoice starts at, invoice ends at)
 - [ ] Coupons handling
 
 ## Contributing
