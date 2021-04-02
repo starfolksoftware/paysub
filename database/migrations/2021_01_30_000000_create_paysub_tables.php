@@ -14,13 +14,14 @@ class CreatePaysubTables extends Migration
     public function up()
     {
         Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
-            $table->json('paystack_auth')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
         });
 
         Schema::create(config('paysub.plan_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
+            $table->enum('interval_type', ['daily', 'weekly', 'monthly', 'yearly'])->default('monthly');
+            $table->integer('interval_count')->default();
             $table->string('description');
             $table->unsignedBigInteger('amount');
             $table->string('currency')->default('NGN');
@@ -31,7 +32,6 @@ class CreatePaysubTables extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
             $table->unsignedBigInteger('plan_id');
-            $table->enum('interval', ['monthly', 'yearly'])->default('monthly');
             $table->enum('status', ['active', 'inactive', 'past_due', 'unpaid'])->default('active');
             $table->integer('quantity')->default(1);
             $table->timestamp('billing_cycle_anchor')->nullable();
@@ -58,12 +58,52 @@ class CreatePaysubTables extends Migration
         Schema::create(config('paysub.payment_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('paystack_id');
-            $table->string('auth_code');
+            $table->unsignedBigInteger('authorization_id');
             $table->string('reference');
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('amount');
             $table->datetime('paid_at');
             $table->timestamps();
+        });
+
+        schema::create(config('paysub.card_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('signature')->unique();
+            $table->string('type');
+            $table->string('last4');
+            $table->integer('exp_month');
+            $table->year('exp_year');
+            $table->string('bin')->nullable();
+            $table->string('bank')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('country_code')->nullable();
+            $table->timestamps();
+        });
+
+        schema::create(config('paysub.auth_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('subscriber_id');
+            $table->unsignedBigInteger('card_id');
+            $table->string('email');
+            $table->json('auth');
+            $table->string('code');
+            $table->boolean('default')->default(false);
+            $table->timestamps();
+
+            $table->unique(['subscriber_id', 'card_id'], 'auth_subscriber_card_unique');
+        });
+
+        schema::create(config('paysub.subscription_items_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('subscription_id');
+            $table->unsignedBigInteger('plan_id');
+            $table->integer('quantity')->nullable();
+            $table->timestamps();
+
+            $table->unique(['subscription_id', 'plan_id'], 's_itms_pl_unq');
         });
     }
 
@@ -76,7 +116,6 @@ class CreatePaysubTables extends Migration
     {
         Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
             $table->dropColumns([
-                'paystack_auth',
                 'trial_ends_at'
             ]);
         });
@@ -84,5 +123,8 @@ class CreatePaysubTables extends Migration
         Schema::dropIfExists(config('paysub.subscription_table_name'));
         Schema::dropIfExists(config('paysub.payment_table_name'));
         Schema::dropIfExists(config('paysub.invoice_table_name'));
+        Schema::dropIfExists(config('paysub.card_table_name'));
+        Schema::dropIfExists(config('paysub.auth_table_name'));
+        Schema::dropIfExists(config('paysub.subscription_items_table_name'));
     }
 }

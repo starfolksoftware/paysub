@@ -6,6 +6,10 @@
 
 Paysub offers basic subscription management with paystack as a payment provider.
 
+## Developer Preview
+
+This project is in Developer Preview stage, All API's might change without warning and no guarantees are given about stability. Do not use it in production.
+
 ## Installation
 
 You can install the package via composer:
