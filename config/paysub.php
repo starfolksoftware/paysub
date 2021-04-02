@@ -75,16 +75,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Taxes
+    | Auto-generate invoices
     |--------------------------------------------------------------------------
     |
-    | Tax definitions for invoice. 
+    | If set to `true`, invoice will be automatically generated for the subscriber 
+    | according to their subscription details. 
     |
     */
 
-    'invoice_taxes' => [
-        // ['name' => 'VAT', 'percentage' => 7.5]
-    ],
+    'auto_invoice' => true,
 
     /*
     |--------------------------------------------------------------------------

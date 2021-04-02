@@ -35,7 +35,6 @@ class InvoiceBuilder
     public function subscription(Subscription $subscription, $autofill = true)
     {
         $this->subscription = $subscription;
-        $this->subscription_id = $subscription->id;
 
         if ($autofill) {
             $line_item_name = trans('paysub::invoice.invoice_bill_payment_name', [
@@ -84,7 +83,10 @@ class InvoiceBuilder
             $this->lineItem(
                 $line_item['name'],
                 $line_item['amount'],
-                $line_item['quantity']
+                $line_item['quantity'],
+                $line_item['start_date'],
+                $line_item['end_date'],
+                $line_item['tax_amounts']
             );
         }
 
@@ -99,12 +101,21 @@ class InvoiceBuilder
      * @param int $quantity
      * @return $this
      */
-    public function lineItem($name, $amount, $quantity)
-    {
+    public function lineItem(
+        string $name, 
+        int $amount, 
+        int $quantity, 
+        Carbon $start_date, 
+        Carbon $end_date, 
+        array $tax_amounts
+    ) {
         array_push($this->line_items, [
             'name' => $name,
             'amount' => $amount,
             'quantity' => $quantity,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'tax_amounts' => $tax_amounts,
         ]);
 
         return $this;
@@ -116,7 +127,7 @@ class InvoiceBuilder
      * @param float|null $amount
      * @return $this|float
      */
-    public function amount($amount = null)
+    protected function amount($amount = null)
     {
         if ($amount) {
             $this->amount = $amount;

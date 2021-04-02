@@ -124,6 +124,16 @@ class Subscription extends Model
     }
 
     /**
+     * Get the items of the subscription
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items()
+    {
+        return $this->hasMany(SubscriptionItem::class, 'subscription_id');
+    }
+
+    /**
      * Get the payments of the subscription
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
