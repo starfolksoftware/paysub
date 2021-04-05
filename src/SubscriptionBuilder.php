@@ -117,10 +117,11 @@ class SubscriptionBuilder
      * @param  int  $quantity
      * @param Plan|null $plan
      * @return $this
-     * 
+     *
      * @throws \InvalidArgumentException
      */
-    public function quantity($quantity, Plan $plan = null) {
+    public function quantity($quantity, Plan $plan = null)
+    {
         if (is_null($plan)) {
             if (count($this->items) > 1) {
                 throw new \InvalidArgumentException('Plan is required when creating multi-plan subscriptions.');
@@ -138,7 +139,8 @@ class SubscriptionBuilder
      * @param  int  $trialDays
      * @return $this
      */
-    public function trialDays($trialDays) {
+    public function trialDays($trialDays)
+    {
         $this->trialExpires = Carbon::now()->addDays($trialDays);
 
         return $this;
@@ -150,7 +152,8 @@ class SubscriptionBuilder
      * @param  \Carbon\Carbon|\Carbon\CarbonInterface  $trialUntil
      * @return $this
      */
-    public function trialUntil($trialUntil) {
+    public function trialUntil($trialUntil)
+    {
         $this->trialExpires = $trialUntil;
 
         return $this;
@@ -238,10 +241,11 @@ class SubscriptionBuilder
      * Create a new subscription.
      *
      * @return \StarfolkSoftware\Paysub\Models\Subscription
-     * 
+     *
      * @throws \Exception
      */
-    public function create() {
+    public function create()
+    {
         if (empty($this->items)) {
             throw new \Exception('At least one plan is required when starting subscriptions.');
         }

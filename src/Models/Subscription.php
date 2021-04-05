@@ -515,38 +515,43 @@ class Subscription extends Model
         switch ($this->interval) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    null, 
+                    null,
+                    null,
                     $this->billing_cycle_anchor->day
                 )->addDay();
+
                 break;
             
             case Plan::INTERVAL_WEEKLY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    null, 
+                    null,
+                    null,
                     $this->billing_cycle_anchor->day
                 )->addWeek();
+
                 break;
             
             case Plan::INTERVAL_MONTHLY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    $this->billing_cycle_anchor->month, 
+                    null,
+                    $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
                 )->addMonth();
+
                 break;
             
             case Plan::INTERVAL_YEARLY:
                 $date = Carbon::createFromDate(
-                    $this->billing_cycle_anchor->year, 
-                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->year,
+                    $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
                 )->addYear();
+
                 break;
             
             default:
                 $date = null;
+
                 break;
         }
 
@@ -563,38 +568,43 @@ class Subscription extends Model
         switch ($this->interval) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    null, 
+                    null,
+                    null,
                     $this->billing_cycle_anchor->day
                 )->subDay();
+
                 break;
             
             case Plan::INTERVAL_WEEKLY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    null, 
+                    null,
+                    null,
                     $this->billing_cycle_anchor->day
                 )->subWeek();
+
                 break;
             
             case Plan::INTERVAL_MONTHLY:
                 $date = Carbon::createFromDate(
-                    null, 
-                    $this->billing_cycle_anchor->month, 
+                    null,
+                    $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
                 )->subMonth();
+
                 break;
             
             case Plan::INTERVAL_YEARLY:
                 $date = Carbon::createFromDate(
-                    $this->billing_cycle_anchor->year, 
-                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->year,
+                    $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
                 )->subYear();
+
                 break;
             
             default:
                 $date = null;
+
                 break;
         }
 

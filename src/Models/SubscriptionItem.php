@@ -5,7 +5,8 @@ namespace StarfolkSoftware\Paysub\Models;
 use Illuminate\Database\Eloquent\Model;
 use StarfolkSoftware\Paysub\Concerns\Prorates;
 
-class SubscriptionItem extends Model {
+class SubscriptionItem extends Model
+{
     use Prorates;
     
     /**
@@ -24,7 +25,8 @@ class SubscriptionItem extends Model {
         'quantity' => 'integer',
     ];
 
-    public function getTable() {
+    public function getTable()
+    {
         return config('paysub.subscription_items_table_name', parent::getTable());
     }
 
@@ -33,7 +35,8 @@ class SubscriptionItem extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function subscription() {
+    public function subscription()
+    {
         return $this->belongsTo(Subscription::class, 'subscription_id');
     }
 
