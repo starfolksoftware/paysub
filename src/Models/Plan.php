@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Plan extends Model
 {
     use HasFactory;
+
+    const INTERVAL_DAILY = 'daily';
+    const INTERVAL_WEEKLY = 'weekly';
+    const INTERVAL_MONTHLY = 'monthly';
+    const INTERVAL_YEARLY = 'yearly';
     
     /**
      * The attributes that are not mass assignable.

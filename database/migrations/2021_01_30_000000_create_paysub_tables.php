@@ -21,10 +21,11 @@ class CreatePaysubTables extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->enum('interval_type', ['daily', 'weekly', 'monthly', 'yearly'])->default('monthly');
-            $table->integer('interval_count')->default();
+            $table->integer('interval_count')->default(1);
             $table->string('description');
             $table->unsignedBigInteger('amount');
             $table->string('currency')->default('NGN');
+            $table->json('tax_rates')->nullable();
             $table->timestamps();
         });
 
@@ -47,8 +48,7 @@ class CreatePaysubTables extends Migration
             $table->unsignedBigInteger('subscription_id');
             $table->string('description')->nullable();
             $table->json('line_items');
-            $table->json('tax')->nullable();
-            $table->unsignedBigInteger('amount');
+            $table->unsignedBigInteger('total');
             $table->timestamp('due_date');
             $table->enum('status', ['paid', 'unpaid', 'void'])->default('unpaid');
             $table->timestamp('paid_at')->nullable();

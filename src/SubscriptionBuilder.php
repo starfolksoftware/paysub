@@ -88,7 +88,6 @@ class SubscriptionBuilder
     {
         $this->owner = $owner;
         $this->name = $name;
-        // $this->subscriber_id = $this->owner->id;
 
         foreach ((array) $plans as $plan) {
             $this->plan($plan);

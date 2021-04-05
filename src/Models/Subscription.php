@@ -21,8 +21,6 @@ class Subscription extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_PAST_DUE = 'past_due';
     const STATUS_UNPAID = 'unpaid';
-    const INTERVAL_MONTHLY = 'monthly';
-    const INTERVAL_YEARLY = 'yearly';
 
     /**
      * The attributes that are not mass assignable.
@@ -58,32 +56,12 @@ class Subscription extends Model
      */
     protected $appends = [
         'next_due_date',
+        'last_due_date',
     ];
 
     public function getTable()
     {
         return config('paysub.subscription_table_name', parent::getTable());
-    }
-
-    public function getBillingCycleAnchorAttribute($value)
-    {
-        $date = Carbon::parse($value);
-
-        if ($this->interval === self::INTERVAL_YEARLY) {
-            return [
-                'interval' => self::INTERVAL_YEARLY,
-                'day' => $date->day,
-                'month' => $date->month,
-            ];
-        } elseif ($this->interval === self::INTERVAL_MONTHLY) {
-            return [
-                'interval' => self::INTERVAL_MONTHLY,
-                'day' => $date->day,
-                'month' => null,
-            ];
-        }
-
-        return null;
     }
 
     /**
@@ -503,24 +481,18 @@ class Subscription extends Model
      * Swap the subscription to new plans.
      *
      * @param  Play  $plan
-     * @param  string|null  $interval
      * @param int|null $quantity
      * @return $this
      * @throws SubscriptionUpdateFailure
      */
-    public function swap(Plan $plan, string $interval = null, int $quantity = null)
+    public function swap(Plan $plan, int $quantity = null)
     {
         if ($this->pastDue()) {
             throw SubscriptionUpdateFailure::default();
         }
-        
-        if (! $interval) {
-            $interval = self::INTERVAL_MONTHLY;
-        }
 
         $this->fill([
             'plan_id' => $plan->id,
-            'interval' => $interval,
             'quantity' => $quantity ?? $this->quantity,
             'created_at' => now(),
         ])->save();
@@ -535,15 +507,98 @@ class Subscription extends Model
      */
     public function getNextDueDateAttribute()
     {
-        $anchor = $this->billing_cycle_anchor;
-        $date = Carbon::createFromDate(null, $anchor['month'], $anchor['day']);
-
         // first invoice is about to be generated
-        if ($this->invoices()->count() == 0) {
+        if ($this->invoices()->count() === 0) {
             return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
-        return $anchor['month'] ? $date->addYear() : $date->addMonth();
+        switch ($this->interval) {
+            case Plan::INTERVAL_DAILY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    null, 
+                    $this->billing_cycle_anchor->day
+                )->addDay();
+                break;
+            
+            case Plan::INTERVAL_WEEKLY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    null, 
+                    $this->billing_cycle_anchor->day
+                )->addWeek();
+                break;
+            
+            case Plan::INTERVAL_MONTHLY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->day
+                )->addMonth();
+                break;
+            
+            case Plan::INTERVAL_YEARLY:
+                $date = Carbon::createFromDate(
+                    $this->billing_cycle_anchor->year, 
+                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->day
+                )->addYear();
+                break;
+            
+            default:
+                $date = null;
+                break;
+        }
+
+        return $date;
+    }
+
+    /**
+     * Calcuate the last payment date
+     *
+     * @return \Carbon\Carbon|null
+     */
+    public function getLastDueDateAttribute()
+    {
+        switch ($this->interval) {
+            case Plan::INTERVAL_DAILY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    null, 
+                    $this->billing_cycle_anchor->day
+                )->subDay();
+                break;
+            
+            case Plan::INTERVAL_WEEKLY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    null, 
+                    $this->billing_cycle_anchor->day
+                )->subWeek();
+                break;
+            
+            case Plan::INTERVAL_MONTHLY:
+                $date = Carbon::createFromDate(
+                    null, 
+                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->day
+                )->subMonth();
+                break;
+            
+            case Plan::INTERVAL_YEARLY:
+                $date = Carbon::createFromDate(
+                    $this->billing_cycle_anchor->year, 
+                    $this->billing_cycle_anchor->month, 
+                    $this->billing_cycle_anchor->day
+                )->subYear();
+                break;
+            
+            default:
+                $date = null;
+                break;
+        }
+
+        return $date;
     }
 
     /**

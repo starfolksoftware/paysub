@@ -14,6 +14,9 @@ class InvoiceBuilder
     /** @var Subscription */
     protected $subscription;
 
+    /** @var Plan */
+    protected $plan;
+
     /**
      * Create a new invoice builder instance.
      *
@@ -35,24 +38,21 @@ class InvoiceBuilder
     public function subscription(Subscription $subscription, $autofill = true)
     {
         $this->subscription = $subscription;
+        $this->plan = $this->subscription->plan;
 
         if ($autofill) {
-            $line_item_name = trans('paysub::invoice.invoice_bill_payment_name', [
-                'interval' => trans('paysub::invoice.'.$subscription->interval),
-                'from' => ($subscription->interval === Subscription::INTERVAL_MONTHLY) ?
-                    $subscription->next_due_date->subMonth() : $subscription->next_due_date->subYear(),
-                'to' => $subscription->next_due_date,
-            ]);
-
             $this->lineItem(
-                $line_item_name,
-                $subscription->plan->amount,
-                $subscription->quantity
+                trans('paysub::invoice.subscription_invoice'),
+                $this->plan->amount,
+                $this->subscription->quantity,
+                $this->subscription->last_due_date,
+                $this->subscription->next_due_date,
+                $this->plan->tax_rates
             );
 
             $this->dueDate($subscription->next_due_date);
             $this->status(Invoice::STATUS_UNPAID);
-            $this->description($line_item_name);
+            $this->description(trans('paysub::invoice.subscription_invoice'));
         }
 
         return $this;
@@ -86,7 +86,7 @@ class InvoiceBuilder
                 $line_item['quantity'],
                 $line_item['start_date'],
                 $line_item['end_date'],
-                $line_item['tax_amounts']
+                $line_item['tax_rates']
             );
         }
 
@@ -107,7 +107,8 @@ class InvoiceBuilder
         int $quantity, 
         Carbon $start_date, 
         Carbon $end_date, 
-        array $tax_amounts
+        array $tax_rates,
+        string $currency = 'NGN'
     ) {
         array_push($this->line_items, [
             'name' => $name,
@@ -115,31 +116,38 @@ class InvoiceBuilder
             'quantity' => $quantity,
             'start_date' => $start_date,
             'end_date' => $end_date,
-            'tax_amounts' => $tax_amounts,
+            'tax_rates' => $tax_rates,
+            'currency' => $currency,
         ]);
 
         return $this;
     }
 
     /**
-     * Calculate the amount payable
+     * Calculate the total payable
      *
      * @param float|null $amount
      * @return $this|float
      */
-    protected function amount($amount = null)
+    protected function total($amount = null)
     {
         if ($amount) {
-            $this->amount = $amount;
+            $this->total = $amount;
 
             return $this;
         }
 
         $amount = collect($this->line_items)->reduce(function ($carry, $line_item) {
-            return $carry + ((double) $line_item['amount'] * (int) $line_item['quantity']);
-        }, 0);
+            $item = new InvoiceLineItem(null, (object) $line_item);
 
-        $amount = $amount * ($this->subscription->interval == Subscription::INTERVAL_MONTHLY ? 1 : 12);
+            $item_total = ((double) $line_item['amount'] * (int) $line_item['quantity']);
+
+            if ($etp = $item->exclusiveTaxPercentage()) {
+                $item_total = $item_total + ($item_total * $etp);
+            }
+
+            return $carry + $item_total;
+        }, 0);
 
         return $amount;
     }
@@ -218,8 +226,7 @@ class InvoiceBuilder
         $invoice = $this->subscription->invoices()->create([
             'description' => $this->description ?? null,
             'line_items' => $this->line_items,
-            'tax' => $this->tax ?? null,
-            'amount' => $this->amount(),
+            'total' => $this->total(),
             'due_date' => $this->due_date,
             'status' => $this->status ?? Invoice::STATUS_UNPAID,
             'paid_at' => $this->paid_at ?? null,

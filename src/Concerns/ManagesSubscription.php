@@ -40,12 +40,11 @@ trait ManagesSubscription
      *
      * @param  string  $name
      * @param  Plan  $plan
-     * @param  string|null $interval
      * @return \StarfolkSoftware\Paysub\SubscriptionBuilder
      */
-    public function newSubscription(Plan $plan, $interval = null)
+    public function newSubscription(Plan $plan)
     {
-        return new SubscriptionBuilder($this, $plan, $interval);
+        return new SubscriptionBuilder($this, $plan);
     }
 
     /**
