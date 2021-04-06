@@ -17,6 +17,9 @@ class SubscriptionTest extends FeatureTestCase
      */
     protected static $basicPlan;
 
+    /** @var Plan */
+    protected static $basicPlanWeekly;
+
     /**
      * @var Plan
      */
@@ -32,20 +35,29 @@ class SubscriptionTest extends FeatureTestCase
         parent::setUp();
 
         self::$basicPlan = Plan::create([
-            'name' => 'Basic',
+            'name' => 'basic',
+            'display_name' => 'Basic',
             'description' => '',
+            'interval_type' => 'monthly',
+            'interval_count' => 1,
             'amount' => 250000,
         ]);
 
         self::$standardPlan = Plan::create([
-            'name' => 'Standard',
+            'name' => 'standard',
+            'display_name' => 'Standard',
             'description' => '',
+            'interval_type' => 'monthly',
+            'interval_count' => 1,
             'amount' => 850000,
         ]);
 
         self::$professionalPlan = Plan::create([
-            'name' => 'Professional',
+            'name' => 'professional',
+            'display_name' => 'Professional',
             'description' => '',
+            'interval_type' => 'monthly',
+            'interval_count' => 1,
             'amount' => 1050000,
         ]);
     }
@@ -59,8 +71,7 @@ class SubscriptionTest extends FeatureTestCase
     {
         $subscriber = $this->createCustomer();
 
-        $subscriber->newSubscription(self::$basicPlan)
-            ->monthly()
+        $subscriber->newSubscription('default', self::$basicPlan)
             ->quantity(1)
             ->trialDays(7)
             ->anchorBillingCycleOn(now()->addDays(7))
@@ -69,9 +80,9 @@ class SubscriptionTest extends FeatureTestCase
         $this->assertEquals(1, $subscriber->subscriptions()->count());
         $this->assertNotNull(($subscription = $subscriber->subscription())->id);
 
-        $this->assertTrue($subscriber->subscribed(self::$basicPlan));
-        $this->assertFalse($subscriber->subscribed(self::$standardPlan));
-        $this->assertFalse($subscriber->subscribed(self::$professionalPlan));
+        $this->assertTrue($subscriber->subscribed('default', self::$basicPlan));
+        $this->assertFalse($subscriber->subscribed('default', self::$standardPlan));
+        $this->assertFalse($subscriber->subscribed('default', self::$professionalPlan));
 
         $this->assertTrue($subscription->active());
         $this->assertFalse($subscription->cancelled());
@@ -117,14 +128,15 @@ class SubscriptionTest extends FeatureTestCase
         // Invoice Tests
         $invoice = $subscriber->invoices()[0];
 
-        $this->assertEquals('250000', $invoice->amount);
+        $this->assertEquals('250000', $invoice->total);
         $this->assertInstanceOf(Carbon::class, $invoice->date());
     }
 
     public function test_swapping_subscription_and_preserving_quantity()
     {
         $subscriber = $this->createCustomer();
-        $subscription = $subscriber->newSubscription(self::$basicPlan)
+        $subscription = $subscriber
+            ->newSubscription('default', self::$basicPlan)
             ->quantity(5)
             ->anchorBillingCycleOn(now())
             ->add();
@@ -137,12 +149,16 @@ class SubscriptionTest extends FeatureTestCase
     public function test_swapping_subscription_and_adopting_new_quantity()
     {
         $subscriber = $this->createCustomer();
-        $subscription = $subscriber->newSubscription(self::$basicPlan)
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
             ->quantity(5)
             ->anchorBillingCycleOn(now())
             ->add();
 
-        $subscription = $subscription->swap(self::$standardPlan, null, 3);
+        $subscriber
+            ->subscription('default')
+            ->updateQuantity(3)
+            ->swap(self::$standardPlan);
+            dd($subscriber->subscription('default'));
 
         $this->assertSame(3, $subscription->quantity);
     }
@@ -152,7 +168,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriber = $this->createCustomer();
 
         // Create Subscription
-        $subscriber->newSubscription(self::$basicPlan)
+        $subscriber->newSubscription('default', self::$basicPlan)
             ->anchorBillingCycleOn(new DateTime('first day of next month'))
             ->add();
 
@@ -185,8 +201,7 @@ class SubscriptionTest extends FeatureTestCase
 
         // Create Subscription
         $subscriber
-            ->newSubscription(self::$basicPlan)
-            ->monthly()
+            ->newSubscription('default', self::$basicPlan)
             ->quantity(1)
             ->trialDays(7)
             ->anchorBillingCycleOn(now()->addDays(7))
@@ -230,7 +245,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriber = $this->createCustomer();
 
         // Create Subscription
-        $subscriber->newSubscription(self::$basicPlan)
+        $subscriber->newSubscription('default', self::$basicPlan)
             ->anchorBillingCycleOn(now()->tomorrow())
             ->trialUntil(Carbon::tomorrow()->hour(3)->minute(15))
             ->add();
@@ -264,7 +279,7 @@ class SubscriptionTest extends FeatureTestCase
     {
         $subscriber = $this->createCustomer();
 
-        $subscription = $subscriber->newSubscription(self::$basicPlan)
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
             ->trialDays(5)
             ->anchorBillingCycleOn(now()->addDays(5))
             ->add();
@@ -281,7 +296,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriber = $this->createCustomer();
 
         $subscription = $subscriber
-            ->newSubscription(self::$basicPlan)
+            ->newSubscription('default', self::$basicPlan)
             ->anchorBillingCycleOn(now()->addDays(5))
             ->add();
 
@@ -297,7 +312,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriber = $this->createCustomer();
 
         $subscription = $subscriber
-            ->newSubscription(self::$basicPlan)
+            ->newSubscription('default', self::$basicPlan)
             ->anchorBillingCycleOn(now()->addDays(5))
             ->add();
 
@@ -312,7 +327,7 @@ class SubscriptionTest extends FeatureTestCase
     {
         $subscriber = $this->createCustomer();
 
-        $subscription = $subscriber->newSubscription(self::$basicPlan)
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
             ->trialDays(10)
             ->anchorBillingCycleOn(now()->addDays(10))
             ->add();
@@ -327,7 +342,7 @@ class SubscriptionTest extends FeatureTestCase
         $subscriber = $this->createCustomer();
 
         // Start with an incomplete subscription.
-        $subscription = $subscriber->newSubscription(self::$basicPlan)
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
             ->anchorBillingCycleOn(now()->addDays(10))
             ->add();
         $subscription->status = Subscription::STATUS_INACTIVE;

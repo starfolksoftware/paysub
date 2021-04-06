@@ -47,7 +47,7 @@ class InvoiceBuilder
                 $this->subscription->quantity,
                 $this->subscription->last_due_date,
                 $this->subscription->next_due_date,
-                $this->plan->tax_rates
+                $this->plan->tax_rates ?? []
             );
 
             $this->dueDate($subscription->next_due_date);

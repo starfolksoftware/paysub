@@ -40,12 +40,12 @@ trait ManagesSubscription
      * Begin creating a new subscription.
      *
      * @param  string  $name
-     * @param  Plan  $plan
+     * @param  Plan|Plan[]  $plan
      * @return \StarfolkSoftware\Paysub\SubscriptionBuilder
      */
-    public function newSubscription(Plan $plan)
+    public function newSubscription($name = 'default', Plan $plan)
     {
-        return new SubscriptionBuilder($this, $plan);
+        return new SubscriptionBuilder($this, $name, $plan);
     }
 
     /**

@@ -168,7 +168,7 @@ class Subscription extends Model
             });
         }
 
-        return $this->stripe_plan === $plan;
+        return (int) $this->plan_id === (int) $plan->id;
     }
 
     /**
@@ -598,7 +598,7 @@ class Subscription extends Model
     /**
      * Swap the subscription to new plans.
      *
-     * @param  Plan|array  $plans
+     * @param  Plan|Plan[]  $plans
      * @return $this
      * 
      * @throws InvalidArgumentException
@@ -609,24 +609,22 @@ class Subscription extends Model
             throw new \InvalidArgumentException('Please provide at least one plan when swapping.');
         }
 
-        $subscription = $this->owner->subscription('default');
-
         /** @var \StarfolkSoftware\Paysub\Models\SubscriptionItem $firstItem */
         $firstItem = collect($this->items)->first();
         $isSinglePlan = collect($this->items)->count() === 1;
+        dd($plans[0]);
 
         $this->fill([
-            'plan_id' => $isSinglePlan ? $firstItem->plan->id : null,
+            'plan_id' => $isSinglePlan ? $firstItem->id : null,
             'quantity' => $isSinglePlan ? $firstItem->quantity : null,
             'ends_at' => null,
         ])->save();
 
-        foreach ($subscription->items as $item) {
+        foreach ($this->items as $item) {
             $this->items()->updateOrCreate([
-                'plan_id' => $item->id,
-                'subscription_id' => $subscription->id
+                'id' => $item->id
             ], [
-                'plan_id' => $item->plan->id,
+                'plan_id' => $item->plan_id,
                 'quantity' => $item->quantity,
             ]);
         }
@@ -669,13 +667,13 @@ class Subscription extends Model
             return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
-        switch ($this->interval) {
+        switch ($this->plan->interval_type) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->addDay();
+                )->addDays($this->plan->interval_count);
 
                 break;
             
@@ -684,7 +682,7 @@ class Subscription extends Model
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->addWeek();
+                )->addWeeks($this->plan->interval_count);
 
                 break;
             
@@ -693,7 +691,7 @@ class Subscription extends Model
                     null,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->addMonth();
+                )->addMonths($this->plan->interval_count);
 
                 break;
             
@@ -702,7 +700,7 @@ class Subscription extends Model
                     $this->billing_cycle_anchor->year,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->addYear();
+                )->addYears($this->plan->interval_count);
 
                 break;
             
@@ -722,13 +720,18 @@ class Subscription extends Model
      */
     public function getLastDueDateAttribute()
     {
-        switch ($this->interval) {
+        // first invoice is about to be generated
+        if ($this->invoices()->count() === 0) {
+            return \Carbon\Carbon::parse($this->anchor_billing_cycle);
+        }
+
+        switch ($this->plan->interval_type) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->subDay();
+                )->subDays($this->plan->interval_count);
 
                 break;
             
@@ -737,7 +740,7 @@ class Subscription extends Model
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->subWeek();
+                )->subWeeks($this->plan->interval_count);
 
                 break;
             
@@ -746,7 +749,7 @@ class Subscription extends Model
                     null,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->subMonth();
+                )->subMonths($this->plan->interval_count);
 
                 break;
             
@@ -755,13 +758,12 @@ class Subscription extends Model
                     $this->billing_cycle_anchor->year,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->subYear();
+                )->subYears($this->plan->interval_count);
 
                 break;
             
             default:
                 $date = null;
-
                 break;
         }
 

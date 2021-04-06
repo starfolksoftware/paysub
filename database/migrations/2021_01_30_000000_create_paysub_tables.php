@@ -20,6 +20,7 @@ class CreatePaysubTables extends Migration
         Schema::create(config('paysub.plan_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
+            $table->string('display_name')->nullable();
             $table->enum('interval_type', ['daily', 'weekly', 'monthly', 'yearly'])->default('monthly');
             $table->integer('interval_count')->default(1);
             $table->string('description');
@@ -32,9 +33,10 @@ class CreatePaysubTables extends Migration
         Schema::create(config('paysub.subscription_table_name'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
+            $table->string('name');
             $table->unsignedBigInteger('plan_id');
             $table->enum('status', ['active', 'inactive', 'past_due', 'unpaid'])->default('active');
-            $table->integer('quantity')->default(null);
+            $table->integer('quantity')->nullable();
             $table->timestamp('billing_cycle_anchor')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();

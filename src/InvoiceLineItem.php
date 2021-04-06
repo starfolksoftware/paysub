@@ -24,10 +24,10 @@ class InvoiceLineItem
      * Create a new invoice line item instance.
      *
      * @param  \StarfolkSoftware\Paysub\Models\Invoice|null  $invoice
-     * @param  \StarfolkSoftware\Paysub\InvoiceLineItem  $item
+     * @param  object $item
      * @return void
      */
-    public function __construct($invoice, InvoiceLineItem $item)
+    public function __construct($invoice, object $item)
     {
         $this->invoice = $invoice;
         $this->item = $item;

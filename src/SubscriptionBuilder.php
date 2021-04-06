@@ -88,8 +88,12 @@ class SubscriptionBuilder
     {
         $this->owner = $owner;
         $this->name = $name;
+        
+        if (! is_array($plans)) {
+            $plans = [$plans];
+        }
 
-        foreach ((array) $plans as $plan) {
+        foreach ($plans as $plan) {
             $this->plan($plan);
         }
     }
@@ -257,8 +261,8 @@ class SubscriptionBuilder
         /** @var \StarfolkSoftware\Paysub\Models\Subscription $subscription */
         $subscription = $this->owner->subscriptions()->create([
             'name' => $this->name,
-            'plan_id' => $isSinglePlan ? $firstItem->plan->id : null,
-            'quantity' => $this->quantity,
+            'plan_id' => $isSinglePlan ? $firstItem->id : null,
+            'quantity' => $isSinglePlan ? $this->quantity : null,
             'billing_cycle_anchor' => $this->billing_cycle_anchor,
             'trial_ends_at' => ! $this->skipTrial ? $this->trialExpires : null,
             'ends_at' => null,
@@ -268,7 +272,7 @@ class SubscriptionBuilder
         foreach ($this->items as $key => $item) {
             $subscription->items()->create([
                 'plan_id' => $key,
-                'quantity' => $item->quantity,
+                'quantity' => $subscription->quantity,
             ]);
         }
 

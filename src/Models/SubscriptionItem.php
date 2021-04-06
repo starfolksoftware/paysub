@@ -41,6 +41,16 @@ class SubscriptionItem extends Model
     }
 
     /**
+     * Get the plan of the subscription
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'plan_id');
+    }
+
+    /**
      * Increment the quantity of the subscription item.
      *
      * @param  int  $count
