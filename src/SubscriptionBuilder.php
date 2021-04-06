@@ -274,42 +274,4 @@ class SubscriptionBuilder
 
         return $subscription;
     }
-
-    // /**
-    //  * Get the tax percentage for the payload.
-    //  *
-    //  * @return int|float|null
-    //  * @deprecated Please migrate to the new Tax Rates API.
-    //  */
-    // protected function getTaxPercentageForPayload()
-    // {
-    //     if ($taxPercentage = $this->owner->taxPercentage()) {
-    //         return $taxPercentage;
-    //     }
-    // }
-
-    // /**
-    //  * Get the tax rates for the payload.
-    //  *
-    //  * @return array|null
-    //  */
-    // protected function getTaxRatesForPayload()
-    // {
-    //     if ($taxRates = $this->owner->taxRates()) {
-    //         return $taxRates;
-    //     }
-    // }
-
-    // /**
-    //  * Get the plan tax rates for the payload.
-    //  *
-    //  * @param  string  $plan
-    //  * @return array|null
-    //  */
-    // protected function getPlanTaxRatesForPayload($plan)
-    // {
-    //     if ($taxRates = $this->owner->planTaxRates()) {
-    //         return $taxRates[$plan] ?? null;
-    //     }
-    // }
 }
