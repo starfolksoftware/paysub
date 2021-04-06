@@ -99,7 +99,7 @@ trait ManagesSubscription
 
     /**
      * Determine if the model has a given subscription.
-     * 
+     *
      * @param string $name
      * @param Plan|null $plan
      * @return bool

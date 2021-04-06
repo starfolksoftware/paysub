@@ -16,7 +16,8 @@ use StarfolkSoftware\Paysub\Paysub;
 
 class Subscription extends Model
 {
-    use HasFactory, Prorates;
+    use HasFactory;
+    use Prorates;
     
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -254,7 +255,8 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function recurring() {
+    public function recurring()
+    {
         return ! $this->onTrial() && ! $this->cancelled();
     }
 
@@ -264,7 +266,8 @@ class Subscription extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return void
      */
-    public function scopeRecurring($query) {
+    public function scopeRecurring($query)
+    {
         $query->notOnTrial()->notCancelled();
     }
 
@@ -387,7 +390,7 @@ class Subscription extends Model
 
     /**
      * Check if subscription has open invoice
-     * 
+     *
      * @return Invoice|null
      */
     public function hasOpenInvoice($withVoid = false)
@@ -600,7 +603,7 @@ class Subscription extends Model
      *
      * @param  Plan|Plan[]  $plans
      * @return $this
-     * 
+     *
      * @throws InvalidArgumentException
      */
     public function swap(Plan $plans)
@@ -631,7 +634,7 @@ class Subscription extends Model
 
         // Delete items that aren't attached to the subscription anymore...
         $this->items()->whereNotIn(
-            'plan_id', 
+            'plan_id',
             collect((array) $plans)->pluck('plan_id')->filter()
         )->delete();
 
