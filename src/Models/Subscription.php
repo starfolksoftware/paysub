@@ -625,7 +625,7 @@ class Subscription extends Model
 
         foreach ($this->items as $item) {
             $this->items()->updateOrCreate([
-                'id' => $item->id
+                'id' => $item->id,
             ], [
                 'plan_id' => $item->plan_id,
                 'quantity' => $item->quantity,
@@ -767,6 +767,7 @@ class Subscription extends Model
             
             default:
                 $date = null;
+
                 break;
         }
 

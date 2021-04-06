@@ -158,7 +158,7 @@ class SubscriptionTest extends FeatureTestCase
             ->subscription('default')
             ->updateQuantity(3)
             ->swap(self::$standardPlan);
-            dd($subscriber->subscription('default'));
+        dd($subscriber->subscription('default'));
 
         $this->assertSame(3, $subscription->quantity);
     }
