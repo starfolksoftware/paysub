@@ -4,7 +4,8 @@ namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
 
-class InvoiceLineItem {
+class InvoiceLineItem
+{
     /**
      * The Invoice instance.
      *

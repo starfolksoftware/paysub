@@ -102,11 +102,11 @@ class InvoiceBuilder
      * @return $this
      */
     public function lineItem(
-        string $name, 
-        int $amount, 
-        int $quantity, 
-        Carbon $start_date, 
-        Carbon $end_date, 
+        string $name,
+        int $amount,
+        int $quantity,
+        Carbon $start_date,
+        Carbon $end_date,
         array $tax_rates,
         string $currency = 'NGN'
     ) {
