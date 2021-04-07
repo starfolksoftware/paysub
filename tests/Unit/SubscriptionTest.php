@@ -3,8 +3,6 @@
 namespace StarfolkSoftware\Paysub\Tests\Unit;
 
 use InvalidArgumentException;
-use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
-use StarfolkSoftware\Paysub\Models\Plan;
 use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\Tests\TestCase;
 

@@ -619,14 +619,14 @@ class Subscription extends Model
 
         $this->fill([
             'plan_id' => $isSinglePlan ? $plans->id : null,
-            'quantity' => ($isSinglePlan) ? 
-                (key_exists($plans->name, $quantities) ? $quantities[$plans->name] : $firstItem->quantity) : 
+            'quantity' => ($isSinglePlan) ?
+                (key_exists($plans->name, $quantities) ? $quantities[$plans->name] : $firstItem->quantity) :
                 null,
             'ends_at' => null,
         ])->save();
 
         if (! is_array($plans)) {
-            $plans = array($plans);
+            $plans = [$plans];
         }
 
         foreach ($plans as $plan) {
