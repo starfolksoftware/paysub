@@ -39,9 +39,7 @@ class Invoice extends Model
     /**
      * The attributes that should be appended
      */
-    protected $appends = [
-        'tax_total',
-    ];
+    protected $appends = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -78,37 +76,6 @@ class Invoice extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class, 'invoice_id');
-    }
-
-    /**
-     * Determine if the invoice has tax applied.
-     *
-     * @return bool
-     */
-    public function hasTax()
-    {
-        return ! ! $this->tax;
-    }
-
-    /**
-     * Filter query by invoice with tax.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return void
-     */
-    public function scopeTax($query)
-    {
-        $query->whereNotNull('tax');
-    }
-
-    /**
-     * Get Tax total
-     */
-    public function getTaxTotalAttribute()
-    {
-        return collect($this->tax)->reduce(function ($carry, $tax) {
-            return $carry + $tax['amount'];
-        }, 0);
     }
 
     /**

@@ -601,41 +601,47 @@ class Subscription extends Model
     /**
      * Swap the subscription to new plans.
      *
-     * @param  Plan|Plan[]  $plans
+     * @param Plan|Plan[] $plans
+     * @param array $quantities
      * @return $this
      *
      * @throws InvalidArgumentException
      */
-    public function swap(Plan $plans)
+    public function swap($plans, $quantities = [])
     {
-        if (empty($plans = (array) $plans)) {
+        if (empty((array) $plans)) {
             throw new \InvalidArgumentException('Please provide at least one plan when swapping.');
         }
 
         /** @var \StarfolkSoftware\Paysub\Models\SubscriptionItem $firstItem */
         $firstItem = collect($this->items)->first();
-        $isSinglePlan = collect($this->items)->count() === 1;
-        dd($plans[0]);
+        $isSinglePlan = (collect($this->items)->count() === 1 && ! is_array($plans));
 
         $this->fill([
-            'plan_id' => $isSinglePlan ? $firstItem->id : null,
-            'quantity' => $isSinglePlan ? $firstItem->quantity : null,
+            'plan_id' => $isSinglePlan ? $plans->id : null,
+            'quantity' => ($isSinglePlan) ? 
+                (key_exists($plans->name, $quantities) ? $quantities[$plans->name] : $firstItem->quantity) : 
+                null,
             'ends_at' => null,
         ])->save();
 
-        foreach ($this->items as $item) {
+        if (! is_array($plans)) {
+            $plans = array($plans);
+        }
+
+        foreach ($plans as $plan) {
             $this->items()->updateOrCreate([
-                'id' => $item->id
+                'plan_id' => $plan->id,
+                'subscription_id' => $this->id,
             ], [
-                'plan_id' => $item->plan_id,
-                'quantity' => $item->quantity,
+                'quantity' => $quantities[$plan->name] ?? $this->quantity,
             ]);
         }
 
         // Delete items that aren't attached to the subscription anymore...
         $this->items()->whereNotIn(
             'plan_id',
-            collect((array) $plans)->pluck('plan_id')->filter()
+            collect($plans)->pluck('id')->filter()
         )->delete();
 
         $this->unsetRelation('items');

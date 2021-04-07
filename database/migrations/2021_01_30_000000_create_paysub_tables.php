@@ -34,7 +34,7 @@ class CreatePaysubTables extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('subscriber_id');
             $table->string('name');
-            $table->unsignedBigInteger('plan_id');
+            $table->unsignedBigInteger('plan_id')->nullable();
             $table->enum('status', ['active', 'inactive', 'past_due', 'unpaid'])->default('active');
             $table->integer('quantity')->nullable();
             $table->timestamp('billing_cycle_anchor')->nullable();

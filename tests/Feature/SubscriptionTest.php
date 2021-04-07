@@ -18,6 +18,9 @@ class SubscriptionTest extends FeatureTestCase
     protected static $basicPlan;
 
     /** @var Plan */
+    protected static $basicPlanExtraUser;
+
+    /** @var Plan */
     protected static $basicPlanWeekly;
 
     /**
@@ -41,6 +44,15 @@ class SubscriptionTest extends FeatureTestCase
             'interval_type' => 'monthly',
             'interval_count' => 1,
             'amount' => 250000,
+        ]);
+
+        self::$basicPlanExtraUser = Plan::create([
+            'name' => 'basic_extra_user',
+            'display_name' => 'Basic Extra User',
+            'description' => '',
+            'interval_type' => 'monthly',
+            'interval_count' => 1,
+            'amount' => 50000,
         ]);
 
         self::$standardPlan = Plan::create([
@@ -143,22 +155,20 @@ class SubscriptionTest extends FeatureTestCase
 
         $subscription = $subscription->swap(self::$standardPlan);
 
+        $this->assertTrue($subscriber->subscribed('default', self::$standardPlan));
         $this->assertSame(5, $subscription->quantity);
     }
 
     public function test_swapping_subscription_and_adopting_new_quantity()
     {
         $subscriber = $this->createCustomer();
-        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
+        $subscription = $subscriber
+            ->newSubscription('default', self::$basicPlan)
             ->quantity(5)
             ->anchorBillingCycleOn(now())
             ->add();
 
-        $subscriber
-            ->subscription('default')
-            ->updateQuantity(3)
-            ->swap(self::$standardPlan);
-            dd($subscriber->subscription('default'));
+        $subscription = $subscription->swap(self::$standardPlan, ['standard' => 3]);
 
         $this->assertSame(3, $subscription->quantity);
     }
@@ -174,25 +184,12 @@ class SubscriptionTest extends FeatureTestCase
 
         $subscription = $subscriber->subscription();
 
-        $this->assertTrue($subscriber->subscribed(self::$basicPlan));
-        $this->assertFalse($subscriber->subscribed(self::$standardPlan));
+        $this->assertTrue($subscriber->subscribed('default', self::$basicPlan));
+        $this->assertFalse($subscriber->subscribed('default', self::$standardPlan));
         $this->assertTrue($subscription->active());
         $this->assertFalse($subscription->cancelled());
         $this->assertFalse($subscription->onGracePeriod());
         $this->assertFalse($subscription->ended());
-
-        // Invoice Tests
-        // $invoice = $subscriber->invoices()[0];
-        // $invoicePeriod = $invoice->invoiceItems()[0]->period;
-
-        // $this->assertEquals(
-        //     (new DateTime('now'))->format('Y-m-d'),
-        //     date('Y-m-d', $invoicePeriod->start)
-        // );
-        // $this->assertEquals(
-        //     (new DateTime('first day of next month'))->format('Y-m-d'),
-        //     date('Y-m-d', $invoicePeriod->end)
-        // );
     }
 
     public function test_creating_subscription_with_trial()
@@ -419,5 +416,33 @@ class SubscriptionTest extends FeatureTestCase
 
         // Reset deactivate past due state to default to not conflict with other tests.
         Paysub::$deactivatePastDue = true;
+    }
+
+    public function test_we_can_check_if_it_has_a_single_plan()
+    {
+        $subscriber = $this->createCustomer();
+
+        // Start with an incomplete subscription.
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
+            ->anchorBillingCycleOn(now()->addDays(10))
+            ->add();
+
+        $this->assertTrue($subscription->hasSinglePlan());
+        $this->assertFalse($subscription->hasMultiplePlans());
+    }
+
+    public function test_we_can_check_if_it_has_multiple_plans()
+    {
+        $subscriber = $this->createCustomer();
+
+        // Start with an incomplete subscription.
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
+            ->anchorBillingCycleOn(now()->addDays(10))
+            ->add();
+
+        $subscription->addPlan(self::$basicPlanExtraUser);
+
+        $this->assertTrue($subscription->hasMultiplePlans());
+        $this->assertFalse($subscription->hasSinglePlan());
     }
 }

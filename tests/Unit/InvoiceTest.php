@@ -17,15 +17,6 @@ class InvoiceTest extends TestCase
         ));
     }
 
-    public function test_we_can_get_the_applied_tax()
-    {
-        $invoice = new Invoice([
-            "tax" => "['something']",
-        ]);
-
-        $this->assertTrue($invoice->hasTax());
-    }
-
     public function test_we_can_get_a_carbon_date_for_the_invoice()
     {
         $invoice = new Invoice([
