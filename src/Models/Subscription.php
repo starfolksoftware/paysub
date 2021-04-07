@@ -773,6 +773,7 @@ class Subscription extends Model
             
             default:
                 $date = null;
+
                 break;
         }
 
