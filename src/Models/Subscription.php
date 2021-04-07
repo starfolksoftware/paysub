@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
+use StarfolkSoftware\Paysub\Concerns\Prorates;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
@@ -16,13 +17,12 @@ use StarfolkSoftware\Paysub\Paysub;
 class Subscription extends Model
 {
     use HasFactory;
+    use Prorates;
     
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
     const STATUS_PAST_DUE = 'past_due';
     const STATUS_UNPAID = 'unpaid';
-    const INTERVAL_MONTHLY = 'monthly';
-    const INTERVAL_YEARLY = 'yearly';
 
     /**
      * The attributes that are not mass assignable.
@@ -58,32 +58,12 @@ class Subscription extends Model
      */
     protected $appends = [
         'next_due_date',
+        'last_due_date',
     ];
 
     public function getTable()
     {
         return config('paysub.subscription_table_name', parent::getTable());
-    }
-
-    public function getBillingCycleAnchorAttribute($value)
-    {
-        $date = Carbon::parse($value);
-
-        if ($this->interval === self::INTERVAL_YEARLY) {
-            return [
-                'interval' => self::INTERVAL_YEARLY,
-                'day' => $date->day,
-                'month' => $date->month,
-            ];
-        } elseif ($this->interval === self::INTERVAL_MONTHLY) {
-            return [
-                'interval' => self::INTERVAL_MONTHLY,
-                'day' => $date->day,
-                'month' => null,
-            ];
-        }
-
-        return null;
     }
 
     /**
@@ -129,6 +109,16 @@ class Subscription extends Model
     }
 
     /**
+     * Get the items of the subscription
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function items()
+    {
+        return $this->hasMany(SubscriptionItem::class, 'subscription_id');
+    }
+
+    /**
      * Get the payments of the subscription
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
@@ -146,6 +136,26 @@ class Subscription extends Model
     }
 
     /**
+     * Determine if the subscription has multiple plans.
+     *
+     * @return bool
+     */
+    public function hasMultiplePlans()
+    {
+        return is_null($this->plan_id);
+    }
+
+    /**
+     * Determine if the subscription has a single plan.
+     *
+     * @return bool
+     */
+    public function hasSinglePlan()
+    {
+        return ! $this->hasMultiplePlans();
+    }
+
+    /**
      * Determine if the subscription has a specific plan.
      *
      * @param  Plan  $plan
@@ -153,7 +163,26 @@ class Subscription extends Model
      */
     public function hasPlan(Plan $plan)
     {
-        return $this->plan->id === $plan->id;
+        if ($this->hasMultiplePlans()) {
+            return $this->items->contains(function (SubscriptionItem $item) use ($plan) {
+                return $item->plan_id === $plan->id;
+            });
+        }
+
+        return (int) $this->plan_id === (int) $plan->id;
+    }
+
+    /**
+     * Get the subscription item for the given plan.
+     *
+     * @param  Plan  $plan
+     * @return \StarfolkSoftware\Paysub\Models\SubscriptionItem
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function findItemOrFail(Plan $plan)
+    {
+        return $this->items()->where('plan_id', $plan->id)->firstOrFail();
     }
 
     /**
@@ -212,12 +241,23 @@ class Subscription extends Model
                 ->orWhere(function ($query) {
                     $query->onGracePeriod();
                 });
-        })->where('status', '!=', self::STATUS_UNPAID)
+        })
+        ->where('status', '!=', self::STATUS_UNPAID)
         ->Where('status', '!=', self::STATUS_INACTIVE);
 
         if (Paysub::$deactivatePastDue) {
             $query->where('status', '!=', self::STATUS_PAST_DUE);
         }
+    }
+
+    /**
+     * Determine if the subscription is recurring and not on trial.
+     *
+     * @return bool
+     */
+    public function recurring()
+    {
+        return ! $this->onTrial() && ! $this->cancelled();
     }
 
     /**
@@ -350,6 +390,8 @@ class Subscription extends Model
 
     /**
      * Check if subscription has open invoice
+     *
+     * @return Invoice|null
      */
     public function hasOpenInvoice($withVoid = false)
     {
@@ -383,45 +425,106 @@ class Subscription extends Model
     }
 
     /**
+     * Make sure a plan argument is provided when the subscription is a multi plan subscription.
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function guardAgainstMultiplePlans()
+    {
+        if ($this->hasMultiplePlans()) {
+            throw new InvalidArgumentException(
+                'This method requires a plan argument since the subscription has multiple plans.'
+            );
+        }
+    }
+
+    /**
      * Increment the quantity of the subscription.
      *
      * @param  int  $count
-     * @param  string|null  $plan
+     * @param  Plan|null  $plan
      * @return $this
      *
      */
-    public function incrementQuantity($count = 1)
+    public function incrementQuantity($count = 1, Plan $plan = null)
     {
-        return $this->updateQuantity($this->quantity + $count);
+        if ($plan) {
+            $this
+                ->findItemOrFail($plan)
+                ->setProrationBehavior($this->prorationBehavior)
+                ->incrementQuantity($count);
+
+            return $this->refresh();
+        }
+
+        $this->guardAgainstMultiplePlans();
+
+        return $this->updateQuantity($this->quantity + $count, $plan);
+    }
+
+    /**
+     *  Increment the quantity of the subscription, and invoice immediately.
+     *
+     * @param int $count
+     * @param Plan|null $plan
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function incrementAndInvoice($count = 1, Plan $plan = null)
+    {
+        $this->alwaysInvoice();
+
+        return $this->incrementQuantity($count, $plan);
     }
 
     /**
      * Decrement the quantity of the subscription.
      *
      * @param  int  $count
-     * @param  string|null  $plan
+     * @param  Plan|null  $plan
      * @return $this
      *
      */
-    public function decrementQuantity($count = 1)
+    public function decrementQuantity($count = 1, Plan $plan = null)
     {
-        return $this->updateQuantity(max(1, $this->quantity - $count));
+        if ($plan) {
+            $this
+                ->findItemOrFail($plan)
+                ->setProrationBehavior($this->prorationBehavior)
+                ->decrementQuantity($count);
+
+            return $this->refresh();
+        }
+
+        $this->guardAgainstMultiplePlans();
+
+        return $this->updateQuantity(max(1, $this->quantity - $count), $plan);
     }
 
     /**
      * Update the quantity of the subscription.
      *
      * @param  int  $quantity
-     * @param  string|null  $plan
+     * @param  Plan|null  $plan
      * @return $this
      * @throws SubscriptionUpdateFailure
      */
-    public function updateQuantity($quantity)
+    public function updateQuantity($quantity, Plan $plan = null)
     {
-        if ($this->pastDue()) {
-            throw SubscriptionUpdateFailure::default();
+        if ($plan) {
+            $this
+                ->findItemOrFail($plan)
+                ->setProrationBehavior($this->prorationBehavior)
+                ->updateQuantity($quantity);
+
+            return $this->refresh();
         }
-        
+
+        $this->guardAgainstMultiplePlans();
+
         $this->quantity = $quantity;
 
         $this->save();
@@ -465,7 +568,13 @@ class Subscription extends Model
      */
     public function endTrial()
     {
+        if (is_null($this->trial_ends_at)) {
+            return $this;
+        }
+
         $this->trial_ends_at = null;
+
+        $this->save();
 
         return $this;
     }
@@ -492,30 +601,67 @@ class Subscription extends Model
     /**
      * Swap the subscription to new plans.
      *
-     * @param  Play  $plan
-     * @param  string|null  $interval
-     * @param int|null $quantity
+     * @param Plan|Plan[] $plans
+     * @param array $quantities
      * @return $this
-     * @throws SubscriptionUpdateFailure
+     *
+     * @throws InvalidArgumentException
      */
-    public function swap(Plan $plan, string $interval = null, int $quantity = null)
+    public function swap($plans, $quantities = [])
     {
-        if ($this->pastDue()) {
-            throw SubscriptionUpdateFailure::default();
+        if (empty((array) $plans)) {
+            throw new \InvalidArgumentException('Please provide at least one plan when swapping.');
         }
-        
-        if (! $interval) {
-            $interval = self::INTERVAL_MONTHLY;
-        }
+
+        /** @var \StarfolkSoftware\Paysub\Models\SubscriptionItem $firstItem */
+        $firstItem = collect($this->items)->first();
+        $isSinglePlan = (collect($this->items)->count() === 1 && ! is_array($plans));
 
         $this->fill([
-            'plan_id' => $plan->id,
-            'interval' => $interval,
-            'quantity' => $quantity ?? $this->quantity,
-            'created_at' => now(),
+            'plan_id' => $isSinglePlan ? $plans->id : null,
+            'quantity' => ($isSinglePlan) ?
+                (key_exists($plans->name, $quantities) ? $quantities[$plans->name] : $firstItem->quantity) :
+                null,
+            'ends_at' => null,
         ])->save();
 
+        if (! is_array($plans)) {
+            $plans = [$plans];
+        }
+
+        foreach ($plans as $plan) {
+            $this->items()->updateOrCreate([
+                'plan_id' => $plan->id,
+                'subscription_id' => $this->id,
+            ], [
+                'quantity' => $quantities[$plan->name] ?? $this->quantity,
+            ]);
+        }
+
+        // Delete items that aren't attached to the subscription anymore...
+        $this->items()->whereNotIn(
+            'plan_id',
+            collect($plans)->pluck('id')->filter()
+        )->delete();
+
+        $this->unsetRelation('items');
+
         return $this;
+    }
+
+    /**
+     * Swap the subscription to new plans, and invoice immediately.
+     *
+     * @param  Plan|Plan[]  $plans
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function swapAndInvoice(Plan $plans)
+    {
+        $this->alwaysInvoice();
+
+        return $this->swap($plans);
     }
 
     /**
@@ -525,15 +671,191 @@ class Subscription extends Model
      */
     public function getNextDueDateAttribute()
     {
-        $anchor = $this->billing_cycle_anchor;
-        $date = Carbon::createFromDate(null, $anchor['month'], $anchor['day']);
-
         // first invoice is about to be generated
-        if ($this->invoices()->count() == 0) {
+        if ($this->invoices()->count() === 0) {
             return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
-        return $anchor['month'] ? $date->addYear() : $date->addMonth();
+        switch ($this->plan->interval_type) {
+            case Plan::INTERVAL_DAILY:
+                $date = Carbon::createFromDate(
+                    null,
+                    null,
+                    $this->billing_cycle_anchor->day
+                )->addDays($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_WEEKLY:
+                $date = Carbon::createFromDate(
+                    null,
+                    null,
+                    $this->billing_cycle_anchor->day
+                )->addWeeks($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_MONTHLY:
+                $date = Carbon::createFromDate(
+                    null,
+                    $this->billing_cycle_anchor->month,
+                    $this->billing_cycle_anchor->day
+                )->addMonths($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_YEARLY:
+                $date = Carbon::createFromDate(
+                    $this->billing_cycle_anchor->year,
+                    $this->billing_cycle_anchor->month,
+                    $this->billing_cycle_anchor->day
+                )->addYears($this->plan->interval_count);
+
+                break;
+            
+            default:
+                $date = null;
+
+                break;
+        }
+
+        return $date;
+    }
+
+    /**
+     * Calcuate the last payment date
+     *
+     * @return \Carbon\Carbon|null
+     */
+    public function getLastDueDateAttribute()
+    {
+        // first invoice is about to be generated
+        if ($this->invoices()->count() === 0) {
+            return \Carbon\Carbon::parse($this->anchor_billing_cycle);
+        }
+
+        switch ($this->plan->interval_type) {
+            case Plan::INTERVAL_DAILY:
+                $date = Carbon::createFromDate(
+                    null,
+                    null,
+                    $this->billing_cycle_anchor->day
+                )->subDays($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_WEEKLY:
+                $date = Carbon::createFromDate(
+                    null,
+                    null,
+                    $this->billing_cycle_anchor->day
+                )->subWeeks($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_MONTHLY:
+                $date = Carbon::createFromDate(
+                    null,
+                    $this->billing_cycle_anchor->month,
+                    $this->billing_cycle_anchor->day
+                )->subMonths($this->plan->interval_count);
+
+                break;
+            
+            case Plan::INTERVAL_YEARLY:
+                $date = Carbon::createFromDate(
+                    $this->billing_cycle_anchor->year,
+                    $this->billing_cycle_anchor->month,
+                    $this->billing_cycle_anchor->day
+                )->subYears($this->plan->interval_count);
+
+                break;
+            
+            default:
+                $date = null;
+
+                break;
+        }
+
+        return $date;
+    }
+
+    /**
+     * Add a new plan to the subscription.
+     *
+     * @param  Plan  $plan
+     * @param  int|null  $quantity
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function addPlan(Plan $plan, $quantity = 1)
+    {
+        if ($this->items->contains('plan_id', $plan->id)) {
+            throw SubscriptionUpdateFailure::duplicatePlan($this, $plan);
+        }
+
+        $this->items()->create([
+            'plan_id' => $plan->id,
+            'quantity' => $quantity,
+        ]);
+
+        $this->unsetRelation('items');
+
+        if ($this->hasSinglePlan()) {
+            $this->fill([
+                'plan_id' => null,
+                'quantity' => null,
+            ])->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add a new plan to the subscription, and invoice immediately.
+     *
+     * @param  Plan  $plan
+     * @param  int  $quantity
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function addPlanAndInvoice($plan, $quantity = 1)
+    {
+        $this->alwaysInvoice();
+
+        return $this->addPlan($plan, $quantity);
+    }
+
+    /**
+     * Remove a plan from the subscription.
+     *
+     * @param  Plan  $plan
+     * @return $this
+     *
+     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
+     */
+    public function removePlan($plan)
+    {
+        if ($this->hasSinglePlan()) {
+            throw SubscriptionUpdateFailure::cannotDeleteLastPlan($this);
+        }
+
+        $this->items()->where('plan_id', $plan->id)->delete();
+
+        $this->unsetRelation('items');
+
+        if ($this->items()->count() < 2) {
+            $item = $this->items()->first();
+
+            $this->fill([
+                'plan_id' => $item->plan_id,
+                'quantity' => $item->quantity,
+            ])->save();
+        }
+
+        return $this;
     }
 
     /**
@@ -543,11 +865,37 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        $this->ends_at = $this->next_due_date;
+        // If the user was on trial, we will set the grace period to end when the trial
+        // would have ended. Otherwise, we'll retrieve the end of the billing period
+        // period and make that the end of the grace period for this current user.
+        if ($this->onTrial()) {
+            $this->ends_at = $this->trial_ends_at;
+        } else {
+            $this->ends_at = $this->next_due_date;
+        }
 
         $this->save();
 
         event(new SubscriptionCancelled($this));
+
+        return $this;
+    }
+
+    /**
+     * Cancel the subscription at a specific moment in time.
+     *
+     * @param  \DateTimeInterface|int  $endsAt
+     * @return $this
+     */
+    public function cancelAt($endsAt)
+    {
+        if ($endsAt instanceof DateTimeInterface) {
+            $endsAt = $endsAt->getTimestamp();
+        }
+        
+        $this->ends_at = Carbon::createFromTimestamp($endsAt);
+
+        $this->save();
 
         return $this;
     }
@@ -559,6 +907,20 @@ class Subscription extends Model
      */
     public function cancelNow()
     {
+        $this->markAsCancelled();
+
+        return $this;
+    }
+
+    /**
+     * Cancel the subscription immediately and invoice.
+     *
+     * @return $this
+     */
+    public function cancelNowAndInvoice()
+    {
+        $this->alwaysInvoice();
+
         $this->markAsCancelled();
 
         return $this;
@@ -589,8 +951,14 @@ class Subscription extends Model
      */
     public function resume()
     {
+        if (! $this->onGracePeriod()) {
+            throw new \LogicException('Unable to resume subscription that is not within grace period.');
+        }
+
+        // Finally, we will remove the ending timestamp from the user's record in the
+        // local database to indicate that the subscription is active again and is
+        // no longer "cancelled". Then we will save this record in the database.
         $this->fill([
-            'billing_cycle_anchor' => now(),
             'status' => self::STATUS_ACTIVE,
             'ends_at' => null,
         ])->save();

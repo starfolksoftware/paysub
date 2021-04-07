@@ -52,6 +52,7 @@ return [
     */
     'subscriber_table_name' => env('PAYSUB_SUBSCRIBER_TABLE', 'users'),
     'subscription_table_name' => env('PAYSUB_SUBSCRIPTION_TABLE', 'paysub_subscriptions'),
+    'subscription_items_table_name' => env('PAYSUB_SUBSCRIPTION_ITEMS_TABLE', 'paysub_subscription_items'),
     'plan_table_name' => env('PAYSUB_PLAN_TABLE', 'paysub_plans'),
     'authorization_table_name' => env('PAYSUB_AUTHORIZATION_TABLE', 'paysub_authorizations'),
     'invoice_table_name' => env('PAYSUB_INVOICE_TABLE', 'paysub_invoices'),
@@ -74,16 +75,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Taxes
+    | Auto-generate invoices
     |--------------------------------------------------------------------------
     |
-    | Tax definitions for invoice. 
+    | If set to `true`, invoice will be automatically generated for the subscriber 
+    | according to their subscription details. 
     |
     */
 
-    'invoice_taxes' => [
-        // ['name' => 'VAT', 'percentage' => 7.5]
-    ],
+    'auto_invoice' => true,
 
     /*
     |--------------------------------------------------------------------------
