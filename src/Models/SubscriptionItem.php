@@ -51,6 +51,19 @@ class SubscriptionItem extends Model
     }
 
     /**
+     * Get usages
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function usages()
+    {
+        return $this->hasMany(
+            Usage::class,
+            'item_id'
+        );
+    }
+
+    /**
      * Increment the quantity of the subscription item.
      *
      * @param  int  $count
@@ -124,39 +137,22 @@ class SubscriptionItem extends Model
     /**
      * Swap the subscription item to a new plan.
      *
-     * @param  string  $plan
-     * @param  array  $options
+     * @param  Plan  $plan
      * @return $this
      *
      * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
      */
-    public function swap($plan, $options = [])
+    public function swap($plan)
     {
-        $this->subscription->guardAgainstIncomplete();
-
-        $options = array_merge([
-            'plan' => $plan,
-            'quantity' => $this->quantity,
-            'payment_behavior' => $this->paymentBehavior(),
-            'proration_behavior' => $this->prorateBehavior(),
-            'tax_rates' => $this->subscription->getPlanTaxRatesForPayload($plan),
-        ], $options);
-
-        $item = StripeSubscriptionItem::update(
-            $this->stripe_id,
-            $options,
-            $this->subscription->owner->stripeOptions()
-        );
-
         $this->fill([
-            'stripe_plan' => $plan,
-            'quantity' => $item->quantity,
+            'plan_id' => $plan->id,
+            'quantity' => $this->quantity,
         ])->save();
 
         if ($this->subscription->hasSinglePlan()) {
             $this->subscription->fill([
-                'stripe_plan' => $plan,
-                'quantity' => $item->quantity,
+                'plan_id' => $plan->id,
+                'quantity' => $this->quantity,
             ])->save();
         }
 
@@ -166,17 +162,15 @@ class SubscriptionItem extends Model
     /**
      * Swap the subscription item to a new plan, and invoice immediately.
      *
-     * @param  string  $plan
-     * @param  array  $options
+     * @param  Plan  $plan
      * @return $this
      *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\IncompletePayment
      * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
      */
-    public function swapAndInvoice($plan, $options = [])
+    public function swapAndInvoice($plan)
     {
         $this->alwaysInvoice();
 
-        return $this->swap($plan, $options);
+        return $this->swap($plan);
     }
 }
