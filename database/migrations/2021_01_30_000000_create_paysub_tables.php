@@ -107,6 +107,35 @@ class CreatePaysubTables extends Migration
 
             $table->unique(['subscription_id', 'plan_id'], 's_itms_pl_unq');
         });
+
+        schema::create(config('paysub.feature_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->unique();
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+        schema::create(config('paysub.feature_plan_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('plan_id');
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedBigInteger('value')->default(0);
+            $table->timestamps();
+        });
+
+        schema::create(config('paysub.usage_table_name'), 
+            function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('feature_id');
+            $table->unsignedInteger('used');
+            $table->timestamp('valid_until')->nullable();
+            $table->timestamps();
+
+            $table->unique(['item_id', 'feature_id'], 'subitem_feat_unq');
+        });
     }
 
     /**
@@ -128,5 +157,8 @@ class CreatePaysubTables extends Migration
         Schema::dropIfExists(config('paysub.card_table_name'));
         Schema::dropIfExists(config('paysub.auth_table_name'));
         Schema::dropIfExists(config('paysub.subscription_items_table_name'));
+        Schema::dropIfExists(config('paysub.feature_table_name'));
+        Schema::dropIfExists(config('paysub.feature_plan_table_name'));
+        Schema::dropIfExists(config('paysub.usage_table_name'));
     }
 }

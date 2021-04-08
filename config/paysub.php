@@ -59,6 +59,9 @@ return [
     'payment_table_name' => env('PAYSUB_PAYMENT_TABLE', 'paysub_payments'),
     'card_table_name' => env('PAYSUB_CARD_TABLE', 'paysub_cards'),
     'auth_table_name' => env('PAYSUB_AUTH_TABLE', 'paysub_authorizations'),
+    'feature_table_name' => env('PAYSUB_FEAT_TABLE', 'paysub_features'),
+    'feature_plan_table_name' => env('PAYSUB_FEAT_PLAN_TABLE', 'paysub_features_plans'),
+    'usage_table_name' => env('PAYSUB_USAGE_TABLE', 'paysub_usages'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,24 +87,6 @@ return [
     */
 
     'auto_invoice' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Company Contact Detail
-    |--------------------------------------------------------------------------
-    |
-    | Contact details for the billable. This will be shown in invoices sent
-    | to billables.
-    |
-    */
-    'contact_detail' => [
-        'vendor' => '',
-        'street' => '',
-        'location' => '',
-        'phone' => '',
-        'url' => '',
-        'vatInfo' => '',
-    ],
 
     /*
     |--------------------------------------------------------------------------

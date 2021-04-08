@@ -65,4 +65,30 @@ class Plan extends Model
     {
         return $this->hasMany(SubscriptionItem::class, 'plan_id');
     }
+
+    /**
+     * Get features
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function features()
+    {
+        return $this->belongsToMany(
+            Feature::class,
+            config('paysub.feature_plan_table_name'),
+            'plan_id',
+            'feature_id'
+        )->withPivot('value');
+    }
+
+    /**
+     * Check if plan has feature
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasFeature($name)
+    {
+        return ! ! $this->features()->where('name', $name)->first();
+    }
 }

@@ -31,12 +31,12 @@ class InvoiceMail extends Mailable
     public function build()
     {
         $data = [
-            'vendor' => config('paysub.contact_detail.vendor'),
-            'street' => config('paysub.contact_detail.street'),
-            'location' => config('paysub.contact_detail.location'),
-            'phone' => config('paysub.contact_detail.phone'),
-            'url' => config('paysub.contact_detail.url'),
-            'vatInfo' => config('paysub.contact_detail.vatInfo'),
+            'vendor' => '',
+            'street' => '',
+            'location' => '',
+            'phone' => '',
+            'url' => '',
+            'vatInfo' => '',
         ];
 
         return $this->view('paysub::invoice')->with(array_merge($data, [
