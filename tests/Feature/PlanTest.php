@@ -4,7 +4,8 @@ namespace StarfolkSoftware\Paysub\Tests\Feature;
 
 use StarfolkSoftware\Paysub\Models\Plan;
 
-class PlanTest extends FeatureTestCase {
+class PlanTest extends FeatureTestCase
+{
     /**
      * @var Plan
      */
@@ -24,10 +25,11 @@ class PlanTest extends FeatureTestCase {
         ]);
     }
 
-    public function test_plan_has_feature() {
+    public function test_plan_has_feature()
+    {
         self::$basicPlan->features()->create([
             'name' => 'sample_feature',
-            'sort_order' => 1
+            'sort_order' => 1,
         ]);
 
         $this->assertTrue(self::$basicPlan->hasFeature('sample_feature'));
