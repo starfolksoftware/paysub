@@ -3,8 +3,6 @@
 namespace StarfolkSoftware\Paysub\Tests\Unit;
 
 use InvalidArgumentException;
-use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
-use StarfolkSoftware\Paysub\Models\Plan;
 use StarfolkSoftware\Paysub\Models\Subscription;
 use StarfolkSoftware\Paysub\Tests\TestCase;
 
@@ -55,27 +53,5 @@ class SubscriptionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         (new Subscription)->extendTrial(now()->subDay());
-    }
-
-    public function test_past_due_subscriptions_cannot_be_swapped()
-    {
-        $subscription = new Subscription([
-            'status' => Subscription::STATUS_PAST_DUE,
-        ]);
-
-        $this->expectException(SubscriptionUpdateFailure::class);
-
-        $subscription->swap(new Plan);
-    }
-
-    public function test_past_due_subscriptions_cannot_update_their_quantity()
-    {
-        $subscription = new Subscription([
-            'status' => Subscription::STATUS_PAST_DUE,
-        ]);
-
-        $this->expectException(SubscriptionUpdateFailure::class);
-
-        $subscription->updateQuantity(5);
     }
 }

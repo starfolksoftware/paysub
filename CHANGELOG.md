@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `paystack-subscription` will be documented in this file.
+All notable changes to `paysub` will be documented in this file.
 
 ## 0.0.1 - 2020-03-29
 

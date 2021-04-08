@@ -52,12 +52,16 @@ return [
     */
     'subscriber_table_name' => env('PAYSUB_SUBSCRIBER_TABLE', 'users'),
     'subscription_table_name' => env('PAYSUB_SUBSCRIPTION_TABLE', 'paysub_subscriptions'),
+    'subscription_items_table_name' => env('PAYSUB_SUBSCRIPTION_ITEMS_TABLE', 'paysub_subscription_items'),
     'plan_table_name' => env('PAYSUB_PLAN_TABLE', 'paysub_plans'),
     'authorization_table_name' => env('PAYSUB_AUTHORIZATION_TABLE', 'paysub_authorizations'),
     'invoice_table_name' => env('PAYSUB_INVOICE_TABLE', 'paysub_invoices'),
     'payment_table_name' => env('PAYSUB_PAYMENT_TABLE', 'paysub_payments'),
     'card_table_name' => env('PAYSUB_CARD_TABLE', 'paysub_cards'),
     'auth_table_name' => env('PAYSUB_AUTH_TABLE', 'paysub_authorizations'),
+    'feature_table_name' => env('PAYSUB_FEAT_TABLE', 'paysub_features'),
+    'feature_plan_table_name' => env('PAYSUB_FEAT_PLAN_TABLE', 'paysub_features_plans'),
+    'usage_table_name' => env('PAYSUB_USAGE_TABLE', 'paysub_usages'),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,34 +78,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Taxes
+    | Auto-generate invoices
     |--------------------------------------------------------------------------
     |
-    | Tax definitions for invoice. 
+    | If set to `true`, invoice will be automatically generated for the subscriber 
+    | according to their subscription details. 
     |
     */
 
-    'invoice_taxes' => [
-        // ['name' => 'VAT', 'percentage' => 7.5]
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Company Contact Detail
-    |--------------------------------------------------------------------------
-    |
-    | Contact details for the billable. This will be shown in invoices sent
-    | to billables.
-    |
-    */
-    'contact_detail' => [
-        'vendor' => '',
-        'street' => '',
-        'location' => '',
-        'phone' => '',
-        'url' => '',
-        'vatInfo' => '',
-    ],
+    'auto_invoice' => true,
 
     /*
     |--------------------------------------------------------------------------

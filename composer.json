@@ -1,15 +1,15 @@
 {
-    "name": "starfolksoftware/paystack-subscription",
+    "name": "starfolksoftware/paysub",
     "description": "Provides an inteface to paystack's subscription service",
     "keywords": [
         "starfolksoftware",
-        "paystack-subscription"
+        "paysub"
     ],
-    "homepage": "https://github.com/starfolksoftware/paystack-subscription",
+    "homepage": "https://github.com/starfolksoftware/paysub",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/starfolksoftware/paystack-subscription/issues",
-        "source": "https://github.com/starfolksoftware/paystack-subscription"
+        "issues": "https://github.com/starfolksoftware/paysub/issues",
+        "source": "https://github.com/starfolksoftware/paysub"
     },
     "authors": [
         {

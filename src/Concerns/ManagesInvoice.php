@@ -34,11 +34,11 @@ trait ManagesInvoice
             throw InvoiceCreationError::hasOpenInvoice($this);
         }
 
-        $invoiceBuilder = $this->newInvoice(
+        $invoice = $this->newInvoice(
             $subscription
-        );
+        )->add();
 
-        return $invoiceBuilder->add();
+        return $invoice;
     }
 
     /**

@@ -21,11 +21,12 @@ trait ManagesSubscription
     /**
      * Get a subscription instance by name.
      *
+     * @param  string  $name
      * @return \StarfolkSoftware\Paysub\Models\Subscription|null
      */
-    public function subscription()
+    public function subscription($name = 'default')
     {
-        return $this->subscriptions()->first();
+        return $this->subscriptions->where('name', $name)->first();
     }
 
     /**
@@ -39,30 +40,30 @@ trait ManagesSubscription
      * Begin creating a new subscription.
      *
      * @param  string  $name
-     * @param  Plan  $plan
-     * @param  string|null $interval
+     * @param  Plan|Plan[]  $plan
      * @return \StarfolkSoftware\Paysub\SubscriptionBuilder
      */
-    public function newSubscription(Plan $plan, $interval = null)
+    public function newSubscription($name = 'default', Plan $plan)
     {
-        return new SubscriptionBuilder($this, $plan, $interval);
+        return new SubscriptionBuilder($this, $name, $plan);
     }
 
     /**
      * Determine if the model is on trial.
+     * @param string $name
      * @param Plan|null $plan
      *
      * @return bool
      */
-    public function onTrial(Plan $plan = null)
+    public function onTrial($name = 'default', Plan $plan = null)
     {
-        if ($this->onGenericTrial()) {
+        if (func_num_args() === 0 && $this->onGenericTrial()) {
             return true;
         }
 
-        $subscription = $this->subscription();
+        $subscription = $this->subscription($name);
 
-        if (! $subscription->onTrial()) {
+        if (! $subscription || ! $subscription->onTrial()) {
             return false;
         }
 
@@ -82,12 +83,12 @@ trait ManagesSubscription
     /**
      * Get the ending date of the trial.
      *
-     * @param  Subscription|null  $subscription
+     * @param string $name
      * @return \Illuminate\Support\Carbon|null
      */
-    public function trialEndsAt()
+    public function trialEndsAt($name = 'default')
     {
-        $subscription = $this->subscription();
+        $subscription = $this->subscription($name);
 
         if ($subscription) {
             return $subscription->trial_ends_at;
@@ -98,12 +99,14 @@ trait ManagesSubscription
 
     /**
      * Determine if the model has a given subscription.
-     * @param  string|null  $plan
+     *
+     * @param string $name
+     * @param Plan|null $plan
      * @return bool
      */
-    public function subscribed(Plan $plan = null)
+    public function subscribed($name = 'default', Plan $plan = null)
     {
-        $subscription = $this->subscription();
+        $subscription = $this->subscription($name);
 
         if ($subscription && ! $subscription->valid()) {
             return false;
@@ -122,6 +125,30 @@ trait ManagesSubscription
         $subscription = $this->subscription();
         
         if (! $subscription->valid()) {
+            return false;
+        }
+
+        foreach ((array) $plans as $plan) {
+            if ($subscription->hasPlan($plan)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the model is actively subscribed to one of the given plans.
+     *
+     * @param  Plan|Plan[]  $plans
+     * @param  string  $name
+     * @return bool
+     */
+    public function subscribedToPlan($plans, $name = 'default')
+    {
+        $subscription = $this->subscription($name);
+
+        if (! $subscription || ! $subscription->valid()) {
             return false;
         }
 
