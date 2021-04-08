@@ -5,14 +5,11 @@ namespace StarfolkSoftware\Paysub;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Support\Arr;
-use StarfolkSoftware\Paysub\Concerns\Prorates;
 use StarfolkSoftware\Paysub\Events\SubscriptionCreated;
 use StarfolkSoftware\Paysub\Models\Plan;
 
 class SubscriptionBuilder
 {
-    use Prorates;
-
     /**
      * The model that is subscribing.
      *

@@ -8,7 +8,6 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use StarfolkSoftware\Paysub\Concerns\Prorates;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
@@ -17,7 +16,6 @@ use StarfolkSoftware\Paysub\Paysub;
 class Subscription extends Model
 {
     use HasFactory;
-    use Prorates;
     
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -453,7 +451,6 @@ class Subscription extends Model
         if ($plan) {
             $this
                 ->findItemOrFail($plan)
-                ->setProrationBehavior($this->prorationBehavior)
                 ->incrementQuantity($count);
 
             return $this->refresh();
@@ -462,22 +459,6 @@ class Subscription extends Model
         $this->guardAgainstMultiplePlans();
 
         return $this->updateQuantity($this->quantity + $count, $plan);
-    }
-
-    /**
-     *  Increment the quantity of the subscription, and invoice immediately.
-     *
-     * @param int $count
-     * @param Plan|null $plan
-     * @return $this
-     *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
-     */
-    public function incrementAndInvoice($count = 1, Plan $plan = null)
-    {
-        $this->alwaysInvoice();
-
-        return $this->incrementQuantity($count, $plan);
     }
 
     /**
@@ -493,7 +474,6 @@ class Subscription extends Model
         if ($plan) {
             $this
                 ->findItemOrFail($plan)
-                ->setProrationBehavior($this->prorationBehavior)
                 ->decrementQuantity($count);
 
             return $this->refresh();
@@ -517,7 +497,6 @@ class Subscription extends Model
         if ($plan) {
             $this
                 ->findItemOrFail($plan)
-                ->setProrationBehavior($this->prorationBehavior)
                 ->updateQuantity($quantity);
 
             return $this->refresh();
@@ -647,21 +626,6 @@ class Subscription extends Model
         $this->unsetRelation('items');
 
         return $this;
-    }
-
-    /**
-     * Swap the subscription to new plans, and invoice immediately.
-     *
-     * @param  Plan|Plan[]  $plans
-     * @return $this
-     *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
-     */
-    public function swapAndInvoice(Plan $plans)
-    {
-        $this->alwaysInvoice();
-
-        return $this->swap($plans);
     }
 
     /**
@@ -813,22 +777,6 @@ class Subscription extends Model
     }
 
     /**
-     * Add a new plan to the subscription, and invoice immediately.
-     *
-     * @param  Plan  $plan
-     * @param  int  $quantity
-     * @return $this
-     *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
-     */
-    public function addPlanAndInvoice($plan, $quantity = 1)
-    {
-        $this->alwaysInvoice();
-
-        return $this->addPlan($plan, $quantity);
-    }
-
-    /**
      * Remove a plan from the subscription.
      *
      * @param  Plan  $plan
@@ -907,20 +855,6 @@ class Subscription extends Model
      */
     public function cancelNow()
     {
-        $this->markAsCancelled();
-
-        return $this;
-    }
-
-    /**
-     * Cancel the subscription immediately and invoice.
-     *
-     * @return $this
-     */
-    public function cancelNowAndInvoice()
-    {
-        $this->alwaysInvoice();
-
         $this->markAsCancelled();
 
         return $this;

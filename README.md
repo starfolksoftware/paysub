@@ -1,10 +1,10 @@
 # Do not user in production
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/starfolksoftware/paystack-subscription.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paystack-subscription)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/starfolksoftware/paystack-subscription/run-tests?label=tests)](https://github.com/starfolksoftware/paystack-subscription/actions?query=workflow%3ATests+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/starfolksoftware/paystack-subscription.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paystack-subscription)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/starfolksoftware/paysub.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paysub)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/starfolksoftware/paysub/run-tests?label=tests)](https://github.com/starfolksoftware/paysub/actions?query=workflow%3ATests+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/starfolksoftware/paysub.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paysub)
 
-Paysub offers basic subscription management for laravel applications with paystack as a payment provider.
+Paysub offers basic subscription management for laravel applications. Currently supports only paystack for payment.
 
 ## Developer Preview
 
@@ -15,7 +15,7 @@ This project is in Developer Preview stage, All API's might change without warni
 You can install the package via composer:
 
 ```bash
-composer require starfolksoftware/paystack-subscription
+composer require starfolksoftware/paysub
 ```
 
 Run the migrations with:
@@ -203,8 +203,8 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Road Map
 
-- [ ] Multiple plans support
-- [ ] Invoice period(invoice starts at, invoice ends at)
+- [x] Multiple plans support
+- [x] Invoice period(invoice starts at, invoice ends at)
 - [ ] Coupons handling
 
 ## Contributing

@@ -3,12 +3,9 @@
 namespace StarfolkSoftware\Paysub\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use StarfolkSoftware\Paysub\Concerns\Prorates;
 
 class SubscriptionItem extends Model
 {
-    use Prorates;
-    
     /**
      * The attributes that are not mass assignable.
      *
@@ -79,24 +76,6 @@ class SubscriptionItem extends Model
     }
 
     /**
-     *  Increment the quantity of the subscription item, and invoice immediately.
-     *
-     * @param  int  $count
-     * @return $this
-     *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\IncompletePayment
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
-     */
-    public function incrementAndInvoice($count = 1)
-    {
-        $this->alwaysInvoice();
-
-        $this->incrementQuantity($count);
-
-        return $this;
-    }
-
-    /**
      * Decrement the quantity of the subscription item.
      *
      * @param  int  $count
@@ -157,20 +136,5 @@ class SubscriptionItem extends Model
         }
 
         return $this;
-    }
-
-    /**
-     * Swap the subscription item to a new plan, and invoice immediately.
-     *
-     * @param  Plan  $plan
-     * @return $this
-     *
-     * @throws \StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure
-     */
-    public function swapAndInvoice($plan)
-    {
-        $this->alwaysInvoice();
-
-        return $this->swap($plan);
     }
 }
