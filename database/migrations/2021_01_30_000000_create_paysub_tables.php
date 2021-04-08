@@ -121,7 +121,7 @@ class CreatePaysubTables extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('plan_id');
             $table->unsignedBigInteger('feature_id');
-            $table->unsignedBigInteger('value')->nullable();
+            $table->unsignedBigInteger('value')->default(0);
             $table->timestamps();
         });
 

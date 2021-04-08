@@ -47,12 +47,12 @@ class InvoicePaid extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $data = [
-            'vendor' => config('paysub.contact_detail.vendor'),
-            'street' => config('paysub.contact_detail.street'),
-            'location' => config('paysub.contact_detail.location'),
-            'phone' => config('paysub.contact_detail.phone'),
-            'url' => config('paysub.contact_detail.url'),
-            'vatInfo' => config('paysub.contact_detail.vatInfo'),
+            'vendor' => '',
+            'street' => '',
+            'location' => '',
+            'phone' => '',
+            'url' => '',
+            'vatInfo' => '',
         ];
 
         $mailMessage = (new MailMessage)->subject('Ciniki Accounting' . ' Invoice[INV-'.$this->invoice->id.']')

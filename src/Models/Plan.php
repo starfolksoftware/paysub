@@ -80,4 +80,14 @@ class Plan extends Model
             'feature_id'
         )->withPivot('value');
     }
+
+    /**
+     * Check if plan has feature
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function hasFeature($name) {
+        return !! $this->features()->where('name', $name)->first();
+    }
 }
