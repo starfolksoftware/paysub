@@ -1,12 +1,18 @@
-# Do not user in production
+<p align="center"><img width="566" alt="Screenshot 2021-04-09 at 10 41 43" src="https://user-images.githubusercontent.com/4984175/114162957-89373800-9921-11eb-8012-8ae8ff6c23fb.png"></p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/starfolksoftware/paysub.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paysub)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/starfolksoftware/paysub/run-tests?label=tests)](https://github.com/starfolksoftware/paysub/actions?query=workflow%3ATests+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/starfolksoftware/paysub.svg?style=flat-square)](https://packagist.org/packages/starfolksoftware/paysub)
+<p align="center">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/starfolksoftware/paysub/Check%20&%20fix%20styling?label=Check%20%26%20fix%20styling&style=for-the-badge">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/starfolksoftware/paysub/Psalm?label=Psalm&style=for-the-badge">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/starfolksoftware/paysub/Tests?style=for-the-badge">
+<img alt="Packagist Downloads" src="https://img.shields.io/packagist/dt/starfolksoftware/paysub?style=for-the-badge">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/starfolksoftware/paysub?style=for-the-badge">
+<img alt="Packagist License" src="https://img.shields.io/packagist/l/starfolksoftware/paysub?style=for-the-badge">
+<img alt="Packagist PHP Version Support" src="https://img.shields.io/packagist/php-v/starfolksoftware/paysub?style=for-the-badge">
+</p>
 
 Paysub offers basic subscription management for laravel applications. Currently supports only paystack for payment.
 
-## Developer Preview
+## Developer Preview [Do not user in production]
 
 This project is in Developer Preview stage, All API's might change without warning and no guarantees are given about stability. Do not use it in production.
 
