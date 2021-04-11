@@ -1,4 +1,4 @@
-<p align="center"><img width="566" alt="Screenshot 2021-04-09 at 10 41 43" src="https://user-images.githubusercontent.com/4984175/114162957-89373800-9921-11eb-8012-8ae8ff6c23fb.png"></p>
+<p align="center"><img width="300" alt="Screenshot 2021-04-09 at 10 41 43" src="https://user-images.githubusercontent.com/4984175/114162957-89373800-9921-11eb-8012-8ae8ff6c23fb.png"></p>
 
 <p align="center">
 <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/starfolksoftware/paysub/Check%20&%20fix%20styling?label=Check%20%26%20fix%20styling&style=for-the-badge">
