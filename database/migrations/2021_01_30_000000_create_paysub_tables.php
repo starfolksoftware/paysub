@@ -23,7 +23,7 @@ class CreatePaysubTables extends Migration
             $table->string('display_name')->nullable();
             $table->enum('interval_type', ['daily', 'weekly', 'monthly', 'yearly'])->default('monthly');
             $table->integer('interval_count')->default(1);
-            $table->string('description');
+            $table->text('description');
             $table->unsignedBigInteger('amount');
             $table->string('currency')->default('NGN');
             $table->json('tax_rates')->nullable();
