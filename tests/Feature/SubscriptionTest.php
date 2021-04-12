@@ -445,4 +445,31 @@ class SubscriptionTest extends FeatureTestCase
         $this->assertTrue($subscription->hasMultiplePlans());
         $this->assertFalse($subscription->hasSinglePlan());
     }
+
+    public function test_we_can_sync_invoice_after_updating_subscription()
+    {
+        $subscriber = $this->createCustomer();
+
+        // Start with an incomplete subscription.
+        $subscription = $subscriber->newSubscription('default', self::$basicPlan)
+            ->anchorBillingCycleOn(now()->addDays(10))
+            ->add();
+        
+        $this->assertTrue($subscription->hasSinglePlan());
+        $this->assertEquals(1, count($subscription->latestInvoice()->line_items));
+        
+        $subscription->addPlan(self::$basicPlanExtraUser);
+
+        $this->assertEquals(1, count($subscription->latestInvoice()->line_items));
+
+        $subscription->syncLatestInvoice();
+
+        $this->assertEquals(2, count($subscription->latestInvoice()->line_items));
+
+        $this->assertEquals(300000, (int) $subscription->latestInvoice()->total);
+
+        $this->assertTrue($subscription->hasMultiplePlans());
+
+        $subscription->swap([self::$standardPlan, self::$basicPlanExtraUser]);
+    }
 }

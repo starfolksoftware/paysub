@@ -640,13 +640,21 @@ class Subscription extends Model
             return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
-        switch ($this->plan->interval_type) {
+        if ($this->hasMultiplePlans()) {
+            $firstItem = $this->items()->first();
+            list($interval_type, $interval_count) = array_values(Plan::find($firstItem->plan_id)->only('interval_type', 'interval_count'));
+        } else {
+            $interval_type = $this->plan->interval_type;
+            $interval_count = $this->plan->interval_count;
+        }
+
+        switch ($interval_type) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->addDays($this->plan->interval_count);
+                )->addDays($interval_count);
 
                 break;
             
@@ -655,7 +663,7 @@ class Subscription extends Model
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->addWeeks($this->plan->interval_count);
+                )->addWeeks($interval_count);
 
                 break;
             
@@ -664,7 +672,7 @@ class Subscription extends Model
                     null,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->addMonths($this->plan->interval_count);
+                )->addMonths($interval_count);
 
                 break;
             
@@ -673,7 +681,7 @@ class Subscription extends Model
                     $this->billing_cycle_anchor->year,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->addYears($this->plan->interval_count);
+                )->addYears($interval_count);
 
                 break;
             
@@ -698,13 +706,21 @@ class Subscription extends Model
             return \Carbon\Carbon::parse($this->anchor_billing_cycle);
         }
 
-        switch ($this->plan->interval_type) {
+        if ($this->hasMultiplePlans()) {
+            $firstItem = $this->items()->first();
+            list($interval_type, $interval_count) = array_values(Plan::find($firstItem->plan_id)->only('interval_type', 'interval_count'));
+        } else {
+            $interval_type = $this->plan->interval_type;
+            $interval_count = $this->plan->interval_count;
+        }
+
+        switch ($interval_type) {
             case Plan::INTERVAL_DAILY:
                 $date = Carbon::createFromDate(
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->subDays($this->plan->interval_count);
+                )->subDays($interval_count);
 
                 break;
             
@@ -713,7 +729,7 @@ class Subscription extends Model
                     null,
                     null,
                     $this->billing_cycle_anchor->day
-                )->subWeeks($this->plan->interval_count);
+                )->subWeeks($interval_count);
 
                 break;
             
@@ -722,7 +738,7 @@ class Subscription extends Model
                     null,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->subMonths($this->plan->interval_count);
+                )->subMonths($interval_count);
 
                 break;
             
@@ -731,7 +747,7 @@ class Subscription extends Model
                     $this->billing_cycle_anchor->year,
                     $this->billing_cycle_anchor->month,
                     $this->billing_cycle_anchor->day
-                )->subYears($this->plan->interval_count);
+                )->subYears($interval_count);
 
                 break;
             
@@ -908,6 +924,37 @@ class Subscription extends Model
     public function latestInvoice()
     {
         return $this->invoices()->latest()->first();
+    }
+
+    /**
+     * Sync latest invoice
+     *
+     * @return Invoice
+     */
+    public function syncLatestInvoice()
+    {
+        $invoice = $this->latestInvoice();
+        $line_items = [];
+
+        foreach ($this->items as $key => $item) {
+            array_push($line_items, [
+                'name' => trans('paysub::invoice.subscription_invoice'),
+                'amount' => $item->plan->amount,
+                'quantity' => $item->quantity,
+                'start_date' => $this->last_due_date,
+                'end_date' => $this->next_due_date,
+                'tax_rates' => $item->plan->tax_rates ?? [],
+                'currency' => $item->plan->currency_code,
+            ]);
+        }
+
+        $invoice->line_items = $line_items;
+        $invoice->due_date = $this->next_due_date;
+        $invoice
+            ->calcTotal()
+            ->save();
+
+        return $invoice->refresh();
     }
 
     /**

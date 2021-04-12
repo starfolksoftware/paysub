@@ -14,8 +14,8 @@ class InvoiceBuilder
     /** @var Subscription */
     protected $subscription;
 
-    /** @var Plan */
-    protected $plan;
+    /** @var SubscriptionItem[] */
+    protected $items;
 
     /**
      * Create a new invoice builder instance.
@@ -38,17 +38,19 @@ class InvoiceBuilder
     public function subscription(Subscription $subscription, $autofill = true)
     {
         $this->subscription = $subscription;
-        $this->plan = $this->subscription->plan;
+        $this->items = $this->subscription->items;
 
         if ($autofill) {
-            $this->lineItem(
-                trans('paysub::invoice.subscription_invoice'),
-                $this->plan->amount,
-                $this->subscription->quantity,
-                $this->subscription->last_due_date,
-                $this->subscription->next_due_date,
-                $this->plan->tax_rates ?? []
-            );
+            foreach ($this->items as $key => $item) {
+                $this->lineItem(
+                    trans('paysub::invoice.subscription_invoice'),
+                    $item->plan->amount,
+                    $item->quantity,
+                    $this->subscription->last_due_date,
+                    $this->subscription->next_due_date,
+                    $item->plan->tax_rates ?? []
+                );
+            }
 
             $this->dueDate($subscription->next_due_date);
             $this->status(Invoice::STATUS_UNPAID);
