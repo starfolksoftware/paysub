@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use StarfolkSoftware\Paysub\Casts\Json;
+use StarfolkSoftware\Paysub\InvoiceLineItem;
 use StarfolkSoftware\Paysub\Paysub;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -273,5 +274,32 @@ class Invoice extends Model
     public function owner()
     {
         return $this->subscription->subscriber;
+    }
+
+    /**
+     * Calculate the total payable
+     *
+     * @param float|null $amount
+     * @return $this
+     */
+    public function calcTotal($amount = null)
+    {
+        if (! $amount) {
+            $amount = collect($this->line_items)->reduce(function ($carry, $line_item) {
+                $item = new InvoiceLineItem($this, (object) $line_item);
+    
+                $item_total = ((double) $line_item['amount'] * (int) $line_item['quantity']);
+    
+                if ($etp = $item->exclusiveTaxPercentage()) {
+                    $item_total = $item_total + ($item_total * $etp);
+                }
+    
+                return $carry + $item_total;
+            }, 0);
+        } 
+
+        $this->total = $amount;
+
+        return $this;
     }
 }
