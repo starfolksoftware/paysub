@@ -640,7 +640,7 @@ class Subscription extends Model
             return \Carbon\Carbon::parse($this->owner->trial_ends_at);
         }
 
-        if ($this->hasMultiplePlans()) { 
+        if ($this->hasMultiplePlans()) {
             $firstItem = $this->items()->first();
             list($interval_type, $interval_count) = array_values(Plan::find($firstItem->plan_id)->only('interval_type', 'interval_count'));
         } else {
@@ -706,7 +706,7 @@ class Subscription extends Model
             return \Carbon\Carbon::parse($this->anchor_billing_cycle);
         }
 
-        if ($this->hasMultiplePlans()) { 
+        if ($this->hasMultiplePlans()) {
             $firstItem = $this->items()->first();
             list($interval_type, $interval_count) = array_values(Plan::find($firstItem->plan_id)->only('interval_type', 'interval_count'));
         } else {
@@ -928,10 +928,11 @@ class Subscription extends Model
 
     /**
      * Sync latest invoice
-     * 
+     *
      * @return Invoice
      */
-    public function syncLatestInvoice() {
+    public function syncLatestInvoice()
+    {
         $invoice = $this->latestInvoice();
         $line_items = [];
 
