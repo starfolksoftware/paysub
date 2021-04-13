@@ -923,13 +923,18 @@ class Subscription extends Model
     }
 
     /**
-     * Sync latest invoice
+     * Sync open invoice according to
+     * current state of this subscription
      *
+     * @param Invoice|null $invoice
      * @return Invoice
      */
-    public function syncLatestInvoice()
+    public function syncOpenInvoice(Invoice $invoice = null)
     {
-        $invoice = $this->latestInvoice();
+        if (! $invoice) {
+            $invoice = $this->openInvoice();
+        }
+        
         $line_items = [];
 
         foreach ($this->items as $key => $item) {

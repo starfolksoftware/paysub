@@ -462,7 +462,7 @@ class SubscriptionTest extends FeatureTestCase
 
         $this->assertEquals(1, count($subscription->latestInvoice()->line_items));
 
-        $subscription->syncLatestInvoice();
+        $subscription->syncOpenInvoice();
 
         $this->assertEquals(2, count($subscription->latestInvoice()->line_items));
 
