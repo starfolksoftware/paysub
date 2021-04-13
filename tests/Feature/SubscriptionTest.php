@@ -446,7 +446,8 @@ class SubscriptionTest extends FeatureTestCase
         $this->assertFalse($subscription->hasSinglePlan());
     }
 
-    public function test_we_can_sync_invoice_after_updating_subscription() {
+    public function test_we_can_sync_invoice_after_updating_subscription()
+    {
         $subscriber = $this->createCustomer();
 
         // Start with an incomplete subscription.

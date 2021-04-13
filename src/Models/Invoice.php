@@ -296,7 +296,7 @@ class Invoice extends Model
     
                 return $carry + $item_total;
             }, 0);
-        } 
+        }
 
         $this->total = $amount;
 
