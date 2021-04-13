@@ -401,10 +401,6 @@ class Subscription extends Model
 
         $count = $builder->count();
 
-        if ($count > 1) {
-            throw InvoiceCreationError::multipleOpenInvoice($this);
-        }
-
         return  $builder->latest()->first();
     }
 
