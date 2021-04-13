@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
-use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
 use StarfolkSoftware\Paysub\Paysub;
 
