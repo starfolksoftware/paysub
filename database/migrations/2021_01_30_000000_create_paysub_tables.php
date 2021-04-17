@@ -146,7 +146,7 @@ class CreatePaysubTables extends Migration
     public function down()
     {
         Schema::table(config('paysub.subscriber_table_name'), function (Blueprint $table) {
-            $table->dropColumns([
+            $table->dropColumn([
                 'trial_ends_at'
             ]);
         });

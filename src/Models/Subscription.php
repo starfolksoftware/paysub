@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
-use StarfolkSoftware\Paysub\Exceptions\InvoiceCreationError;
 use StarfolkSoftware\Paysub\Exceptions\SubscriptionUpdateFailure;
 use StarfolkSoftware\Paysub\Paysub;
 
@@ -400,10 +399,6 @@ class Subscription extends Model
         }
 
         $count = $builder->count();
-
-        if ($count > 1) {
-            throw InvoiceCreationError::multipleOpenInvoice($this);
-        }
 
         return  $builder->latest()->first();
     }
@@ -927,13 +922,18 @@ class Subscription extends Model
     }
 
     /**
-     * Sync latest invoice
+     * Sync open invoice according to
+     * current state of this subscription
      *
+     * @param Invoice|null $invoice
      * @return Invoice
      */
-    public function syncLatestInvoice()
+    public function syncOpenInvoice(Invoice $invoice = null)
     {
-        $invoice = $this->latestInvoice();
+        if (! $invoice) {
+            $invoice = $this->openInvoice();
+        }
+        
         $line_items = [];
 
         foreach ($this->items as $key => $item) {
@@ -949,7 +949,6 @@ class Subscription extends Model
         }
 
         $invoice->line_items = $line_items;
-        $invoice->due_date = $this->next_due_date;
         $invoice
             ->calcTotal()
             ->save();

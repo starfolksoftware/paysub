@@ -43,7 +43,7 @@ trait ManagesPayment
         $auth = $this->defaultAuth();
 
         $response = $this->chargeUsingPaystack(
-            $invoice->amount,
+            $invoice->total,
             $auth->email,
             $auth->code
         );
