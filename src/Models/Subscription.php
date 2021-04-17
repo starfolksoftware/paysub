@@ -949,7 +949,6 @@ class Subscription extends Model
         }
 
         $invoice->line_items = $line_items;
-        $invoice->due_date = $this->next_due_date;
         $invoice
             ->calcTotal()
             ->save();
