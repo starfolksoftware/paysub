@@ -142,7 +142,7 @@ class Invoice extends Model
      */
     public function date($timezone = null)
     {
-        $carbon = Carbon::createFromTimestamp($this->created_at);
+        $carbon = $this->created_at;
 
         return $timezone ? $carbon->setTimezone($timezone) : $carbon;
     }
