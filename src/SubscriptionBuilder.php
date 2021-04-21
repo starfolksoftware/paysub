@@ -31,6 +31,12 @@ class SubscriptionBuilder
      */
     protected $items;
 
+    /** @var int */
+    protected $quantity;
+
+    /** @var mixed */
+    protected $billing_cycle_anchor;
+
     /**
      * The date and time the trial will expire.
      *

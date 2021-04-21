@@ -63,7 +63,7 @@ class Payment extends Model
     /**
      * Get the subscription of the payment
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     public function subscription()
     {
@@ -74,7 +74,7 @@ class Payment extends Model
             '',
             [
                 'StarfolkSoftware\Paysub\Models\Subscription' => 'subscription_id',
-                'StarfolkSoftware\Paysub\Models\Subscription' => 'invoice_id',
+                'StarfolkSoftware\Paysub\Models\Invoice' => 'invoice_id',
             ]
         );
     }

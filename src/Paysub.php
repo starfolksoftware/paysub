@@ -52,21 +52,8 @@ class Paysub
      */
     public static $deactivatePastDue = true;
 
-    /**
-     * Get the billable entity instance by Stripe ID.
-     *
-     * @param  string  $paystackId
-     * @return \StarfolkSoftware\Paysub\Billable|null
-     */
-    public static function findBillable($paystackId)
+    final public function __construct()
     {
-        if ($paystackId === null) {
-            return;
-        }
-
-        $model = config('paysub.subscriber_model');
-
-        return (new $model)->where('stripe_id', $paystackId)->first();
     }
 
     /**

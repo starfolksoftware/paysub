@@ -5,6 +5,7 @@ namespace StarfolkSoftware\Paysub;
 use Carbon\Carbon;
 use StarfolkSoftware\Paysub\Models\Invoice;
 use StarfolkSoftware\Paysub\Models\Subscription;
+use StarfolkSoftware\Paysub\Models\SubscriptionItem;
 
 class InvoiceBuilder
 {
@@ -16,6 +17,9 @@ class InvoiceBuilder
 
     /** @var SubscriptionItem[] */
     protected $items;
+
+    /** @var Carbon */
+    protected $due_date;
 
     /**
      * Create a new invoice builder instance.

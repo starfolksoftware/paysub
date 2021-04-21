@@ -8,6 +8,10 @@ use StarfolkSoftware\Paysub\Models\Subscription;
 
 class SubscriptionUpdateFailure extends Exception
 {
+    final public function __construct()
+    {
+    }
+    
     /**
      * Create a new InvoiceCreationError instance.
      *
@@ -36,7 +40,7 @@ class SubscriptionUpdateFailure extends Exception
      * Create a new SubscriptionUpdateFailure instance.
      *
      * @param  \StarfolkSoftware\Paysub\Models\Subscription  $subscription
-     * @param  \StarfolkSoftware\Paysub\Models\Subscription  $plan
+     * @param  \StarfolkSoftware\Paysub\Models\Plan  $plan
      * @return static
      */
     public static function duplicatePlan(Subscription $subscription, Plan $plan)
