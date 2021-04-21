@@ -18,19 +18,19 @@ class InvoiceBuilder
     /** @var SubscriptionItem[] */
     protected $items;
 
-    /** @var Carbon */
+    /** @var Carbon|null */
     protected $due_date;
 
-    /** @var string */
+    /** @var string|null */
     protected $description;
 
-    /** @var float */
+    /** @var float|null */
     protected $total;
 
-    /** @var array */
+    /** @var array|null */
     protected $tax;
 
-    /** @var string */
+    /** @var string|null */
     protected $status;
 
     /** @var Carbon|null */
@@ -44,10 +44,6 @@ class InvoiceBuilder
      */
     public function __construct(Subscription $subscription, $autofill_line_items = true)
     {
-        $this->description = '';
-        $this->status = Invoice::STATUS_UNPAID;
-        $this->paid_at = null;
-
         $this->subscription($subscription, $autofill_line_items);
     }
 
