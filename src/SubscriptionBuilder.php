@@ -110,7 +110,6 @@ class SubscriptionBuilder
      */
     public function plan(Plan $plan, $quantity = 1)
     {
-        $this->plan_id = $plan->id;
         $this->quantity = $quantity;
         
         $this->items[$plan->id] = $plan;

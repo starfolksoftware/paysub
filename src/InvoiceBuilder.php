@@ -59,6 +59,11 @@ class InvoiceBuilder
         $this->subscription = $subscription;
         $this->items = $this->subscription->items;
 
+        $this->description = '';
+        $this->status = Invoice::STATUS_UNPAID;
+        $this->paid_at = null;
+
+
         if ($autofill) {
             foreach ($this->items as $item) {
                 $this->lineItem(
