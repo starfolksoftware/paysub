@@ -108,7 +108,7 @@ trait ManagesSubscription
     {
         $subscription = $this->subscription($name);
 
-        if ($subscription && ! $subscription->valid()) {
+        if (! $subscription || ($subscription && ! $subscription->valid())) {
             return false;
         }
 
