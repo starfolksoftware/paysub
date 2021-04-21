@@ -33,7 +33,7 @@ class InvoiceBuilder
     /** @var string */
     protected $status;
 
-    /** @var Carbon */
+    /** @var Carbon|null */
     protected $paid_at;
 
     /**
@@ -44,6 +44,10 @@ class InvoiceBuilder
      */
     public function __construct(Subscription $subscription, $autofill_line_items = true)
     {
+        $this->description = '';
+        $this->status = Invoice::STATUS_UNPAID;
+        $this->paid_at = null;
+
         $this->subscription($subscription, $autofill_line_items);
     }
 
@@ -58,11 +62,6 @@ class InvoiceBuilder
     {
         $this->subscription = $subscription;
         $this->items = $this->subscription->items;
-
-        $this->description = '';
-        $this->status = Invoice::STATUS_UNPAID;
-        $this->paid_at = null;
-
 
         if ($autofill) {
             foreach ($this->items as $item) {

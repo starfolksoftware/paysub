@@ -398,8 +398,6 @@ class Subscription extends Model
             $builder = $this->invoices()->unpaid();
         }
 
-        $count = $builder->count();
-
         return  $builder->latest()->first();
     }
 
@@ -936,7 +934,7 @@ class Subscription extends Model
         
         $line_items = [];
 
-        foreach ($this->items as $key => $item) {
+        foreach ($this->items as $item) {
             array_push($line_items, [
                 'name' => trans('paysub::invoice.subscription_invoice'),
                 'amount' => $item->plan->amount,
