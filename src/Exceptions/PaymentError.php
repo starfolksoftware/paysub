@@ -6,10 +6,6 @@ use Exception;
 
 class PaymentError extends Exception
 {
-    final public function __construct()
-    {
-    }
-    
     /**
      * Create a new InvoiceCreationError instance.
      *

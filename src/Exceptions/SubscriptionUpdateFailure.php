@@ -8,10 +8,6 @@ use StarfolkSoftware\Paysub\Models\Subscription;
 
 class SubscriptionUpdateFailure extends Exception
 {
-    final public function __construct()
-    {
-    }
-    
     /**
      * Create a new InvoiceCreationError instance.
      *

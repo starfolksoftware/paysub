@@ -6,10 +6,6 @@ use Exception;
 
 class FailedRequest extends Exception
 {
-    final public function __construct()
-    {
-    }
-    
     /**
      * Create a new PaystackIsNull instance.
      *

@@ -6,10 +6,6 @@ use Exception;
 
 class ApiKeyInvalid extends Exception
 {
-    final public function __construct()
-    {
-    }
-    
     /**
      * Create a new PaystackIsNull instance.
      *

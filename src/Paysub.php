@@ -52,10 +52,6 @@ class Paysub
      */
     public static $deactivatePastDue = true;
 
-    final public function __construct()
-    {
-    }
-
     /**
      * Get the default Stripe API options.
      *
