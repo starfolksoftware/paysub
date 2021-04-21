@@ -25,7 +25,7 @@ class Json implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
-     * @param  array  $value
+     * @param  mixed  $value
      * @param  array  $attributes
      * @return string
      */

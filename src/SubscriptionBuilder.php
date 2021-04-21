@@ -31,6 +31,12 @@ class SubscriptionBuilder
      */
     protected $items;
 
+    /** @var int */
+    protected $quantity;
+
+    /** @var mixed */
+    protected $billing_cycle_anchor;
+
     /**
      * The date and time the trial will expire.
      *
@@ -78,10 +84,10 @@ class SubscriptionBuilder
      *
      * @param  mixed  $owner
      * @param  string $name
-     * @param  Plan|Plan[]  $plan
+     * @param  mixed  $plan
      * @return void
      */
-    public function __construct($owner, $name, Plan $plans = null)
+    public function __construct($owner, $name, $plans = null)
     {
         $this->owner = $owner;
         $this->name = $name;
@@ -104,7 +110,6 @@ class SubscriptionBuilder
      */
     public function plan(Plan $plan, $quantity = 1)
     {
-        $this->plan_id = $plan->id;
         $this->quantity = $quantity;
         
         $this->items[$plan->id] = $plan;
@@ -265,8 +270,8 @@ class SubscriptionBuilder
             'ends_at' => null,
         ]);
 
-        /** @var \StarfolkSoftware\Paysub\Models\SubscriptionItem $item */
-        foreach ($this->items as $key => $item) {
+        $keys = array_keys($this->items);
+        foreach ($keys as $key) {
             $subscription->items()->create([
                 'plan_id' => $key,
                 'quantity' => $subscription->quantity,

@@ -28,7 +28,10 @@ class InvoiceMail extends Mailable
         $this->invoice = $invoice;
     }
 
-    public function build()
+    /**
+     * @return static
+     */
+    public function build(): self
     {
         $data = [
             'vendor' => '',

@@ -108,7 +108,7 @@ trait ManagesSubscription
     {
         $subscription = $this->subscription($name);
 
-        if ($subscription && ! $subscription->valid()) {
+        if (! $subscription || ($subscription && ! $subscription->valid())) {
             return false;
         }
 
@@ -117,7 +117,7 @@ trait ManagesSubscription
 
     /**
      * Determine if the model is actively subscribed to one of the given plans.
-     * @param  Plan|Plan[]  $plans
+     * @param  mixed  $plans
      * @return bool
      */
     public function subscribedToOneOf($plans)
@@ -140,7 +140,7 @@ trait ManagesSubscription
     /**
      * Determine if the model is actively subscribed to one of the given plans.
      *
-     * @param  Plan|Plan[]  $plans
+     * @param  mixed  $plans
      * @param  string  $name
      * @return bool
      */

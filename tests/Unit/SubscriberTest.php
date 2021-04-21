@@ -14,7 +14,7 @@ class SubscriberTest extends TestCase
 
         $this->assertFalse($subscriber->onGenericTrial());
 
-        $subscriber->trial_ends_at = $tomorrow = Carbon::tomorrow();
+        $subscriber->trial_ends_at = Carbon::tomorrow();
 
         $this->assertTrue($subscriber->onGenericTrial());
 

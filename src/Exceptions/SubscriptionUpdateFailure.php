@@ -36,7 +36,7 @@ class SubscriptionUpdateFailure extends Exception
      * Create a new SubscriptionUpdateFailure instance.
      *
      * @param  \StarfolkSoftware\Paysub\Models\Subscription  $subscription
-     * @param  \StarfolkSoftware\Paysub\Models\Subscription  $plan
+     * @param  \StarfolkSoftware\Paysub\Models\Plan  $plan
      * @return static
      */
     public static function duplicatePlan(Subscription $subscription, Plan $plan)

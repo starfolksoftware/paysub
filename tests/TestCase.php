@@ -2,7 +2,6 @@
 
 namespace StarfolkSoftware\Paysub\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use StarfolkSoftware\Paysub\PaysubServiceProvider;
 
@@ -11,10 +10,6 @@ class TestCase extends Orchestra
     public function setUp(): void
     {
         parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'StarfolkSoftware\\Subscription\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
     }
 
     protected function getPackageProviders($app)

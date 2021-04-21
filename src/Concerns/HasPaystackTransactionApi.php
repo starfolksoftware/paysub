@@ -7,8 +7,6 @@ use StarfolkSoftware\Paysub\Utilities\CurlRequest;
 
 trait HasPaystackTransactionApi
 {
-    public static string $paystackTransUrl = 'https://api.paystack.co/transaction/';
-
     /**
      * Get the subscriber valid email to be used with paystack
      *
@@ -20,7 +18,7 @@ trait HasPaystackTransactionApi
     {
         return (new CurlRequest())(
             'post',
-            self::$paystackTransUrl.'initialize',
+            'https://api.paystack.co/transaction/initialize',
             [
                 'email' => $this->paystackEmail(),
                 'amount' => $amount,
@@ -36,7 +34,7 @@ trait HasPaystackTransactionApi
         
         return (new CurlRequest())(
             'get',
-            self::$paystackTransUrl.'verify/'.$reference
+            'https://api.paystack.co/transaction/verify/'.$reference
         );
     }
 
@@ -44,7 +42,7 @@ trait HasPaystackTransactionApi
     {
         return (new CurlRequest())(
             'post',
-            self::$paystackTransUrl.'charge_authorization',
+            'https://api.paystack.co/transaction/charge_authorization',
             [
                 'email' => $email,
                 'amount' => $amount,

@@ -142,7 +142,7 @@ class Invoice extends Model
      */
     public function date($timezone = null)
     {
-        $carbon = Carbon::createFromTimestampUTC($this->created_at);
+        $carbon = $this->created_at;
 
         return $timezone ? $carbon->setTimezone($timezone) : $carbon;
     }
@@ -180,7 +180,7 @@ class Invoice extends Model
      * Capture the invoice as a PDF and return the raw bytes.
      *
      * @param  array  $data
-     * @return string
+     * @return string|null
      */
     public function pdf(array $data)
     {

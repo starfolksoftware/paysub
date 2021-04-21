@@ -3,13 +3,14 @@
 namespace StarfolkSoftware\Paysub;
 
 use Carbon\Carbon;
+use StarfolkSoftware\Paysub\Models\Invoice;
 
 class InvoiceLineItem
 {
     /**
      * The Invoice instance.
      *
-     * @var \Laravel\Cashier\Invoice
+     * @var Invoice
      */
     protected $invoice;
 
@@ -23,7 +24,7 @@ class InvoiceLineItem
     /**
      * Create a new invoice line item instance.
      *
-     * @param  \StarfolkSoftware\Paysub\Models\Invoice|null  $invoice
+     * @param  Invoice|null  $invoice
      * @param  object $item
      * @return void
      */
@@ -138,7 +139,7 @@ class InvoiceLineItem
     /**
      * Get the model instance.
      *
-     * @return \StarfolkSoftware\Paysub\Models\Invoice
+     * @return Invoice
      */
     public function invoice()
     {

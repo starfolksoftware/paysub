@@ -5,6 +5,7 @@ namespace StarfolkSoftware\Paysub;
 use Carbon\Carbon;
 use StarfolkSoftware\Paysub\Models\Invoice;
 use StarfolkSoftware\Paysub\Models\Subscription;
+use StarfolkSoftware\Paysub\Models\SubscriptionItem;
 
 class InvoiceBuilder
 {
@@ -16,6 +17,24 @@ class InvoiceBuilder
 
     /** @var SubscriptionItem[] */
     protected $items;
+
+    /** @var Carbon|null */
+    protected $due_date;
+
+    /** @var string|null */
+    protected $description;
+
+    /** @var float|null */
+    protected $total;
+
+    /** @var array|null */
+    protected $tax;
+
+    /** @var string|null */
+    protected $status;
+
+    /** @var Carbon|null */
+    protected $paid_at;
 
     /**
      * Create a new invoice builder instance.
@@ -41,7 +60,7 @@ class InvoiceBuilder
         $this->items = $this->subscription->items;
 
         if ($autofill) {
-            foreach ($this->items as $key => $item) {
+            foreach ($this->items as $item) {
                 $this->lineItem(
                     trans('paysub::invoice.subscription_invoice'),
                     $item->plan->amount,
