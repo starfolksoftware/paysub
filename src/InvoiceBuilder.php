@@ -21,6 +21,21 @@ class InvoiceBuilder
     /** @var Carbon */
     protected $due_date;
 
+    /** @var string */
+    protected $description;
+
+    /** @var float */
+    protected $total;
+
+    /** @var array */
+    protected $tax;
+
+    /** @var string */
+    protected $status;
+
+    /** @var Carbon */
+    protected $paid_at;
+
     /**
      * Create a new invoice builder instance.
      *
@@ -45,7 +60,7 @@ class InvoiceBuilder
         $this->items = $this->subscription->items;
 
         if ($autofill) {
-            foreach ($this->items as $key => $item) {
+            foreach ($this->items as $item) {
                 $this->lineItem(
                     trans('paysub::invoice.subscription_invoice'),
                     $item->plan->amount,

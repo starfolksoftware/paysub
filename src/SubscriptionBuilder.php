@@ -84,10 +84,10 @@ class SubscriptionBuilder
      *
      * @param  mixed  $owner
      * @param  string $name
-     * @param  Plan|Plan[]  $plan
+     * @param  mixed  $plan
      * @return void
      */
-    public function __construct($owner, $name, Plan $plans = null)
+    public function __construct($owner, $name, $plans = null)
     {
         $this->owner = $owner;
         $this->name = $name;
@@ -271,8 +271,8 @@ class SubscriptionBuilder
             'ends_at' => null,
         ]);
 
-        /** @var \StarfolkSoftware\Paysub\Models\SubscriptionItem $item */
-        foreach ($this->items as $key => $item) {
+        $keys = array_keys($this->items);
+        foreach ($keys as $key) {
             $subscription->items()->create([
                 'plan_id' => $key,
                 'quantity' => $subscription->quantity,

@@ -6,7 +6,7 @@ use StarfolkSoftware\Paysub\Events\SubscriptionCreated;
 
 class GenerateFirstInvoice
 {
-    public function handle(SubscriptionCreated $event)
+    public function handle(SubscriptionCreated $event): void
     {
         $subscription = $event->subscription;
 

@@ -575,7 +575,7 @@ class Subscription extends Model
     /**
      * Swap the subscription to new plans.
      *
-     * @param Plan|Plan[] $plans
+     * @param mixed $plans
      * @param array $quantities
      * @return $this
      *
@@ -914,7 +914,7 @@ class Subscription extends Model
     /**
      * Get the latest invoice for the subscription.
      *
-     * @return Invoice
+     * @return Invoice|null
      */
     public function latestInvoice()
     {

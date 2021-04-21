@@ -117,7 +117,7 @@ trait ManagesSubscription
 
     /**
      * Determine if the model is actively subscribed to one of the given plans.
-     * @param  Plan|Plan[]  $plans
+     * @param  mixed  $plans
      * @return bool
      */
     public function subscribedToOneOf($plans)
@@ -140,7 +140,7 @@ trait ManagesSubscription
     /**
      * Determine if the model is actively subscribed to one of the given plans.
      *
-     * @param  Plan|Plan[]  $plans
+     * @param  mixed  $plans
      * @param  string  $name
      * @return bool
      */

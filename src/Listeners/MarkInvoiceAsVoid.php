@@ -6,7 +6,7 @@ use StarfolkSoftware\Paysub\Events\SubscriptionCancelled;
 
 class MarkInvoiceAsVoid
 {
-    public function handle(SubscriptionCancelled $event)
+    public function handle(SubscriptionCancelled $event): void
     {
         $invoice = $event->subscription->openInvoice();
         $invoice->void();
