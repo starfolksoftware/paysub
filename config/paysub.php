@@ -40,7 +40,7 @@ return [
     |
     */
 
-    'subscriber_model' => env('PAYSUB_SUBSCRIPTION_MODEL', class_exists(App\Models\User::class) ? App\Models\User::class : App\User::class),
+    'subscriber_model' => env('PAYSUB_SUBSCRIPTION_MODEL', App\Models\User::class),
 
     /*
     |--------------------------------------------------------------------------
