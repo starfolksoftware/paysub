@@ -97,7 +97,9 @@ class SubscriptionBuilder
         }
 
         foreach ($plans as $plan) {
-            $this->plan($plan);
+            if ($plan) {
+                $this->plan($plan);
+            }
         }
     }
 
