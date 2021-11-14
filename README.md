@@ -210,8 +210,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Road Map
 
 - [x] Multiple plans support
-- [x] Invoice period(invoice starts at, invoice ends at)
-- [ ] Coupons handling
 
 ## Contributing
 
